@@ -1,1262 +1,890 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="dark">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portage AI — Sales Force Command Center</title>
+  <title>Portage AI — Force Commerciale Augmentée par l'IA</title>
+  <meta name="description" content="Portage AI révolutionne la prospection commerciale en portage salarial grâce à 5 agents IA spécialisés. Simulateur, CRM intelligent, pipelines B2B/B2C automatisés.">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg-primary: #0a0b0f;
-      --bg-secondary: #10111a;
-      --bg-card: #181920;
-      --bg-input: #12131a;
-      --border: #1e1f2e;
-      --border-hover: #2a2b3a;
-      --text-primary: #e8e9f0;
-      --text-secondary: #8b8ca0;
-      --text-muted: #5c5d70;
-      --text-dim: #3d3e50;
+      --white: #ffffff;
+      --bg-light: #f8f9fc;
+      --bg-section: #f0f2f8;
+      --text-dark: #1a1d2e;
+      --text-body: #4a4d60;
+      --text-muted: #7a7d90;
       --accent-blue: #3b82f6;
+      --accent-blue-dark: #2563eb;
+      --accent-purple: #8b5cf6;
       --accent-green: #10b981;
       --accent-yellow: #f59e0b;
-      --accent-purple: #8b5cf6;
       --accent-red: #f43f5e;
       --accent-cyan: #06b6d4;
-      --accent-linkedin: #0077b5;
-      --sidebar-width: 240px;
-      --sidebar-collapsed: 64px;
-      --header-height: 0px;
+      --gradient-main: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      --gradient-warm: linear-gradient(135deg, #f59e0b, #f43f5e);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+      --shadow-xl: 0 16px 48px rgba(0,0,0,0.15);
+      --radius: 16px;
+      --radius-sm: 10px;
     }
+    html { scroll-behavior: smooth; }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      overflow: hidden;
-      height: 100vh;
+      background: var(--white);
+      color: var(--text-body);
+      line-height: 1.7;
+      overflow-x: hidden;
     }
-    /* Layout */
-    .app-layout { display: flex; height: 100vh; }
-    .sidebar {
-      width: var(--sidebar-width);
-      background: var(--bg-secondary);
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      transition: width 0.25s ease;
-      overflow: hidden;
-      flex-shrink: 0;
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      transition: box-shadow 0.3s;
     }
-    .sidebar.collapsed { width: var(--sidebar-collapsed); }
-    .sidebar-header {
-      padding: 20px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-bottom: 1px solid var(--border);
-      min-height: 68px;
+    .navbar.scrolled { box-shadow: var(--shadow-md); }
+    .navbar-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 32px; height: 72px;
+      display: flex; align-items: center; justify-content: space-between;
     }
-    .sidebar-logo {
+    .navbar-brand {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none;
+    }
+    .navbar-logo {
+      width: 40px; height: 40px;
+      background: var(--gradient-main);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .navbar-logo .material-icons-round { font-size: 22px; color: #fff; }
+    .navbar-title {
+      font-size: 18px; font-weight: 800;
+      color: var(--text-dark); letter-spacing: -0.3px;
+    }
+    .navbar-links {
+      display: flex; align-items: center; gap: 32px;
+      list-style: none;
+    }
+    .navbar-links a {
+      text-decoration: none; color: var(--text-body);
+      font-size: 14px; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .navbar-links a:hover { color: var(--accent-blue); }
+    .btn-nav {
+      background: var(--gradient-main);
+      color: #fff !important; padding: 10px 24px;
+      border-radius: 10px; font-weight: 600;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-nav:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(59,130,246,0.35);
+    }
+    .menu-toggle {
+      display: none; background: none; border: none;
+      cursor: pointer; color: var(--text-dark);
+    }
+    .menu-toggle .material-icons-round { font-size: 28px; }
+
+    /* ===== HERO ===== */
+    .hero {
+      padding: 140px 32px 80px;
+      background: linear-gradient(170deg, #f8f9fc 0%, #eef1f8 40%, #e8ecf6 100%);
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .hero::after {
+      content: ''; position: absolute; bottom: -150px; left: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .hero-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; align-items: center;
+      position: relative; z-index: 1;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(59,130,246,0.08);
+      border: 1px solid rgba(59,130,246,0.15);
+      padding: 6px 16px; border-radius: 50px;
+      font-size: 13px; font-weight: 600;
+      color: var(--accent-blue); margin-bottom: 24px;
+    }
+    .hero-badge .material-icons-round { font-size: 16px; }
+    .hero h1 {
+      font-size: 52px; font-weight: 900;
+      color: var(--text-dark); line-height: 1.15;
+      letter-spacing: -1.5px; margin-bottom: 24px;
+    }
+    .hero h1 span {
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-desc {
+      font-size: 18px; color: var(--text-body);
+      line-height: 1.8; margin-bottom: 36px;
+      max-width: 520px;
+    }
+    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--gradient-main);
+      color: #fff; padding: 14px 32px;
+      border-radius: 12px; font-size: 15px; font-weight: 700;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(59,130,246,0.35);
+    }
+    .btn-primary .material-icons-round { font-size: 20px; }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--white);
+      color: var(--text-dark); padding: 14px 32px;
+      border-radius: 12px; font-size: 15px; font-weight: 700;
+      text-decoration: none; border: 1px solid rgba(0,0,0,0.1);
+      cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .btn-secondary .material-icons-round { font-size: 20px; }
+
+    /* Hero Visual */
+    .hero-visual {
+      position: relative;
+      display: flex; justify-content: center;
+    }
+    .hero-card {
+      background: var(--white);
+      border-radius: 20px;
+      box-shadow: var(--shadow-xl);
+      padding: 32px;
+      width: 100%; max-width: 480px;
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    .hero-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .hero-card-title {
+      font-size: 14px; font-weight: 700;
+      color: var(--text-dark);
+    }
+    .hero-card-badge {
+      background: rgba(16,185,129,0.1);
+      color: var(--accent-green);
+      padding: 4px 12px; border-radius: 50px;
+      font-size: 12px; font-weight: 700;
+    }
+    .hero-stats {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      margin-bottom: 24px;
+    }
+    .hero-stat {
+      background: var(--bg-light);
+      padding: 16px; border-radius: 12px;
+    }
+    .hero-stat-value {
+      font-size: 28px; font-weight: 800;
+      color: var(--text-dark); letter-spacing: -0.5px;
+    }
+    .hero-stat-label {
+      font-size: 12px; color: var(--text-muted);
+      font-weight: 500; margin-top: 2px;
+    }
+    .hero-stat-change {
+      font-size: 11px; font-weight: 700;
+      margin-top: 4px;
+    }
+    .hero-stat-change.up { color: var(--accent-green); }
+    .hero-agents {
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .hero-agent {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--bg-light);
+      padding: 6px 12px; border-radius: 8px;
+      font-size: 12px; font-weight: 600;
+    }
+    .hero-agent-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+    }
+    .floating-badge {
+      position: absolute;
+      background: var(--white);
+      border-radius: 12px;
+      padding: 12px 16px;
+      box-shadow: var(--shadow-lg);
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 600;
+      animation: float 3s ease-in-out infinite;
+    }
+    .floating-badge.top-right {
+      top: -10px; right: -20px;
+      color: var(--accent-green);
+    }
+    .floating-badge.bottom-left {
+      bottom: 20px; left: -30px;
+      color: var(--accent-purple);
+      animation-delay: 1.5s;
+    }
+    .floating-badge .material-icons-round { font-size: 18px; }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* ===== SECTION COMMON ===== */
+    section { padding: 100px 32px; }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-header {
+      text-align: center; margin-bottom: 64px;
+    }
+    .section-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(59,130,246,0.08);
+      border: 1px solid rgba(59,130,246,0.12);
+      padding: 5px 14px; border-radius: 50px;
+      font-size: 12px; font-weight: 700;
+      color: var(--accent-blue);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: 40px; font-weight: 900;
+      color: var(--text-dark); letter-spacing: -1px;
+      line-height: 1.2; margin-bottom: 16px;
+    }
+    .section-subtitle {
+      font-size: 17px; color: var(--text-muted);
+      max-width: 600px; margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ===== AGENTS ===== */
+    #agents { background: var(--bg-light); }
+    .agents-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+    }
+    .agent-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 28px 20px;
+      text-align: center;
+      border: 1px solid rgba(0,0,0,0.04);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: default;
+    }
+    .agent-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+    .agent-avatar {
+      width: 64px; height: 64px;
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; margin: 0 auto 16px;
+    }
+    .agent-name {
+      font-size: 16px; font-weight: 800;
+      color: var(--text-dark); margin-bottom: 4px;
+    }
+    .agent-role {
+      font-size: 12px; color: var(--text-muted);
+      font-weight: 500; margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .agent-score {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 12px; border-radius: 50px;
+      font-size: 13px; font-weight: 800;
+    }
+
+    /* ===== FEATURES ===== */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .feature-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 32px;
+      border: 1px solid rgba(0,0,0,0.05);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+    .feature-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+    .feature-icon .material-icons-round { font-size: 26px; color: #fff; }
+    .feature-title {
+      font-size: 18px; font-weight: 800;
+      color: var(--text-dark); margin-bottom: 10px;
+    }
+    .feature-desc {
+      font-size: 14px; color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ===== STATS BANNER ===== */
+    .stats-banner {
+      background: linear-gradient(135deg, #1e2340 0%, #2a1f4e 100%);
+      padding: 80px 32px;
+    }
+    .stats-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 32px; text-align: center;
+    }
+    .stat-item {}
+    .stat-number {
+      font-size: 48px; font-weight: 900;
+      color: #fff; letter-spacing: -1px;
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 14px; color: rgba(255,255,255,0.6);
+      font-weight: 500;
+    }
+
+    /* ===== PIPELINE ===== */
+    #pipeline { background: var(--bg-light); }
+    .pipeline-visual {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; flex-wrap: wrap;
+    }
+    .pipeline-step {
+      text-align: center; flex: 1;
+      min-width: 160px; position: relative;
+      padding: 24px 16px;
+    }
+    .pipeline-step::after {
+      content: '→'; position: absolute;
+      right: -8px; top: 50%; transform: translateY(-50%);
+      font-size: 24px; color: var(--text-muted);
+      font-weight: 300;
+    }
+    .pipeline-step:last-child::after { display: none; }
+    .pipeline-circle {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 12px;
+      font-size: 28px; font-weight: 900; color: #fff;
+    }
+    .pipeline-label {
+      font-size: 13px; font-weight: 700;
+      color: var(--text-dark); margin-bottom: 2px;
+    }
+    .pipeline-value {
+      font-size: 12px; color: var(--text-muted);
+    }
+
+    /* ===== CTA ===== */
+    .cta {
+      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #a855f7 100%);
+      padding: 100px 32px; text-align: center;
+    }
+    .cta h2 {
+      font-size: 40px; font-weight: 900;
+      color: #fff; letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+    .cta p {
+      font-size: 18px; color: rgba(255,255,255,0.85);
+      max-width: 600px; margin: 0 auto 36px;
+      line-height: 1.7;
+    }
+    .btn-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff; color: var(--accent-blue);
+      padding: 16px 36px; border-radius: 12px;
+      font-size: 16px; font-weight: 800;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+    .btn-cta .material-icons-round { font-size: 20px; }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background: #0f1023;
+      padding: 60px 32px 32px;
+      color: rgba(255,255,255,0.5);
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px; margin-bottom: 48px;
+    }
+    .footer-brand {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 16px;
+    }
+    .footer-logo {
       width: 36px; height: 36px;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      background: var(--gradient-main);
       border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
     }
-    .sidebar-logo .material-icons-round { font-size: 20px; color: #fff; }
-    .sidebar-brand { white-space: nowrap; overflow: hidden; }
-    .sidebar-brand h2 { font-size: 15px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.3px; }
-    .sidebar-brand span { font-size: 10px; color: var(--text-muted); font-weight: 500; }
-    .sidebar.collapsed .sidebar-brand { display: none; }
-    .sidebar-nav { flex: 1; padding: 12px 8px; overflow-y: auto; }
-    .nav-section { margin-bottom: 16px; }
-    .nav-section-title {
-      font-size: 10px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 1px; color: var(--text-dim); padding: 4px 12px 8px;
+    .footer-logo .material-icons-round { font-size: 20px; color: #fff; }
+    .footer-brand-name {
+      font-size: 16px; font-weight: 800; color: #fff;
     }
-    .sidebar.collapsed .nav-section-title { display: none; }
-    .nav-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 9px 12px; border-radius: 10px; cursor: pointer;
-      transition: all 0.15s ease; color: var(--text-secondary);
-      text-decoration: none; position: relative; margin-bottom: 2px;
+    .footer-desc {
+      font-size: 13px; line-height: 1.8;
+      color: rgba(255,255,255,0.4);
     }
-    .nav-item:hover { background: rgba(59,130,246,0.06); color: var(--text-primary); }
-    .nav-item.active {
-      background: rgba(59,130,246,0.1);
-      color: var(--accent-blue);
+    .footer-col-title {
+      font-size: 13px; font-weight: 700;
+      color: rgba(255,255,255,0.7);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 16px;
     }
-    .nav-item.active::before {
-      content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
-      width: 3px; height: 20px; background: var(--accent-blue); border-radius: 0 3px 3px 0;
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 10px; }
+    .footer-links a {
+      text-decoration: none; color: rgba(255,255,255,0.4);
+      font-size: 13px; transition: color 0.2s;
     }
-    .nav-item .material-icons-round { font-size: 20px; flex-shrink: 0; }
-    .nav-item span { font-size: 13px; font-weight: 500; white-space: nowrap; }
-    .sidebar.collapsed .nav-item span { display: none; }
-    .sidebar.collapsed .nav-item { justify-content: center; padding: 10px; }
-    .nav-badge {
-      margin-left: auto; font-size: 10px; font-weight: 700;
-      background: var(--accent-blue); color: #fff;
-      padding: 2px 7px; border-radius: 10px;
+    .footer-links a:hover { color: rgba(255,255,255,0.8); }
+    .footer-bottom {
+      max-width: 1200px; margin: 0 auto;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding-top: 24px;
+      display: flex; justify-content: space-between;
+      align-items: center; font-size: 12px;
     }
-    .sidebar.collapsed .nav-badge { display: none; }
-    .sidebar-footer {
-      padding: 12px 8px; border-top: 1px solid var(--border);
-    }
-    .sidebar-toggle {
-      display: flex; align-items: center; justify-content: center;
-      gap: 8px; padding: 8px; border-radius: 8px; cursor: pointer;
-      color: var(--text-muted); transition: all 0.15s; border: none;
-      background: transparent; width: 100%;
-    }
-    .sidebar-toggle:hover { background: rgba(255,255,255,0.04); color: var(--text-secondary); }
-    /* Main content */
-    .main-content {
-      flex: 1; overflow-y: auto; overflow-x: hidden;
-      background: var(--bg-primary);
-    }
-    .page { display: none; padding: 28px 32px; min-height: 100vh; }
-    .page.active { display: block; }
-    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
-    .page-title { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
-    .page-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
-    .live-badge {
-      display: flex; align-items: center; gap: 6px;
-      background: rgba(16,185,129,0.1); padding: 6px 14px; border-radius: 20px;
-    }
-    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-green); animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-    .live-badge span { font-size: 12px; font-weight: 600; color: var(--accent-green); }
-    /* KPI Grid */
-    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 24px; }
-    .kpi-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 14px; padding: 18px;
-      transition: border-color 0.2s, transform 0.15s;
-    }
-    .kpi-card:hover { border-color: var(--border-hover); transform: translateY(-1px); }
-    .kpi-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .kpi-icon {
-      width: 36px; height: 36px; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .kpi-icon .material-icons-round { font-size: 18px; }
-    .kpi-trend { font-size: 12px; font-weight: 600; }
-    .kpi-trend.up { color: var(--accent-green); }
-    .kpi-trend.down { color: var(--accent-red); }
-    .kpi-value { font-size: 28px; font-weight: 800; margin-bottom: 2px; }
-    .kpi-label { font-size: 12px; color: var(--text-muted); }
-    /* Panels / Cards */
-    .panel {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 14px; padding: 20px; margin-bottom: 16px;
-    }
-    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .panel-title { font-size: 15px; font-weight: 700; }
-    .panel-badge {
-      font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 8px;
-    }
-    /* Grid layouts */
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-    .grid-5-3 { display: grid; grid-template-columns: 3fr 2fr; gap: 16px; margin-bottom: 16px; }
-    /* Charts */
-    .chart-container { position: relative; height: 220px; }
-    /* Funnel */
-    .funnel-step { display: flex; align-items: center; gap: 12px; padding: 10px 0; }
-    .funnel-bar-bg { flex: 1; height: 28px; background: var(--bg-input); border-radius: 6px; overflow: hidden; position: relative; }
-    .funnel-bar { height: 100%; border-radius: 6px; transition: width 0.6s ease; display: flex; align-items: center; padding-left: 10px; }
-    .funnel-bar span { font-size: 11px; font-weight: 700; color: #fff; white-space: nowrap; }
-    .funnel-label { font-size: 12px; color: var(--text-secondary); width: 100px; flex-shrink: 0; }
-    .funnel-count { font-size: 13px; font-weight: 700; width: 50px; text-align: right; flex-shrink: 0; }
-    .funnel-rate { font-size: 11px; color: var(--text-muted); width: 40px; text-align: right; flex-shrink: 0; }
-    /* Activity feed */
-    .activity-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(30,31,46,0.5); }
-    .activity-item:last-child { border-bottom: none; }
-    .activity-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
-    .activity-time { font-size: 11px; color: var(--text-muted); width: 42px; flex-shrink: 0; }
-    .activity-text { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
-    .activity-agent { font-weight: 600; }
-    /* Leaderboard */
-    .leader-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(30,31,46,0.5); }
-    .leader-row:last-child { border-bottom: none; }
-    .leader-rank { font-size: 14px; font-weight: 800; width: 24px; text-align: center; }
-    .leader-avatar { width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-    .leader-info { flex: 1; }
-    .leader-name { font-size: 13px; font-weight: 600; }
-    .leader-role { font-size: 11px; color: var(--text-muted); }
-    .leader-score { font-size: 15px; font-weight: 800; }
-    .leader-bar-bg { width: 80px; height: 4px; background: var(--bg-input); border-radius: 2px; overflow: hidden; }
-    .leader-bar { height: 100%; border-radius: 2px; }
-    /* Agent cards */
-    .agent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
-    .agent-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 14px; padding: 20px; cursor: pointer;
-      transition: all 0.2s;
-    }
-    .agent-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
-    .agent-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
-    .agent-avatar {
-      width: 48px; height: 48px; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px;
-    }
-    .agent-name { font-size: 16px; font-weight: 700; }
-    .agent-role { font-size: 12px; color: var(--text-muted); }
-    .agent-status {
-      font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px;
-      margin-left: auto;
-    }
-    .agent-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
-    .agent-metric { text-align: center; }
-    .agent-metric-val { font-size: 18px; font-weight: 800; }
-    .agent-metric-lbl { font-size: 10px; color: var(--text-muted); }
-    .agent-specialties { display: flex; flex-wrap: wrap; gap: 6px; }
-    .agent-specialty {
-      font-size: 10px; font-weight: 600; padding: 4px 8px;
-      background: var(--bg-input); border-radius: 6px; color: var(--text-secondary);
-    }
-    /* Pipeline */
-    .pipeline-table { width: 100%; }
-    .pipeline-row {
-      display: grid; grid-template-columns: 2fr 1.2fr 1fr 1fr 1fr;
-      align-items: center; padding: 12px 0; gap: 12px;
-      border-bottom: 1px solid rgba(30,31,46,0.3);
-    }
-    .pipeline-row:last-child { border-bottom: none; }
-    .pipeline-row.header { color: var(--text-muted); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-    .pipeline-name { font-size: 13px; font-weight: 600; }
-    .pipeline-sector { font-size: 11px; color: var(--text-muted); }
-    .stage-badge { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 8px; text-align: center; display: inline-block; }
-    .pipeline-value { font-size: 13px; font-weight: 700; }
-    .pipeline-agent { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 8px; }
-    /* Buttons */
-    .btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 10px 18px; border-radius: 10px; font-size: 13px;
-      font-weight: 700; border: none; cursor: pointer;
-      transition: all 0.15s;
-    }
-    .btn:hover { transform: translateY(-1px); }
-    .btn:active { transform: translateY(0); }
-    .btn-primary { background: var(--accent-blue); color: #fff; }
-    .btn-primary:hover { background: #2563eb; }
-    .btn-success { background: var(--accent-green); color: #fff; }
-    .btn-linkedin { background: var(--accent-linkedin); color: #fff; }
-    /* Filter tabs */
-    .filter-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-    .filter-tab {
-      padding: 7px 14px; border-radius: 8px; font-size: 12px;
-      font-weight: 600; cursor: pointer; border: none;
-      background: var(--bg-input); color: var(--text-muted);
-      transition: all 0.15s;
-    }
-    .filter-tab:hover { color: var(--text-secondary); }
-    .filter-tab.active { background: var(--accent-blue); color: #fff; }
-    /* Forms */
-    .form-group { margin-bottom: 16px; }
-    .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
-    .form-input {
-      width: 100%; padding: 11px 14px; background: var(--bg-input);
-      border: 1px solid var(--border); border-radius: 10px;
-      color: var(--text-primary); font-size: 14px; font-weight: 500;
-      font-family: inherit; outline: none; transition: border-color 0.2s;
-    }
-    .form-input:focus { border-color: var(--accent-blue); }
-    .form-input::placeholder { color: var(--text-dim); }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    /* Simulateur */
-    .sim-result-card {
-      background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.08));
-      border: 1px solid rgba(59,130,246,0.2); border-radius: 14px;
-      padding: 24px; text-align: center; margin-top: 20px;
-    }
-    .sim-result-value { font-size: 42px; font-weight: 900; color: var(--accent-blue); }
-    .sim-result-label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
-    .sim-breakdown { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 16px; }
-    .sim-breakdown-item { text-align: center; padding: 12px; background: var(--bg-card); border-radius: 10px; border: 1px solid var(--border); }
-    .sim-breakdown-val { font-size: 18px; font-weight: 700; }
-    .sim-breakdown-lbl { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
-    /* CRM */
-    .crm-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 14px; padding: 18px; margin-bottom: 12px;
-      transition: all 0.2s;
-    }
-    .crm-card:hover { border-color: var(--border-hover); }
-    .crm-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-    .crm-avatar {
-      width: 40px; height: 40px; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; font-weight: 700;
-    }
-    .crm-name { font-size: 14px; font-weight: 700; }
-    .crm-email { font-size: 11px; color: var(--text-muted); }
-    .crm-meta { display: flex; gap: 12px; flex-wrap: wrap; }
-    .crm-tag { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px; }
-    /* Campaign cards */
-    .campaign-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 14px; padding: 18px; margin-bottom: 12px;
-    }
-    .campaign-metrics { display: flex; justify-content: space-between; margin: 14px 0; }
-    .campaign-metric { text-align: center; }
-    .campaign-metric-val { font-size: 16px; font-weight: 700; }
-    .campaign-metric-lbl { font-size: 10px; color: var(--text-muted); }
-    .progress-bar { height: 4px; background: var(--bg-input); border-radius: 2px; overflow: hidden; margin: 10px 0; }
-    .progress-fill { height: 100%; border-radius: 2px; transition: width 0.4s; }
-    /* Mission cards */
-    .mission-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 14px; padding: 18px; border-left: 3px solid;
-    }
-    .mission-progress { margin: 12px 0; }
-    .mission-progress-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
-    .mission-progress-label { font-size: 12px; color: var(--text-secondary); }
-    .mission-progress-pct { font-size: 13px; font-weight: 700; }
-    /* Config */
-    .config-section {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 14px; padding: 20px; margin-bottom: 16px;
-    }
-    .config-section-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-    .config-section-title { font-size: 16px; font-weight: 700; }
-    .config-section-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
-    .config-row {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 0; border-bottom: 1px solid rgba(30,31,46,0.5);
-    }
-    .config-row:last-child { border-bottom: none; }
-    .switch {
-      position: relative; width: 40px; height: 22px;
-      background: var(--border-hover); border-radius: 11px;
-      cursor: pointer; transition: background 0.2s; flex-shrink: 0;
-    }
-    .switch.on { background: var(--accent-blue); }
-    .switch::after {
-      content: ''; position: absolute; top: 2px; left: 2px;
-      width: 18px; height: 18px; border-radius: 50%;
-      background: #fff; transition: transform 0.2s;
-    }
-    .switch.on::after { transform: translateX(18px); }
-    .integration-btn {
-      font-size: 11px; font-weight: 600; padding: 5px 12px;
-      border-radius: 8px; border: 1px solid; cursor: pointer;
-      background: transparent;
-    }
-    /* Search */
-    .search-box {
-      display: flex; align-items: center; gap: 8px;
-      background: var(--bg-input); border: 1px solid var(--border);
-      border-radius: 10px; padding: 0 14px; margin-bottom: 16px;
-    }
-    .search-box .material-icons-round { font-size: 18px; color: var(--text-muted); }
-    .search-box input {
-      flex: 1; padding: 11px 0; background: transparent; border: none;
-      color: var(--text-primary); font-size: 14px; font-family: inherit; outline: none;
-    }
-    .search-box input::placeholder { color: var(--text-dim); }
-    /* LinkedIn profiles */
-    .profile-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 14px; padding: 18px; margin-bottom: 12px;
-    }
-    .profile-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-    .profile-avatar {
-      width: 44px; height: 44px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; font-weight: 700; background: rgba(59,130,246,0.15); color: var(--accent-blue);
-    }
-    .profile-score { font-size: 22px; font-weight: 800; text-align: center; }
-    .profile-skills { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
-    .profile-skill { font-size: 10px; font-weight: 600; padding: 4px 8px; background: var(--bg-input); border-radius: 6px; color: var(--text-secondary); }
-    /* Notification toast */
-    .toast {
-      position: fixed; top: 20px; right: 20px; z-index: 1000;
-      background: var(--bg-card); border: 1px solid var(--accent-green);
-      border-radius: 12px; padding: 14px 20px;
-      display: flex; align-items: center; gap: 10px;
-      transform: translateX(120%); transition: transform 0.3s ease;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-    }
-    .toast.show { transform: translateX(0); }
-    .toast-icon { font-size: 20px; color: var(--accent-green); }
-    .toast-text { font-size: 13px; font-weight: 500; }
-    .toast-text strong { font-weight: 700; }
-    /* Modal */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-      display: none; align-items: center; justify-content: center; z-index: 999;
-      backdrop-filter: blur(4px);
-    }
-    .modal-overlay.show { display: flex; }
-    .modal {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 16px; padding: 28px; width: 90%; max-width: 500px;
-      max-height: 85vh; overflow-y: auto;
-    }
-    .modal-title { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
-    .modal-subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
-    /* Responsive */
+
+    /* ===== RESPONSIVE ===== */
     @media (max-width: 1024px) {
-      .grid-2, .grid-5-3 { grid-template-columns: 1fr; }
-      .grid-3 { grid-template-columns: 1fr 1fr; }
+      .hero-inner { grid-template-columns: 1fr; text-align: center; }
+      .hero-desc { margin: 0 auto 36px; }
+      .hero-actions { justify-content: center; }
+      .hero-visual { margin-top: 40px; }
+      .agents-grid { grid-template-columns: repeat(3, 1fr); }
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 40px; }
+      .footer-inner { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 768px) {
-      .sidebar { position: fixed; z-index: 100; width: var(--sidebar-collapsed); }
-      .sidebar .sidebar-brand, .sidebar .nav-item span, .sidebar .nav-badge, .sidebar .nav-section-title { display: none; }
-      .sidebar .nav-item { justify-content: center; padding: 10px; }
-      .main-content { margin-left: var(--sidebar-collapsed); }
-      .page { padding: 16px; }
-      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-      .pipeline-row { grid-template-columns: 1fr 1fr; }
+      .navbar-links { display: none; }
+      .menu-toggle { display: block; }
+      .navbar-links.open {
+        display: flex; flex-direction: column;
+        position: absolute; top: 72px; left: 0; right: 0;
+        background: var(--white);
+        padding: 24px; gap: 16px;
+        box-shadow: var(--shadow-lg);
+      }
+      .hero h1 { font-size: 36px; }
+      .hero { padding: 120px 20px 60px; }
+      section { padding: 60px 20px; }
+      .section-title { font-size: 28px; }
+      .agents-grid { grid-template-columns: repeat(2, 1fr); }
+      .features-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .pipeline-visual { flex-direction: column; }
+      .pipeline-step::after { content: '↓'; right: auto; bottom: -8px; top: auto; transform: none; }
+      .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .agents-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 30px; }
+      .hero-stats { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-<div class="app-layout">
-  <!-- SIDEBAR -->
-  <nav class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="sidebar-logo"><span class="material-icons-round">auto_awesome</span></div>
-      <div class="sidebar-brand">
-        <h2>Portage AI</h2>
-        <span>Sales Force Command Center</span>
-      </div>
-    </div>
-    <div class="sidebar-nav">
-      <div class="nav-section">
-        <div class="nav-section-title">Principal</div>
-        <div class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')">
-          <span class="material-icons-round">dashboard</span><span>Dashboard</span>
-        </div>
-        <div class="nav-item" data-page="agents" onclick="navigate('agents')">
-          <span class="material-icons-round">smart_toy</span><span>Agents IA</span>
-          <div class="nav-badge">5</div>
-        </div>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section-title">Pipelines</div>
-        <div class="nav-item" data-page="b2b" onclick="navigate('b2b')">
-          <span class="material-icons-round">business</span><span>Pipeline B2B</span>
-        </div>
-        <div class="nav-item" data-page="b2c" onclick="navigate('b2c')">
-          <span class="material-icons-round">people</span><span>Pipeline B2C</span>
-        </div>
-        <div class="nav-item" data-page="crm" onclick="navigate('crm')">
-          <span class="material-icons-round">contact_page</span><span>CRM</span>
-          <div class="nav-badge" id="crm-badge">0</div>
-        </div>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section-title">Outils</div>
-        <div class="nav-item" data-page="simulateur" onclick="navigate('simulateur')">
-          <span class="material-icons-round">calculate</span><span>Simulateur</span>
-        </div>
-        <div class="nav-item" data-page="campagnes" onclick="navigate('campagnes')">
-          <span class="material-icons-round">campaign</span><span>Campagnes</span>
-        </div>
-        <div class="nav-item" data-page="linkedin" onclick="navigate('linkedin')">
-          <span class="material-icons-round">work</span><span>LinkedIn</span>
-        </div>
-        <div class="nav-item" data-page="missions" onclick="navigate('missions')">
-          <span class="material-icons-round">assignment</span><span>Missions</span>
-        </div>
-      </div>
-      <div class="nav-section">
-        <div class="nav-section-title">Système</div>
-        <div class="nav-item" data-page="config" onclick="navigate('config')">
-          <span class="material-icons-round">settings</span><span>Configuration</span>
-        </div>
-      </div>
-    </div>
-    <div class="sidebar-footer">
-      <button class="sidebar-toggle" onclick="toggleSidebar()">
-        <span class="material-icons-round" id="toggle-icon">chevron_left</span>
-      </button>
-    </div>
-  </nav>
 
-  <!-- MAIN CONTENT -->
-  <div class="main-content" id="main-content">
-</div>
-</div>
-
-<!-- Toast notification -->
-<div class="toast" id="toast">
-  <span class="material-icons-round toast-icon">check_circle</span>
-  <div class="toast-text" id="toast-text"></div>
-</div>
-
-<!-- Mission Modal -->
-<div class="modal-overlay" id="mission-modal">
-  <div class="modal">
-    <div class="modal-title">Nouvelle Mission</div>
-    <div class="modal-subtitle">Créer une mission pour un agent IA</div>
-    <div class="form-group">
-      <label class="form-label">Titre de la mission</label>
-      <input class="form-input" id="mission-title" placeholder="Ex: Prospection ESN Lyon">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Description</label>
-      <textarea class="form-input" id="mission-desc" rows="3" placeholder="Décrivez l'objectif..."></textarea>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Agent assigné</label>
-        <select class="form-input" id="mission-agent">
-          <option value="aria">🔍 ARIA</option>
-          <option value="noah">🤝 NOAH</option>
-          <option value="luna">✨ LUNA</option>
-          <option value="alex">🎯 ALEX</option>
-          <option value="max">📊 MAX</option>
-        </select>
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="navbar-inner">
+    <a href="#" class="navbar-brand">
+      <div class="navbar-logo">
+        <span class="material-icons-round">auto_awesome</span>
       </div>
-      <div class="form-group">
-        <label class="form-label">Priorité</label>
-        <select class="form-input" id="mission-priority">
-          <option value="haute">Haute</option>
-          <option value="moyenne">Moyenne</option>
-          <option value="basse">Basse</option>
-        </select>
+      <span class="navbar-title">Portage AI</span>
+    </a>
+    <ul class="navbar-links" id="navLinks">
+      <li><a href="#agents">Agents IA</a></li>
+      <li><a href="#features">Fonctionnalités</a></li>
+      <li><a href="#pipeline">Pipeline</a></li>
+      <li><a href="#stats">Résultats</a></li>
+      <li><a href="dashboard.html" class="btn-nav">Accéder au Dashboard</a></li>
+    </ul>
+    <button class="menu-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')">
+      <span class="material-icons-round">menu</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="material-icons-round">bolt</span>
+        Sales Force Command Center
+      </div>
+      <h1>Votre force commerciale <span>augmentée par l'IA</span></h1>
+      <p class="hero-desc">
+        5 agents IA spécialisés travaillent 24h/24 pour prospecter, qualifier, négocier et fidéliser vos clients en portage salarial. Du premier contact à la signature, chaque étape est automatisée et optimisée.
+      </p>
+      <div class="hero-actions">
+        <a href="dashboard.html" class="btn-primary">
+          <span class="material-icons-round">dashboard</span>
+          Accéder au Dashboard
+        </a>
+        <a href="#agents" class="btn-secondary">
+          <span class="material-icons-round">smart_toy</span>
+          Découvrir les Agents
+        </a>
       </div>
     </div>
-    <div class="form-group">
-      <label class="form-label">Échéance</label>
-      <input class="form-input" type="date" id="mission-deadline">
-    </div>
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;">
-      <button class="btn" style="background:var(--bg-input);color:var(--text-secondary);" onclick="closeMissionModal()">Annuler</button>
-      <button class="btn btn-primary" onclick="createMission()">Créer la mission</button>
+    <div class="hero-visual">
+      <div class="hero-card">
+        <div class="hero-card-header">
+          <span class="hero-card-title">Performance en temps réel</span>
+          <span class="hero-card-badge">● Live</span>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-value">2 057</div>
+            <div class="hero-stat-label">Contacts générés</div>
+            <div class="hero-stat-change up">↗ +18%</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">666</div>
+            <div class="hero-stat-label">Leads qualifiés</div>
+            <div class="hero-stat-change up">↗ +24%</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">307</div>
+            <div class="hero-stat-label">RDV obtenus</div>
+            <div class="hero-stat-change up">↗ +12%</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">136K€</div>
+            <div class="hero-stat-label">Pipeline B2B</div>
+            <div class="hero-stat-change up">↗ +31%</div>
+          </div>
+        </div>
+        <div class="hero-agents">
+          <div class="hero-agent"><div class="hero-agent-dot" style="background:#3b82f6"></div> ARIA</div>
+          <div class="hero-agent"><div class="hero-agent-dot" style="background:#f43f5e"></div> MAX</div>
+          <div class="hero-agent"><div class="hero-agent-dot" style="background:#10b981"></div> NOAH</div>
+          <div class="hero-agent"><div class="hero-agent-dot" style="background:#f59e0b"></div> LUNA</div>
+          <div class="hero-agent"><div class="hero-agent-dot" style="background:#8b5cf6"></div> ALEX</div>
+        </div>
+      </div>
+      <div class="floating-badge top-right">
+        <span class="material-icons-round">trending_up</span>
+        +58% conversion
+      </div>
+      <div class="floating-badge bottom-left">
+        <span class="material-icons-round">psychology</span>
+        IA active 24/7
+      </div>
     </div>
   </div>
-</div>
+</section>
+
+<!-- AGENTS IA -->
+<section id="agents">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">
+        <span class="material-icons-round" style="font-size:14px">smart_toy</span>
+        Équipe IA
+      </div>
+      <h2 class="section-title">5 agents IA spécialisés</h2>
+      <p class="section-subtitle">Chaque agent maîtrise une étape clé du cycle commercial. Ensemble, ils forment une force de vente autonome et performante.</p>
+    </div>
+    <div class="agents-grid">
+      <div class="agent-card">
+        <div class="agent-avatar" style="background:rgba(59,130,246,0.1)">🔍</div>
+        <div class="agent-name">ARIA</div>
+        <div class="agent-role">Prospection & Qualification</div>
+        <div class="agent-score" style="background:rgba(59,130,246,0.1);color:#3b82f6">94/100</div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-avatar" style="background:rgba(244,63,94,0.1)">📊</div>
+        <div class="agent-name">MAX</div>
+        <div class="agent-role">Analytics & Reporting</div>
+        <div class="agent-score" style="background:rgba(244,63,94,0.1);color:#f43f5e">92/100</div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-avatar" style="background:rgba(16,185,129,0.1)">🤝</div>
+        <div class="agent-name">NOAH</div>
+        <div class="agent-role">Négociation & Closing</div>
+        <div class="agent-score" style="background:rgba(16,185,129,0.1);color:#10b981">91/100</div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-avatar" style="background:rgba(245,158,11,0.1)">✨</div>
+        <div class="agent-name">LUNA</div>
+        <div class="agent-role">Marketing & Nurturing</div>
+        <div class="agent-score" style="background:rgba(245,158,11,0.1);color:#f59e0b">88/100</div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-avatar" style="background:rgba(139,92,246,0.1)">🎯</div>
+        <div class="agent-name">ALEX</div>
+        <div class="agent-role">Onboarding & Fidélisation</div>
+        <div class="agent-score" style="background:rgba(139,92,246,0.1);color:#8b5cf6">86/100</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">
+        <span class="material-icons-round" style="font-size:14px">widgets</span>
+        Fonctionnalités
+      </div>
+      <h2 class="section-title">Tout-en-un pour votre développement commercial</h2>
+      <p class="section-subtitle">Un écosystème complet qui couvre chaque aspect de votre activité commerciale en portage salarial.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--gradient-main)">
+          <span class="material-icons-round">calculate</span>
+        </div>
+        <div class="feature-title">Simulateur de Portage</div>
+        <div class="feature-desc">Calculez instantanément les revenus nets, charges et frais de gestion. Algorithme Light Portage intégré avec scoring automatique.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:linear-gradient(135deg,#10b981,#06b6d4)">
+          <span class="material-icons-round">contact_page</span>
+        </div>
+        <div class="feature-title">CRM Intelligent</div>
+        <div class="feature-desc">Fiches prospects enrichies (15 champs), scoring automatique, rotation d'affectation des agents IA et suivi en temps réel.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:linear-gradient(135deg,#f59e0b,#f43f5e)">
+          <span class="material-icons-round">business</span>
+        </div>
+        <div class="feature-title">Pipeline B2B & B2C</div>
+        <div class="feature-desc">Double pipeline automatisé avec funnel de conversion, suivi des propositions, négociations et signatures en temps réel.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:linear-gradient(135deg,#8b5cf6,#a855f7)">
+          <span class="material-icons-round">campaign</span>
+        </div>
+        <div class="feature-title">Campagnes Automatisées</div>
+        <div class="feature-desc">Emails de nurturing, séquences de prospection et campagnes ciblées pilotées par LUNA, votre agent marketing IA.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:linear-gradient(135deg,#0077b5,#00a0dc)">
+          <span class="material-icons-round">work</span>
+        </div>
+        <div class="feature-title">Module LinkedIn</div>
+        <div class="feature-desc">Identification et qualification automatique de profils LinkedIn. Prospection ciblée sur les secteurs Data, IA et conseil.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:linear-gradient(135deg,#06b6d4,#3b82f6)">
+          <span class="material-icons-round">insights</span>
+        </div>
+        <div class="feature-title">Dashboard Temps Réel</div>
+        <div class="feature-desc">Vue d'ensemble complète avec KPIs, graphiques de performance hebdomadaire, classement des agents et activité en direct.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BANNER -->
+<section class="stats-banner" id="stats">
+  <div class="stats-grid">
+    <div class="stat-item">
+      <div class="stat-number">2 057</div>
+      <div class="stat-label">Contacts générés</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">58%</div>
+      <div class="stat-label">Taux de conversion moyen</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">136K€</div>
+      <div class="stat-label">Pipeline B2B actif</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">24/7</div>
+      <div class="stat-label">Agents IA actifs en continu</div>
+    </div>
+  </div>
+</section>
+
+<!-- PIPELINE -->
+<section id="pipeline">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag">
+        <span class="material-icons-round" style="font-size:14px">filter_alt</span>
+        Pipeline
+      </div>
+      <h2 class="section-title">Du premier contact à la signature</h2>
+      <p class="section-subtitle">Un funnel de conversion optimisé par l'IA à chaque étape du parcours commercial.</p>
+    </div>
+    <div class="pipeline-visual">
+      <div class="pipeline-step">
+        <div class="pipeline-circle" style="background:var(--accent-blue)">2K</div>
+        <div class="pipeline-label">Contacts</div>
+        <div class="pipeline-value">100% — ARIA</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-circle" style="background:var(--accent-cyan)">666</div>
+        <div class="pipeline-label">Qualifiés</div>
+        <div class="pipeline-value">32% — ARIA</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-circle" style="background:var(--accent-green)">307</div>
+        <div class="pipeline-label">Propositions</div>
+        <div class="pipeline-value">15% — NOAH</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-circle" style="background:var(--accent-yellow)">142</div>
+        <div class="pipeline-label">Négociation</div>
+        <div class="pipeline-value">6.9% — NOAH</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-circle" style="background:var(--accent-purple)">89</div>
+        <div class="pipeline-label">Signés</div>
+        <div class="pipeline-value">4.3% — ALEX</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Prêt à transformer votre développement commercial ?</h2>
+  <p>Accédez au Sales Force Command Center et découvrez la puissance de vos 5 agents IA en action.</p>
+  <a href="dashboard.html" class="btn-cta">
+    <span class="material-icons-round">rocket_launch</span>
+    Lancer le Dashboard
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <span class="material-icons-round">auto_awesome</span>
+        </div>
+        <span class="footer-brand-name">Portage AI</span>
+      </div>
+      <p class="footer-desc">Sales Force Command Center — La force commerciale augmentée par l'intelligence artificielle pour le portage salarial.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Plateforme</div>
+      <ul class="footer-links">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="#agents">Agents IA</a></li>
+        <li><a href="#features">Fonctionnalités</a></li>
+        <li><a href="#pipeline">Pipeline</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Outils</div>
+      <ul class="footer-links">
+        <li><a href="dashboard.html">Simulateur</a></li>
+        <li><a href="dashboard.html">CRM</a></li>
+        <li><a href="dashboard.html">Campagnes</a></li>
+        <li><a href="dashboard.html">LinkedIn</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Ressources</div>
+      <ul class="footer-links">
+        <li><a href="#">Documentation</a></li>
+        <li><a href="#">API</a></li>
+        <li><a href="#">Support</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2025 Portage AI — Tous droits réservés</span>
+    <span>Propulsé par l'Intelligence Artificielle</span>
+  </div>
+</footer>
 
 <script>
-// ===== DATA =====
-const AGENTS = [
-  { id:'aria', name:'ARIA', fullName:'Agent de Recherche et Intelligence Artificielle', role:'Prospection & Qualification', emoji:'🔍', color:'#3b82f6', bg:'rgba(59,130,246,0.12)', status:'active', score:94, contacts:487, deals:23, specialties:['Scraping LinkedIn','Scoring IA','Qualification auto'], weeklyData:[42,38,55,48,62,45,52] },
-  { id:'noah', name:'NOAH', fullName:'Négociateur Optimisé par Algorithmes Heuristiques', role:'Négociation & Closing', emoji:'🤝', color:'#10b981', bg:'rgba(16,185,129,0.12)', status:'active', score:91, contacts:234, deals:18, specialties:['Closing B2B','Négociation','Contrats-cadres'], weeklyData:[28,35,42,38,45,40,48] },
-  { id:'luna', name:'LUNA', fullName:'Logiciel Unifié de Nurturing Automatisé', role:'Marketing & Nurturing', emoji:'✨', color:'#f59e0b', bg:'rgba(245,158,11,0.12)', status:'busy', score:88, contacts:1205, deals:45, specialties:['Email marketing','Séquences auto','Content IA'], weeklyData:[85,92,78,95,88,102,96] },
-  { id:'alex', name:'ALEX', fullName:'Agent Logistique d\'EXpérience client', role:'Onboarding & Fidélisation', emoji:'🎯', color:'#8b5cf6', bg:'rgba(139,92,246,0.12)', status:'active', score:86, contacts:312, deals:67, specialties:['Onboarding','Satisfaction','Rétention'], weeklyData:[35,42,38,45,40,48,44] },
-  { id:'max', name:'MAX', fullName:'Module d\'Analyse et eXploitation des données', role:'Analytics & Reporting', emoji:'📊', color:'#f43f5e', bg:'rgba(244,63,94,0.12)', status:'idle', score:92, contacts:0, deals:0, specialties:['Dashboards','Prédictions','Rapports auto'], weeklyData:[12,15,18,14,20,16,22] }
-];
-
-const B2B_PIPELINE = [
-  { name:'Capgemini Engineering', sector:'ESN', stage:'Négociation', value:25000, agent:'noah' },
-  { name:'Sopra Steria', sector:'ESN', stage:'Proposition', value:18000, agent:'aria' },
-  { name:'Accenture France', sector:'Conseil', stage:'Qualification', value:32000, agent:'aria' },
-  { name:'Alten', sector:'Ingénierie', stage:'Closing', value:15000, agent:'noah' },
-  { name:'CGI France', sector:'ESN', stage:'Découverte', value:22000, agent:'aria' },
-  { name:'Devoteam', sector:'Conseil IT', stage:'Proposition', value:12000, agent:'noah' },
-  { name:'Atos', sector:'ESN', stage:'Négociation', value:28000, agent:'noah' },
-  { name:'Wavestone', sector:'Conseil', stage:'Qualification', value:8000, agent:'aria' }
-];
-
-const B2C_PIPELINE = [
-  { name:'Thomas Durand', sector:'DevOps', stage:'Simulation', value:650, agent:'luna' },
-  { name:'Sophie Martin', sector:'SAP', stage:'Onboarding', value:720, agent:'alex' },
-  { name:'Pierre Lambert', sector:'Cloud', stage:'Qualification', value:800, agent:'luna' },
-  { name:'Marie Chevalier', sector:'Data', stage:'Contact', value:580, agent:'luna' },
-  { name:'Jean Rousseau', sector:'PM', stage:'Simulation', value:600, agent:'alex' },
-  { name:'Claire Bonnet', sector:'UX', stage:'Onboarding', value:550, agent:'alex' },
-  { name:'Karim Amrani', sector:'IA/ML', stage:'Contact', value:900, agent:'aria' },
-  { name:'Nadia Faure', sector:'Formation', stage:'Signé', value:450, agent:'alex' }
-];
-
-const ACTIVITIES = [
-  { time:'14:32', agent:'ARIA', text:'a qualifié 3 nouveaux leads B2B dans le secteur ESN', color:'#3b82f6' },
-  { time:'14:15', agent:'NOAH', text:'a envoyé une proposition commerciale à Capgemini Engineering', color:'#10b981' },
-  { time:'13:58', agent:'LUNA', text:'a lancé la campagne email "Découvrez le portage salarial"', color:'#f59e0b' },
-  { time:'13:42', agent:'ALEX', text:'a finalisé l\'onboarding de Sophie Martin (SAP)', color:'#8b5cf6' },
-  { time:'13:20', agent:'MAX', text:'a généré le rapport de performance hebdomadaire', color:'#f43f5e' },
-  { time:'12:55', agent:'ARIA', text:'a identifié 12 profils LinkedIn Data/IA à contacter', color:'#3b82f6' },
-  { time:'12:30', agent:'LUNA', text:'a envoyé 450 emails de nurturing aux leads B2C', color:'#f59e0b' },
-  { time:'11:45', agent:'NOAH', text:'a programmé un RDV closing avec Alten pour vendredi', color:'#10b981' }
-];
-
-const DASHBOARD_FUNNEL = [
-  { label:'Contacts', count:2057, rate:'100%', color:'#3b82f6' },
-  { label:'Qualifiés', count:666, rate:'32%', color:'#8b5cf6' },
-  { label:'Propositions', count:307, rate:'15%', color:'#f59e0b' },
-  { label:'Négociation', count:142, rate:'6.9%', color:'#06b6d4' },
-  { label:'Signés', count:89, rate:'4.3%', color:'#10b981' }
-];
-
-const B2B_FUNNEL = [
-  { label:'Découverte', count:45, rate:'100%', color:'#3b82f6' },
-  { label:'Qualification', count:28, rate:'62%', color:'#8b5cf6' },
-  { label:'Proposition', count:18, rate:'40%', color:'#f59e0b' },
-  { label:'Négociation', count:12, rate:'27%', color:'#06b6d4' },
-  { label:'Closing', count:8, rate:'18%', color:'#10b981' }
-];
-
-const B2C_FUNNEL = [
-  { label:'Contact', count:1200, rate:'100%', color:'#3b82f6' },
-  { label:'Simulation', count:420, rate:'35%', color:'#8b5cf6' },
-  { label:'Qualification', count:180, rate:'15%', color:'#f59e0b' },
-  { label:'Onboarding', count:85, rate:'7%', color:'#06b6d4' },
-  { label:'Signé', count:52, rate:'4.3%', color:'#10b981' }
-];
-
-const CAMPAIGNS = [
-  { name:'Découvrez vos revenus en portage', agent:'LUNA', agentEmoji:'✨', status:'active', type:'email', sent:2400, opened:864, clicked:312, replies:48, meetings:12, target:'Freelances IT' },
-  { name:'Offre entreprise — Contrat-cadre', agent:'ARIA', agentEmoji:'🔍', status:'active', type:'multicanal', sent:450, opened:198, clicked:67, replies:23, meetings:8, target:'DSI Grands Comptes' },
-  { name:'Webinaire Portage vs Auto-entrepreneur', agent:'LUNA', agentEmoji:'✨', status:'completed', type:'email', sent:3200, opened:1280, clicked:576, replies:89, meetings:34, target:'Indépendants' },
-  { name:'Relance prospects qualifiés Q1', agent:'NOAH', agentEmoji:'🤝', status:'active', type:'email', sent:180, opened:108, clicked:45, replies:18, meetings:6, target:'Prospects B2B chauds' },
-  { name:'Nurturing nouveaux inscrits', agent:'ALEX', agentEmoji:'🎯', status:'draft', type:'email', sent:0, opened:0, clicked:0, replies:0, meetings:0, target:'Nouveaux leads B2C' },
-  { name:'Prospection LinkedIn ESN', agent:'ARIA', agentEmoji:'🔍', status:'paused', type:'linkedin', sent:320, opened:160, clicked:48, replies:15, meetings:4, target:'ESN & SSII' }
-];
-
-const LINKEDIN_PROFILES = [
-  { name:'Thomas Durand', title:'DevOps Senior', company:'Freelance', location:'Paris', score:92, status:'interested', agent:'LUNA', skills:['AWS','Kubernetes','Terraform'], tjm:650 },
-  { name:'Sophie Martin', title:'Consultante SAP', company:'Accenture', location:'Lyon', score:88, status:'meeting', agent:'ALEX', skills:['SAP S/4HANA','ABAP','Fiori'], tjm:720 },
-  { name:'Pierre Lambert', title:'Architecte Cloud', company:'Capgemini', location:'Nantes', score:85, status:'contacted', agent:'LUNA', skills:['Azure','GCP','Microservices'], tjm:800 },
-  { name:'Marie Chevalier', title:'Data Analyst', company:'Freelance', location:'Bordeaux', score:78, status:'new', agent:'ARIA', skills:['Python','Power BI','SQL'], tjm:580 },
-  { name:'Jean Rousseau', title:'Chef de Projet IT', company:'Sopra Steria', location:'Toulouse', score:82, status:'contacted', agent:'LUNA', skills:['Agile','JIRA','PMO'], tjm:600 },
-  { name:'Claire Bonnet', title:'UX Designer Senior', company:'Freelance', location:'Paris', score:90, status:'interested', agent:'ALEX', skills:['Figma','Design System','User Research'], tjm:550 },
-  { name:'Karim Amrani', title:'Ingénieur IA/ML', company:'Thales', location:'Paris', score:95, status:'new', agent:'ARIA', skills:['PyTorch','NLP','MLOps'], tjm:900 },
-  { name:'Nadia Faure', title:'Formatrice Digitale', company:'Freelance', location:'Marseille', score:72, status:'converted', agent:'ALEX', skills:['E-learning','Moodle','Pédagogie'], tjm:450 }
-];
-
-const MISSIONS = [
-  { title:'Prospection ESN Île-de-France', desc:'Identifier et qualifier 50 ESN en IDF pour proposer des contrats-cadres.', agent:'aria', priority:'haute', status:'en_cours', progress:68, target:'50 ESN qualifiées', deadline:'28/02/2026', metrics:[{l:'Identifiées',v:'42'},{l:'Contactées',v:'34'},{l:'Qualifiées',v:'18'}] },
-  { title:'Campagne Webinaire Mars 2026', desc:'Organiser un webinaire "Portage vs Auto-entrepreneur" — 200 inscrits.', agent:'luna', priority:'haute', status:'planifiee', progress:25, target:'200 inscrits', deadline:'15/03/2026', metrics:[{l:'Landing page',v:'OK'},{l:'Inscrits',v:'52'},{l:'Emails',v:'1200'}] },
-  { title:'Closing Capgemini Engineering', desc:'Finaliser la négociation du contrat-cadre — 25K€/mois.', agent:'noah', priority:'haute', status:'en_cours', progress:85, target:'Signature contrat', deadline:'22/02/2026', metrics:[{l:'Réunions',v:'4'},{l:'Proposition',v:'Envoyée'},{l:'Retour',v:'Positif'}] },
-  { title:'Onboarding batch février', desc:'Accompagner l\'onboarding de 12 nouveaux consultants.', agent:'alex', priority:'moyenne', status:'en_cours', progress:58, target:'12 consultants actifs', deadline:'28/02/2026', metrics:[{l:'Inscrits',v:'12'},{l:'Simulation OK',v:'8'},{l:'Contrats',v:'7'}] },
-  { title:'Rapport performance Q1', desc:'Générer le rapport trimestriel avec analyse prédictive.', agent:'max', priority:'basse', status:'planifiee', progress:10, target:'Rapport complet', deadline:'31/03/2026', metrics:[{l:'Données',v:'40%'},{l:'Analyses',v:'En cours'}] },
-  { title:'Prospection LinkedIn Data/IA', desc:'Rechercher et contacter 30 profils Data/IA seniors.', agent:'aria', priority:'moyenne', status:'terminee', progress:100, target:'30 profils contactés', deadline:'15/02/2026', metrics:[{l:'Trouvés',v:'35'},{l:'Contactés',v:'30'},{l:'Réponses',v:'12'}] }
-];
-
-// CRM Prospects (populated by simulator)
-let CRM_PROSPECTS = [];
-let simCounter = 0;
-
-// ===== HELPERS =====
-function getAgent(id) { return AGENTS.find(a => a.id === id); }
-function formatK(v) { return v >= 1000 ? Math.round(v/1000)+'K€' : v+'€'; }
-function getStageColor(stage) {
-  const map = {
-    'Négociation':{ bg:'rgba(16,185,129,0.12)', text:'#10b981' },
-    'Proposition':{ bg:'rgba(245,158,11,0.12)', text:'#f59e0b' },
-    'Qualification':{ bg:'rgba(139,92,246,0.12)', text:'#8b5cf6' },
-    'Closing':{ bg:'rgba(244,63,94,0.12)', text:'#f43f5e' },
-    'Découverte':{ bg:'rgba(59,130,246,0.12)', text:'#3b82f6' },
-    'Simulation':{ bg:'rgba(245,158,11,0.12)', text:'#f59e0b' },
-    'Contact':{ bg:'rgba(59,130,246,0.12)', text:'#3b82f6' },
-    'Onboarding':{ bg:'rgba(139,92,246,0.12)', text:'#8b5cf6' },
-    'Signé':{ bg:'rgba(16,185,129,0.12)', text:'#10b981' }
-  };
-  return map[stage] || { bg:'rgba(92,93,112,0.12)', text:'#5c5d70' };
-}
-function getStatusInfo(s) {
-  const map = {
-    'active':{ bg:'rgba(16,185,129,0.12)', text:'#10b981', label:'Active' },
-    'draft':{ bg:'rgba(92,93,112,0.12)', text:'#5c5d70', label:'Brouillon' },
-    'completed':{ bg:'rgba(59,130,246,0.12)', text:'#3b82f6', label:'Terminée' },
-    'paused':{ bg:'rgba(245,158,11,0.12)', text:'#f59e0b', label:'Pause' },
-    'en_cours':{ bg:'rgba(59,130,246,0.12)', text:'#3b82f6', label:'En cours' },
-    'planifiee':{ bg:'rgba(139,92,246,0.12)', text:'#8b5cf6', label:'Planifiée' },
-    'terminee':{ bg:'rgba(16,185,129,0.12)', text:'#10b981', label:'Terminée' },
-    'new':{ bg:'rgba(59,130,246,0.12)', text:'#3b82f6', label:'Nouveau' },
-    'contacted':{ bg:'rgba(245,158,11,0.12)', text:'#f59e0b', label:'Contacté' },
-    'interested':{ bg:'rgba(139,92,246,0.12)', text:'#8b5cf6', label:'Intéressé' },
-    'meeting':{ bg:'rgba(6,182,212,0.12)', text:'#06b6d4', label:'RDV planifié' },
-    'converted':{ bg:'rgba(16,185,129,0.12)', text:'#10b981', label:'Converti' }
-  };
-  return map[s] || { bg:'rgba(92,93,112,0.12)', text:'#5c5d70', label:s };
-}
-function showToast(html) {
-  const t = document.getElementById('toast');
-  document.getElementById('toast-text').innerHTML = html;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 4000);
-}
-
-// ===== NAVIGATION =====
-function navigate(page) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-'+page).classList.add('active');
-  document.querySelector(`.nav-item[data-page="${page}"]`).classList.add('active');
-  if(page === 'dashboard') initDashboardCharts();
-}
-function toggleSidebar() {
-  const sb = document.getElementById('sidebar');
-  sb.classList.toggle('collapsed');
-  document.getElementById('toggle-icon').textContent = sb.classList.contains('collapsed') ? 'chevron_right' : 'chevron_left';
-}
-
-// ===== RENDER FUNNEL =====
-function renderFunnel(data, containerId) {
-  const maxCount = data[0].count;
-  let html = '';
-  data.forEach(step => {
-    const pct = (step.count / maxCount * 100);
-    html += `<div class="funnel-step">
-      <div class="funnel-label">${step.label}</div>
-      <div class="funnel-bar-bg"><div class="funnel-bar" style="width:${pct}%;background:${step.color}"><span>${step.count.toLocaleString('fr')}</span></div></div>
-      <div class="funnel-rate">${step.rate}</div>
-    </div>`;
+  // Navbar scroll effect
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10);
   });
-  document.getElementById(containerId).innerHTML = html;
-}
 
-// ===== RENDER PIPELINE =====
-function renderPipeline(data, containerId) {
-  let html = `<div class="pipeline-row header"><div>Entreprise</div><div>Étape</div><div>Valeur</div><div>Agent</div><div>Secteur</div></div>`;
-  data.forEach(item => {
-    const sc = getStageColor(item.stage);
-    const ag = getAgent(item.agent);
-    html += `<div class="pipeline-row">
-      <div><div class="pipeline-name">${item.name}</div></div>
-      <div><span class="stage-badge" style="background:${sc.bg};color:${sc.text}">${item.stage}</span></div>
-      <div class="pipeline-value">${formatK(item.value)}</div>
-      <div><span class="pipeline-agent" style="background:${ag.bg};color:${ag.color}">${ag.emoji} ${ag.name}</span></div>
-      <div style="font-size:12px;color:var(--text-muted)">${item.sector}</div>
-    </div>`;
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('navLinks').classList.remove('open');
+    });
   });
-  document.getElementById(containerId).innerHTML = html;
-}
 
-// ===== SIMULATEUR =====
-function calculateSimulation() {
-  const tjm = parseFloat(document.getElementById('sim-tjm').value) || 0;
-  const jours = parseFloat(document.getElementById('sim-jours').value) || 0;
-  const fraisPro = parseFloat(document.getElementById('sim-frais').value) || 0;
-  const tauxGestion = 0.05; // 5% frais de gestion
-
-  const caHT = tjm * jours;
-  const fraisGestion = caHT * tauxGestion;
-  const caNet = caHT - fraisGestion - fraisPro;
-  const chargesPatronales = caNet * 0.42;
-  const salaireBrut = caNet - chargesPatronales;
-  const chargesSalariales = salaireBrut * 0.22;
-  const salaireNet = salaireBrut - chargesSalariales;
-  const salaireNetImpot = salaireNet * 0.9; // approx PAS 10%
-
-  document.getElementById('sim-results').style.display = 'block';
-  document.getElementById('sim-net').textContent = Math.round(salaireNet).toLocaleString('fr') + ' €';
-  document.getElementById('sim-bd-ca').textContent = Math.round(caHT).toLocaleString('fr') + ' €';
-  document.getElementById('sim-bd-gestion').textContent = Math.round(fraisGestion).toLocaleString('fr') + ' €';
-  document.getElementById('sim-bd-charges-p').textContent = Math.round(chargesPatronales).toLocaleString('fr') + ' €';
-  document.getElementById('sim-bd-brut').textContent = Math.round(salaireBrut).toLocaleString('fr') + ' €';
-  document.getElementById('sim-bd-charges-s').textContent = Math.round(chargesSalariales).toLocaleString('fr') + ' €';
-  document.getElementById('sim-bd-net-impot').textContent = Math.round(salaireNetImpot).toLocaleString('fr') + ' €';
-  document.getElementById('sim-bd-frais').textContent = Math.round(fraisPro).toLocaleString('fr') + ' €';
-}
-
-function calculateInverse() {
-  const salaireSouhaite = parseFloat(document.getElementById('sim-inv-salaire').value) || 0;
-  const jours = parseFloat(document.getElementById('sim-inv-jours').value) || 0;
-  if(!salaireSouhaite || !jours) return;
-
-  const salaireNet = salaireSouhaite;
-  const salaireBrut = salaireNet / 0.78;
-  const caNet = salaireBrut / 0.58;
-  const fraisGestion = caNet * 0.05 / 0.95;
-  const caHT = caNet + fraisGestion;
-  const tjm = Math.round(caHT / jours);
-
-  document.getElementById('sim-inv-results').style.display = 'block';
-  document.getElementById('sim-inv-tjm-result').textContent = tjm.toLocaleString('fr') + ' €/jour';
-  document.getElementById('sim-inv-ca').textContent = Math.round(caHT).toLocaleString('fr') + ' €';
-  document.getElementById('sim-inv-gestion').textContent = Math.round(fraisGestion).toLocaleString('fr') + ' €';
-  document.getElementById('sim-inv-brut').textContent = Math.round(salaireBrut).toLocaleString('fr') + ' €';
-}
-
-// ===== CRM: Create prospect from simulation =====
-function submitSimulationWithCRM() {
-  const nom = document.getElementById('sim-nom').value.trim();
-  const prenom = document.getElementById('sim-prenom').value.trim();
-  const email = document.getElementById('sim-email').value.trim();
-  const tel = document.getElementById('sim-tel').value.trim();
-  const tjm = parseFloat(document.getElementById('sim-tjm').value) || 0;
-  const jours = parseFloat(document.getElementById('sim-jours').value) || 0;
-
-  if(!nom || !email || !tel) {
-    showToast('<strong>Erreur</strong> — Veuillez remplir nom, email et téléphone');
-    document.getElementById('toast').querySelector('.toast-icon').textContent = 'error';
-    document.getElementById('toast').querySelector('.toast-icon').style.color = 'var(--accent-red)';
-    setTimeout(() => {
-      document.getElementById('toast').querySelector('.toast-icon').textContent = 'check_circle';
-      document.getElementById('toast').querySelector('.toast-icon').style.color = 'var(--accent-green)';
-    }, 4100);
-    return;
-  }
-
-  // Calculate
-  calculateSimulation();
-
-  // Create CRM prospect
-  simCounter++;
-  const agents = ['luna','alex','aria'];
-  const assignedAgent = agents[simCounter % agents.length];
-  const ag = getAgent(assignedAgent);
-  const caHT = tjm * jours;
-  const salaireNet = Math.round(caHT * 0.95 * 0.58 * 0.78);
-
-  const prospect = {
-    id: simCounter,
-    nom, prenom, email, tel,
-    tjm, jours,
-    caHT,
-    salaireNet,
-    agent: assignedAgent,
-    date: new Date().toLocaleDateString('fr-FR'),
-    heure: new Date().toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'}),
-    status: 'simulation',
-    score: Math.min(99, Math.round(50 + tjm/20 + jours*2)),
-    simulations: [{ date: new Date().toLocaleDateString('fr-FR'), tjm, jours, salaireNet }]
-  };
-
-  CRM_PROSPECTS.unshift(prospect);
-  updateCRMBadge();
-  renderCRM();
-
-  // Add to B2C pipeline
-  B2C_PIPELINE.unshift({ name: prenom+' '+nom, sector: 'Simulation', stage:'Simulation', value: tjm, agent: assignedAgent });
-
-  showToast(`<strong>Fiche CRM créée</strong> — ${prenom} ${nom} assigné à ${ag.emoji} ${ag.name}`);
-}
-
-function updateCRMBadge() {
-  document.getElementById('crm-badge').textContent = CRM_PROSPECTS.length;
-}
-
-// ===== RENDER PAGES =====
-function buildAllPages() {
-  const mc = document.getElementById('main-content');
-  mc.innerHTML = '';
-
-  // DASHBOARD
-  mc.innerHTML += `
-  <div class="page active" id="page-dashboard">
-    <div class="page-header">
-      <div><div class="page-title">Dashboard</div><div class="page-subtitle">Vue d'ensemble de l'activité commerciale</div></div>
-      <div class="live-badge"><div class="live-dot"></div><span>Live</span></div>
-    </div>
-    <div class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-header"><div class="kpi-icon" style="background:rgba(59,130,246,0.12)"><span class="material-icons-round" style="color:#3b82f6">contacts</span></div><div class="kpi-trend up">↗ +18%</div></div>
-        <div class="kpi-value">2 057</div><div class="kpi-label">Contacts Générés</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-header"><div class="kpi-icon" style="background:rgba(16,185,129,0.12)"><span class="material-icons-round" style="color:#10b981">verified</span></div><div class="kpi-trend up">↗ +24%</div></div>
-        <div class="kpi-value">666</div><div class="kpi-label">Leads Qualifiés</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-header"><div class="kpi-icon" style="background:rgba(245,158,11,0.12)"><span class="material-icons-round" style="color:#f59e0b">event_available</span></div><div class="kpi-trend up">↗ +12%</div></div>
-        <div class="kpi-value">307</div><div class="kpi-label">RDV Obtenus</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-header"><div class="kpi-icon" style="background:rgba(139,92,246,0.12)"><span class="material-icons-round" style="color:#8b5cf6">trending_up</span></div><div class="kpi-trend up">↗ +3pts</div></div>
-        <div class="kpi-value">58%</div><div class="kpi-label">Taux Conv. Moy.</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-header"><div class="kpi-icon" style="background:rgba(244,63,94,0.12)"><span class="material-icons-round" style="color:#f43f5e">account_balance</span></div><div class="kpi-trend up">↗ +31%</div></div>
-        <div class="kpi-value">136K€</div><div class="kpi-label">Pipeline B2B</div>
-      </div>
-    </div>
-    <div class="grid-2">
-      <div class="panel"><div class="panel-header"><div class="panel-title">Performance Hebdomadaire</div><div class="panel-badge" style="background:rgba(59,130,246,0.12);color:#3b82f6">7 derniers jours</div></div><div class="chart-container"><canvas id="chart-weekly"></canvas></div></div>
-      <div class="panel"><div class="panel-header"><div class="panel-title">Funnel de Conversion</div><div class="panel-badge" style="background:rgba(16,185,129,0.12);color:#10b981">● Temps réel</div></div><div id="funnel-dashboard"></div></div>
-    </div>
-    <div class="grid-5-3">
-      <div class="panel"><div class="panel-header"><div class="panel-title">Activité en Direct</div></div><div id="activity-feed"></div></div>
-      <div class="panel"><div class="panel-header"><div class="panel-title">Classement Agents</div></div><div id="leaderboard"></div></div>
-    </div>
-  </div>`;
-
-  // AGENTS
-  let agentCards = '';
-  AGENTS.forEach(a => {
-    const statusInfo = a.status === 'active' ? {bg:'rgba(16,185,129,0.12)',text:'#10b981',label:'Actif'} : a.status === 'busy' ? {bg:'rgba(245,158,11,0.12)',text:'#f59e0b',label:'Occupé'} : {bg:'rgba(92,93,112,0.12)',text:'#5c5d70',label:'Veille'};
-    agentCards += `<div class="agent-card">
-      <div class="agent-header">
-        <div class="agent-avatar" style="background:${a.bg}">${a.emoji}</div>
-        <div><div class="agent-name">${a.name}</div><div class="agent-role">${a.role}</div></div>
-        <div class="agent-status" style="background:${statusInfo.bg};color:${statusInfo.text}">${statusInfo.label}</div>
-      </div>
-      <div class="agent-metrics">
-        <div class="agent-metric"><div class="agent-metric-val" style="color:${a.color}">${a.score}</div><div class="agent-metric-lbl">Score</div></div>
-        <div class="agent-metric"><div class="agent-metric-val">${a.contacts}</div><div class="agent-metric-lbl">Contacts</div></div>
-        <div class="agent-metric"><div class="agent-metric-val">${a.deals}</div><div class="agent-metric-lbl">Deals</div></div>
-      </div>
-      <div class="agent-specialties">${a.specialties.map(s => `<span class="agent-specialty">${s}</span>`).join('')}</div>
-    </div>`;
-  });
-  mc.innerHTML += `<div class="page" id="page-agents">
-    <div class="page-header"><div><div class="page-title">Agents IA</div><div class="page-subtitle">Équipe commerciale automatisée — 5 agents spécialisés</div></div></div>
-    <div class="agent-grid">${agentCards}</div>
-  </div>`;
-
-  // B2B
-  mc.innerHTML += `<div class="page" id="page-b2b">
-    <div class="page-header"><div><div class="page-title">Pipeline B2B</div><div class="page-subtitle">Entreprises et contrats-cadres</div></div></div>
-    <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-value">${B2B_PIPELINE.length}</div><div class="kpi-label">Opportunités</div></div>
-      <div class="kpi-card"><div class="kpi-value">${formatK(B2B_PIPELINE.reduce((s,p)=>s+p.value,0))}</div><div class="kpi-label">Valeur Pipeline</div></div>
-      <div class="kpi-card"><div class="kpi-value" style="color:#10b981">${B2B_FUNNEL[B2B_FUNNEL.length-1].rate}</div><div class="kpi-label">Taux Closing</div></div>
-    </div>
-    <div class="grid-5-3">
-      <div class="panel"><div class="panel-header"><div class="panel-title">Opportunités en cours</div></div><div id="b2b-pipeline"></div></div>
-      <div class="panel"><div class="panel-header"><div class="panel-title">Funnel B2B</div></div><div id="funnel-b2b"></div></div>
-    </div>
-  </div>`;
-
-  // B2C
-  mc.innerHTML += `<div class="page" id="page-b2c">
-    <div class="page-header"><div><div class="page-title">Pipeline B2C</div><div class="page-subtitle">Consultants indépendants et freelances</div></div></div>
-    <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-value">${B2C_PIPELINE.length}</div><div class="kpi-label">Prospects</div></div>
-      <div class="kpi-card"><div class="kpi-value">${B2C_PIPELINE.filter(p=>p.stage==='Signé').length}</div><div class="kpi-label">Signés</div></div>
-      <div class="kpi-card"><div class="kpi-value" style="color:#10b981">${B2C_FUNNEL[B2C_FUNNEL.length-1].rate}</div><div class="kpi-label">Taux Conversion</div></div>
-    </div>
-    <div class="grid-5-3">
-      <div class="panel"><div class="panel-header"><div class="panel-title">Prospects en cours</div></div><div id="b2c-pipeline"></div></div>
-      <div class="panel"><div class="panel-header"><div class="panel-title">Funnel B2C</div></div><div id="funnel-b2c"></div></div>
-    </div>
-  </div>`;
-
-  // CRM
-  mc.innerHTML += `<div class="page" id="page-crm">
-    <div class="page-header"><div><div class="page-title">CRM</div><div class="page-subtitle">Fiches prospects générées par le simulateur</div></div></div>
-    <div class="search-box"><span class="material-icons-round">search</span><input placeholder="Rechercher un prospect (nom, email, téléphone)..." oninput="filterCRM(this.value)"></div>
-    <div id="crm-list"><div style="text-align:center;padding:60px 20px;color:var(--text-muted)"><span class="material-icons-round" style="font-size:48px;display:block;margin-bottom:12px">contact_page</span>Aucun prospect pour le moment.<br>Utilisez le <strong>Simulateur</strong> pour générer automatiquement des fiches CRM.</div></div>
-  </div>`;
-
-  // SIMULATEUR
-  mc.innerHTML += `<div class="page" id="page-simulateur">
-    <div class="page-header"><div><div class="page-title">Simulateur de Revenus</div><div class="page-subtitle">Calculez votre salaire net en portage salarial — Barème Light Portage</div></div></div>
-    <div class="grid-2">
-      <div class="panel">
-        <div class="panel-header"><div class="panel-title">📊 Simulation Standard (TJM → Net)</div></div>
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">Prénom</label><input class="form-input" id="sim-prenom" placeholder="Jean"></div>
-          <div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="sim-nom" placeholder="Dupont"></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">Email *</label><input class="form-input" id="sim-email" type="email" placeholder="jean@email.com"></div>
-          <div class="form-group"><label class="form-label">Téléphone *</label><input class="form-input" id="sim-tel" type="tel" placeholder="06 12 34 56 78"></div>
-        </div>
-        <hr style="border-color:var(--border);margin:16px 0">
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">TJM (€/jour)</label><input class="form-input" id="sim-tjm" type="number" placeholder="550" value="550"></div>
-          <div class="form-group"><label class="form-label">Jours travaillés / mois</label><input class="form-input" id="sim-jours" type="number" placeholder="18" value="18"></div>
-        </div>
-        <div class="form-group"><label class="form-label">Frais professionnels (€/mois)</label><input class="form-input" id="sim-frais" type="number" placeholder="0" value="0"></div>
-        <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px" onclick="submitSimulationWithCRM()">
-          <span class="material-icons-round" style="font-size:18px">calculate</span> Calculer et créer fiche CRM
-        </button>
-        <div id="sim-results" style="display:none">
-          <div class="sim-result-card">
-            <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Salaire Net Mensuel Estimé</div>
-            <div id="sim-net" class="sim-result-value">—</div>
-          </div>
-          <div class="sim-breakdown">
-            <div class="sim-breakdown-item"><div class="sim-breakdown-val" style="color:#3b82f6" id="sim-bd-ca">—</div><div class="sim-breakdown-lbl">CA HT</div></div>
-            <div class="sim-breakdown-item"><div class="sim-breakdown-val" style="color:#f59e0b" id="sim-bd-gestion">—</div><div class="sim-breakdown-lbl">Frais gestion (5%)</div></div>
-            <div class="sim-breakdown-item"><div class="sim-breakdown-val" style="color:#f43f5e" id="sim-bd-charges-p">—</div><div class="sim-breakdown-lbl">Charges patron.</div></div>
-            <div class="sim-breakdown-item"><div class="sim-breakdown-val" style="color:#8b5cf6" id="sim-bd-brut">—</div><div class="sim-breakdown-lbl">Salaire Brut</div></div>
-            <div class="sim-breakdown-item"><div class="sim-breakdown-val" style="color:#f43f5e" id="sim-bd-charges-s">—</div><div class="sim-breakdown-lbl">Charges salar.</div></div>
-            <div class="sim-breakdown-item"><div class="sim-breakdown-val" style="color:#10b981" id="sim-bd-net-impot">—</div><div class="sim-breakdown-lbl">Net après PAS</div></div>
-            <div class="sim-breakdown-item"><div class="sim-breakdown-val" id="sim-bd-frais">—</div><div class="sim-breakdown-lbl">Frais pro.</div></div>
-          </div>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panel-header"><div class="panel-title">🔄 Simulation Inversée (Salaire → TJM)</div></div>
-        <div class="form-group"><label class="form-label">Salaire net souhaité (€/mois)</label><input class="form-input" id="sim-inv-salaire" type="number" placeholder="3500" value="3500"></div>
-        <div class="form-group"><label class="form-label">Jours travaillés / mois</label><input class="form-input" id="sim-inv-jours" type="number" placeholder="18" value="18"></div>
-        <button class="btn btn-success" style="width:100%;justify-content:center;margin-top:8px" onclick="calculateInverse()">
-          <span class="material-icons-round" style="font-size:18px">swap_vert</span> Calculer le TJM nécessaire
-        </button>
-        <div id="sim-inv-results" style="display:none">
-          <div class="sim-result-card" style="background:linear-gradient(135deg,rgba(16,185,129,0.08),rgba(6,182,212,0.08));border-color:rgba(16,185,129,0.2)">
-            <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">TJM Nécessaire</div>
-            <div id="sim-inv-tjm-result" class="sim-result-value" style="color:#10b981">—</div>
-          </div>
-          <div class="sim-breakdown">
-            <div class="sim-breakdown-item"><div class="sim-breakdown-val" style="color:#3b82f6" id="sim-inv-ca">—</div><div class="sim-breakdown-lbl">CA HT requis</div></div>
-            <div class="sim-breakdown-item"><div class="sim-breakdown-val" style="color:#f59e0b" id="sim-inv-gestion">—</div><div class="sim-breakdown-lbl">Frais gestion</div></div>
-            <div class="sim-breakdown-item"><div class="sim-breakdown-val" style="color:#8b5cf6" id="sim-inv-brut">—</div><div class="sim-breakdown-lbl">Salaire Brut</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>`;
-
-  // CAMPAGNES
-  let campCards = '';
-  CAMPAIGNS.forEach(c => {
-    const st = getStatusInfo(c.status);
-    const openRate = c.sent > 0 ? Math.round(c.opened/c.sent*100) : 0;
-    const clickRate = c.sent > 0 ? Math.round(c.clicked/c.sent*100) : 0;
-    campCards += `<div class="campaign-card">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
-        <div><div style="font-size:15px;font-weight:700">${c.name}</div><div style="font-size:12px;color:var(--text-muted);margin-top:2px">${c.agentEmoji} ${c.agent} • ${c.target}</div></div>
-        <span class="stage-badge" style="background:${st.bg};color:${st.text}">${st.label}</span>
-      </div>
-      <div class="campaign-metrics">
-        <div class="campaign-metric"><div class="campaign-metric-val">${c.sent.toLocaleString('fr')}</div><div class="campaign-metric-lbl">Envoyés</div></div>
-        <div class="campaign-metric"><div class="campaign-metric-val" style="color:#10b981">${openRate}%</div><div class="campaign-metric-lbl">Ouverture</div></div>
-        <div class="campaign-metric"><div class="campaign-metric-val" style="color:#f59e0b">${clickRate}%</div><div class="campaign-metric-lbl">Clic</div></div>
-        <div class="campaign-metric"><div class="campaign-metric-val" style="color:#8b5cf6">${c.replies}</div><div class="campaign-metric-lbl">Réponses</div></div>
-        <div class="campaign-metric"><div class="campaign-metric-val" style="color:#3b82f6">${c.meetings}</div><div class="campaign-metric-lbl">RDV</div></div>
-      </div>
-      ${c.sent > 0 ? `<div class="progress-bar"><div class="progress-fill" style="width:${openRate}%;background:#10b981"></div></div>` : ''}
-      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-top:6px"><span>${c.type.toUpperCase()}</span></div>
-    </div>`;
-  });
-  mc.innerHTML += `<div class="page" id="page-campagnes">
-    <div class="page-header"><div><div class="page-title">Campagnes</div><div class="page-subtitle">Gestion des campagnes email et multicanal</div></div>
-      <button class="btn btn-primary"><span class="material-icons-round" style="font-size:18px">add</span> Nouvelle Campagne</button>
-    </div>
-    <div class="grid-2">${campCards}</div>
-  </div>`;
-
-  // LINKEDIN
-  let profileCards = '';
-  LINKEDIN_PROFILES.forEach(p => {
-    const st = getStatusInfo(p.status);
-    const scoreColor = p.score >= 85 ? '#10b981' : p.score >= 70 ? '#f59e0b' : '#5c5d70';
-    profileCards += `<div class="profile-card">
-      <div class="profile-header">
-        <div class="profile-avatar">${p.name.charAt(0)}</div>
-        <div style="flex:1"><div style="font-size:15px;font-weight:700">${p.name}</div><div style="font-size:13px;color:var(--text-secondary)">${p.title}</div><div style="font-size:11px;color:var(--text-muted)">${p.company} • ${p.location}</div></div>
-        <div style="text-align:center"><div class="profile-score" style="color:${scoreColor}">${p.score}</div><div style="font-size:10px;color:var(--text-muted)">Score</div></div>
-      </div>
-      <div class="profile-skills">${p.skills.map(s => `<span class="profile-skill">${s}</span>`).join('')}</div>
-      <div style="display:flex;align-items:center;gap:12px;margin-top:10px">
-        <span class="stage-badge" style="background:${st.bg};color:${st.text}">${st.label}</span>
-        <span style="font-size:12px;font-weight:600;flex:1">TJM: ${p.tjm}€/j</span>
-        <span style="font-size:11px;color:var(--text-muted);background:var(--bg-input);padding:4px 8px;border-radius:6px">${getAgent(p.agent.toLowerCase())?.emoji || ''} ${p.agent}</span>
-      </div>
-    </div>`;
-  });
-  mc.innerHTML += `<div class="page" id="page-linkedin">
-    <div class="page-header"><div><div class="page-title">LinkedIn</div><div class="page-subtitle">Prospection et suivi des profils LinkedIn</div></div>
-      <button class="btn btn-linkedin"><span class="material-icons-round" style="font-size:18px">search</span> Lancer une recherche</button>
-    </div>
-    <div class="search-box"><span class="material-icons-round">search</span><input placeholder="Rechercher un profil..."></div>
-    <div class="grid-2">${profileCards}</div>
-  </div>`;
-
-  // MISSIONS
-  let missionCards = '';
-  MISSIONS.forEach(m => {
-    const ag = getAgent(m.agent);
-    const pr = m.priority === 'haute' ? {bg:'rgba(244,63,94,0.12)',text:'#f43f5e'} : m.priority === 'moyenne' ? {bg:'rgba(245,158,11,0.12)',text:'#f59e0b'} : {bg:'rgba(92,93,112,0.12)',text:'#5c5d70'};
-    const st = getStatusInfo(m.status);
-    missionCards += `<div class="mission-card" style="border-left-color:${ag.color}">
-      <div style="display:flex;justify-content:space-between;margin-bottom:10px">
-        <div style="flex:1;margin-right:12px"><div style="font-size:15px;font-weight:700">${m.title}</div><div style="font-size:12px;color:var(--text-secondary);margin-top:4px;line-height:1.5">${m.desc}</div></div>
-        <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
-          <span class="stage-badge" style="background:${pr.bg};color:${pr.text}">${m.priority}</span>
-          <span class="stage-badge" style="background:${st.bg};color:${st.text}">${st.label}</span>
-        </div>
-      </div>
-      <div class="mission-progress">
-        <div class="mission-progress-header"><span class="mission-progress-label">${m.target}</span><span class="mission-progress-pct" style="color:${ag.color}">${m.progress}%</span></div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${m.progress}%;background:${ag.color}"></div></div>
-      </div>
-      <div style="display:flex;gap:16px;margin:10px 0">${m.metrics.map(mt => `<div style="text-align:center"><div style="font-size:15px;font-weight:700">${mt.v}</div><div style="font-size:10px;color:var(--text-muted)">${mt.l}</div></div>`).join('')}</div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-        <span style="font-size:12px;color:var(--text-secondary);background:var(--bg-input);padding:5px 10px;border-radius:8px">${ag.emoji} ${ag.name}</span>
-        <span style="font-size:11px;color:var(--text-muted)"><span class="material-icons-round" style="font-size:14px;vertical-align:middle">event</span> ${m.deadline}</span>
-      </div>
-    </div>`;
-  });
-  mc.innerHTML += `<div class="page" id="page-missions">
-    <div class="page-header"><div><div class="page-title">Missions</div><div class="page-subtitle">Suivi et gestion des missions commerciales</div></div>
-      <button class="btn btn-primary" onclick="openMissionModal()"><span class="material-icons-round" style="font-size:18px">add</span> Nouvelle Mission</button>
-    </div>
-    <div class="kpi-grid">
-      <div class="kpi-card" style="border-left:3px solid #3b82f6"><div class="kpi-value">${MISSIONS.filter(m=>m.status==='en_cours').length}</div><div class="kpi-label">En cours</div></div>
-      <div class="kpi-card" style="border-left:3px solid #8b5cf6"><div class="kpi-value">${MISSIONS.filter(m=>m.status==='planifiee').length}</div><div class="kpi-label">Planifiées</div></div>
-      <div class="kpi-card" style="border-left:3px solid #10b981"><div class="kpi-value">${MISSIONS.filter(m=>m.status==='terminee').length}</div><div class="kpi-label">Terminées</div></div>
-      <div class="kpi-card" style="border-left:3px solid #f59e0b"><div class="kpi-value">${Math.round(MISSIONS.reduce((s,m)=>s+m.progress,0)/MISSIONS.length)}%</div><div class="kpi-label">Progression moy.</div></div>
-    </div>
-    <div class="grid-2">${missionCards}</div>
-  </div>`;
-
-  // CONFIG
-  let agentToggles = '';
-  AGENTS.forEach(a => {
-    agentToggles += `<div class="config-row">
-      <div class="agent-avatar" style="background:${a.bg};width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px">${a.emoji}</div>
-      <div style="flex:1"><div style="font-size:13px;font-weight:600">${a.name}</div><div style="font-size:11px;color:var(--text-muted)">${a.role}</div></div>
-      <div class="switch ${a.status !== 'idle' ? 'on' : ''}" onclick="this.classList.toggle('on')"></div>
-    </div>`;
-  });
-  mc.innerHTML += `<div class="page" id="page-config">
-    <div class="page-header"><div><div class="page-title">Configuration</div><div class="page-subtitle">Paramètres de la plateforme commerciale</div></div></div>
-    <div class="grid-2">
-      <div class="config-section">
-        <div class="config-section-header"><span class="material-icons-round" style="color:#3b82f6">smart_toy</span><div class="config-section-title">Agents IA</div></div>
-        <div class="config-section-desc">Activer ou désactiver les agents commerciaux</div>
-        ${agentToggles}
-      </div>
-      <div class="config-section">
-        <div class="config-section-header"><span class="material-icons-round" style="color:#f59e0b">flag</span><div class="config-section-title">Objectifs Mensuels</div></div>
-        <div class="config-section-desc">Définir les objectifs de performance</div>
-        <div class="form-group"><label class="form-label">Objectif B2B (contrats/mois)</label><input class="form-input" value="50"></div>
-        <div class="form-group"><label class="form-label">Objectif B2C (leads/mois)</label><input class="form-input" value="400"></div>
-        <div class="form-group"><label class="form-label">Frais de gestion (%)</label><input class="form-input" value="5"></div>
-      </div>
-      <div class="config-section">
-        <div class="config-section-header"><span class="material-icons-round" style="color:#8b5cf6">notifications</span><div class="config-section-title">Notifications</div></div>
-        <div class="config-section-desc">Configurer les alertes et notifications</div>
-        <div class="config-row"><div style="flex:1"><div style="font-size:13px;font-weight:600">Notifications email</div><div style="font-size:11px;color:var(--text-muted)">Recevoir les alertes par email</div></div><div class="switch on" onclick="this.classList.toggle('on')"></div></div>
-        <div class="config-row"><div style="flex:1"><div style="font-size:13px;font-weight:600">Notifications Slack</div><div style="font-size:11px;color:var(--text-muted)">Intégration Slack</div></div><div class="switch" onclick="this.classList.toggle('on')"></div></div>
-        <div class="config-row"><div style="flex:1"><div style="font-size:13px;font-weight:600">Attribution automatique</div><div style="font-size:11px;color:var(--text-muted)">Assigner les leads automatiquement</div></div><div class="switch on" onclick="this.classList.toggle('on')"></div></div>
-      </div>
-      <div class="config-section">
-        <div class="config-section-header"><span class="material-icons-round" style="color:#10b981">extension</span><div class="config-section-title">Intégrations</div></div>
-        <div class="config-section-desc">Services connectés à la plateforme</div>
-        ${[
-          {name:'LinkedIn Sales Navigator',icon:'work',status:'Connecté',color:'#0077b5'},
-          {name:'SendGrid Email',icon:'email',status:'Connecté',color:'#10b981'},
-          {name:'Slack Workspace',icon:'chat',status:'Non connecté',color:'#5c5d70'},
-          {name:'HubSpot CRM',icon:'hub',status:'Non connecté',color:'#5c5d70'},
-          {name:'Google Calendar',icon:'calendar_today',status:'Connecté',color:'#4285f4'},
-          {name:'Stripe Paiements',icon:'payment',status:'Connecté',color:'#635bff'}
-        ].map(i => `<div class="config-row">
-          <span class="material-icons-round" style="color:${i.color}">${i.icon}</span>
-          <div style="flex:1"><div style="font-size:13px;font-weight:600">${i.name}</div><div style="font-size:11px;color:${i.status==='Connecté'?'#10b981':'var(--text-muted)'}">${i.status}</div></div>
-          <button class="integration-btn" style="border-color:${i.status==='Connecté'?'rgba(16,185,129,0.3)':'rgba(59,130,246,0.3)'};color:${i.status==='Connecté'?'#10b981':'#3b82f6'}">${i.status==='Connecté'?'Gérer':'Connecter'}</button>
-        </div>`).join('')}
-      </div>
-    </div>
-  </div>`;
-}
-
-// ===== RENDER CRM =====
-function renderCRM() {
-  const container = document.getElementById('crm-list');
-  if(!CRM_PROSPECTS.length) {
-    container.innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--text-muted)"><span class="material-icons-round" style="font-size:48px;display:block;margin-bottom:12px">contact_page</span>Aucun prospect pour le moment.<br>Utilisez le <strong>Simulateur</strong> pour générer automatiquement des fiches CRM.</div>`;
-    return;
-  }
-  let html = '';
-  CRM_PROSPECTS.forEach(p => {
-    const ag = getAgent(p.agent);
-    const scoreColor = p.score >= 80 ? '#10b981' : p.score >= 60 ? '#f59e0b' : '#5c5d70';
-    html += `<div class="crm-card">
-      <div class="crm-header">
-        <div class="crm-avatar" style="background:rgba(59,130,246,0.15);color:#3b82f6">${p.prenom.charAt(0)}${p.nom.charAt(0)}</div>
-        <div style="flex:1"><div class="crm-name">${p.prenom} ${p.nom}</div><div class="crm-email">${p.email} • ${p.tel}</div></div>
-        <div style="text-align:center"><div style="font-size:22px;font-weight:800;color:${scoreColor}">${p.score}</div><div style="font-size:10px;color:var(--text-muted)">Score</div></div>
-      </div>
-      <div class="crm-meta">
-        <span class="crm-tag" style="background:rgba(59,130,246,0.12);color:#3b82f6">TJM: ${p.tjm}€/j</span>
-        <span class="crm-tag" style="background:rgba(16,185,129,0.12);color:#10b981">Net: ${p.salaireNet.toLocaleString('fr')}€</span>
-        <span class="crm-tag" style="background:${ag.bg};color:${ag.color}">${ag.emoji} ${ag.name}</span>
-        <span class="crm-tag" style="background:rgba(139,92,246,0.12);color:#8b5cf6">Simulation</span>
-        <span style="margin-left:auto;font-size:11px;color:var(--text-muted)">${p.date} à ${p.heure}</span>
-      </div>
-      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
-        <div style="font-size:11px;font-weight:600;color:var(--text-secondary);margin-bottom:6px">Historique des simulations</div>
-        ${p.simulations.map(s => `<div style="font-size:12px;color:var(--text-muted);padding:3px 0">${s.date} — TJM: ${s.tjm}€/j, ${s.jours}j/mois → Net: ${s.salaireNet.toLocaleString('fr')}€</div>`).join('')}
-      </div>
-    </div>`;
-  });
-  container.innerHTML = html;
-}
-
-function filterCRM(query) {
-  const q = query.toLowerCase();
-  const cards = document.querySelectorAll('#crm-list .crm-card');
-  cards.forEach((card, i) => {
-    const p = CRM_PROSPECTS[i];
-    if(!p) return;
-    const match = (p.nom+' '+p.prenom+' '+p.email+' '+p.tel).toLowerCase().includes(q);
-    card.style.display = match ? '' : 'none';
-  });
-}
-
-// ===== MISSIONS MODAL =====
-function openMissionModal() { document.getElementById('mission-modal').classList.add('show'); }
-function closeMissionModal() { document.getElementById('mission-modal').classList.remove('show'); }
-function createMission() {
-  const title = document.getElementById('mission-title').value;
-  if(!title) return;
-  closeMissionModal();
-  showToast(`<strong>Mission créée</strong> — "${title}"`);
-}
-
-// ===== DASHBOARD CHARTS =====
-let weeklyChart = null;
-function initDashboardCharts() {
-  // Weekly chart
-  const ctx = document.getElementById('chart-weekly');
-  if(!ctx) return;
-  if(weeklyChart) weeklyChart.destroy();
-  weeklyChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],
-      datasets: AGENTS.filter(a => a.id !== 'max').map(a => ({
-        label: a.name,
-        data: a.weeklyData,
-        backgroundColor: a.color + '80',
-        borderColor: a.color,
-        borderWidth: 1,
-        borderRadius: 4,
-      }))
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { color: '#8b8ca0', font: { size: 11 }, boxWidth: 12, padding: 16 } } },
-      scales: {
-        x: { grid: { color: 'rgba(30,31,46,0.5)' }, ticks: { color: '#5c5d70', font: { size: 11 } } },
-        y: { grid: { color: 'rgba(30,31,46,0.5)' }, ticks: { color: '#5c5d70', font: { size: 11 } } }
+  // Animate stats on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
       }
-    }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.agent-card, .feature-card, .stat-item, .pipeline-step').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
   });
-
-  // Funnels
-  renderFunnel(DASHBOARD_FUNNEL, 'funnel-dashboard');
-
-  // Activity feed
-  let actHtml = '';
-  ACTIVITIES.forEach(a => {
-    actHtml += `<div class="activity-item"><div class="activity-time">${a.time}</div><div class="activity-dot" style="background:${a.color}"></div><div class="activity-text"><span class="activity-agent" style="color:${a.color}">${a.agent}</span> ${a.text}</div></div>`;
-  });
-  document.getElementById('activity-feed').innerHTML = actHtml;
-
-  // Leaderboard
-  const sorted = [...AGENTS].sort((a,b) => b.score - a.score);
-  let lbHtml = '';
-  sorted.forEach((a, i) => {
-    lbHtml += `<div class="leader-row">
-      <div class="leader-rank" style="color:${i===0?'#f59e0b':i===1?'#8b8ca0':i===2?'#cd7f32':'var(--text-muted)'}">${i+1}</div>
-      <div class="leader-avatar" style="background:${a.bg}">${a.emoji}</div>
-      <div class="leader-info"><div class="leader-name">${a.name}</div><div class="leader-role">${a.role}</div></div>
-      <div class="leader-score" style="color:${a.color}">${a.score}</div>
-      <div class="leader-bar-bg"><div class="leader-bar" style="width:${a.score}%;background:${a.color}"></div></div>
-    </div>`;
-  });
-  document.getElementById('leaderboard').innerHTML = lbHtml;
-}
-
-// ===== INIT =====
-buildAllPages();
-initDashboardCharts();
-renderFunnel(B2B_FUNNEL, 'funnel-b2b');
-renderFunnel(B2C_FUNNEL, 'funnel-b2c');
-renderPipeline(B2B_PIPELINE, 'b2b-pipeline');
-renderPipeline(B2C_PIPELINE, 'b2c-pipeline');
 </script>
+
 </body>
 </html>
