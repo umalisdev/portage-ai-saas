@@ -741,11 +741,12 @@ function calculateSimulation() {
   const chargesPatronales = caNet * 0.42;
   const salaireBrut = caNet - chargesPatronales;
   const chargesSalariales = salaireBrut * 0.22;
-  const salaireNet = salaireBrut - chargesSalariales;
-  const salaireNetImpot = salaireNet * 0.9; // approx PAS 10%
+  const salaireNetAvantFrais = salaireBrut - chargesSalariales;
+  const salaireNetFinal = salaireNetAvantFrais + fraisPro;
+  const salaireNetImpot = salaireNetAvantFrais * 0.9 + fraisPro; // approx PAS 10%
 
   document.getElementById('sim-results').style.display = 'block';
-  document.getElementById('sim-net').textContent = Math.round(salaireNet).toLocaleString('fr') + ' €';
+  document.getElementById('sim-net').textContent = Math.round(salaireNetFinal).toLocaleString('fr') + ' €';
   document.getElementById('sim-bd-ca').textContent = Math.round(caHT).toLocaleString('fr') + ' €';
   document.getElementById('sim-bd-gestion').textContent = Math.round(fraisGestion).toLocaleString('fr') + ' €';
   document.getElementById('sim-bd-charges-p').textContent = Math.round(chargesPatronales).toLocaleString('fr') + ' €';
