@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agents IA — Portage AI Sales Force Command Center</title>
+  <meta name="description" content="Découvrez les 5 agents IA spécialisés de Portage AI : ARIA, MAX, NOAH, LUNA et ALEX. Chaque agent maîtrise une étape clé du cycle commercial en portage salarial.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --white: #ffffff;
+      --bg-light: #f8f9fc;
+      --bg-section: #f0f2f8;
+      --text-dark: #1a1d2e;
+      --text-body: #4a4d60;
+      --text-muted: #7a7d90;
+      --accent-blue: #3b82f6;
+      --accent-blue-dark: #2563eb;
+      --accent-purple: #8b5cf6;
+      --accent-green: #10b981;
+      --accent-yellow: #f59e0b;
+      --accent-red: #f43f5e;
+      --accent-cyan: #06b6d4;
+      --gradient-main: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      --gradient-warm: linear-gradient(135deg, #f59e0b, #f43f5e);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+      --shadow-xl: 0 16px 48px rgba(0,0,0,0.15);
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--white);
+      color: var(--text-body);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      transition: box-shadow 0.3s;
+    }
+    .navbar.scrolled { box-shadow: var(--shadow-md); }
+    .navbar-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 32px; height: 72px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .navbar-brand {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none;
+    }
+    .navbar-logo {
+      width: 40px; height: 40px;
+      background: var(--gradient-main);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .navbar-logo .material-icons-round { font-size: 22px; color: #fff; }
+    .navbar-title {
+      font-size: 18px; font-weight: 800;
+      color: var(--text-dark); letter-spacing: -0.3px;
+    }
+    .navbar-links {
+      display: flex; align-items: center; gap: 32px;
+      list-style: none;
+    }
+    .navbar-links a {
+      text-decoration: none; color: var(--text-body);
+      font-size: 14px; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .navbar-links a:hover { color: var(--accent-blue); }
+    .navbar-links a.active { color: var(--accent-blue); font-weight: 700; }
+    .btn-nav {
+      background: var(--gradient-main);
+      color: #fff !important; padding: 10px 24px;
+      border-radius: 10px; font-weight: 600;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-nav:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(59,130,246,0.35);
+    }
+    .menu-toggle {
+      display: none; background: none; border: none;
+      cursor: pointer; color: var(--text-dark);
+    }
+    .menu-toggle .material-icons-round { font-size: 28px; }
+
+    /* ===== HERO AGENTS ===== */
+    .hero-agents-page {
+      padding: 140px 32px 80px;
+      background: linear-gradient(170deg, #f8f9fc 0%, #eef1f8 40%, #e8ecf6 100%);
+      position: relative; overflow: hidden;
+      text-align: center;
+    }
+    .hero-agents-page::before {
+      content: ''; position: absolute; top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .hero-agents-page::after {
+      content: ''; position: absolute; bottom: -150px; left: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .hero-agents-inner {
+      max-width: 800px; margin: 0 auto;
+      position: relative; z-index: 1;
+    }
+    .hero-agents-page .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(59,130,246,0.08);
+      border: 1px solid rgba(59,130,246,0.15);
+      padding: 6px 16px; border-radius: 50px;
+      font-size: 13px; font-weight: 600;
+      color: var(--accent-blue); margin-bottom: 24px;
+    }
+    .hero-agents-page .hero-badge .material-icons-round { font-size: 16px; }
+    .hero-agents-page h1 {
+      font-size: 48px; font-weight: 900;
+      color: var(--text-dark); line-height: 1.15;
+      letter-spacing: -1.5px; margin-bottom: 20px;
+    }
+    .hero-agents-page h1 span {
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-agents-page .hero-desc {
+      font-size: 18px; color: var(--text-body);
+      line-height: 1.8; max-width: 640px; margin: 0 auto 36px;
+    }
+    .hero-agents-page .agent-avatars-row {
+      display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;
+    }
+    .hero-agents-page .agent-mini {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--white);
+      padding: 8px 16px; border-radius: 12px;
+      box-shadow: var(--shadow-md);
+      font-size: 14px; font-weight: 700;
+      color: var(--text-dark);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .hero-agents-page .agent-mini:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+    .hero-agents-page .agent-mini .dot {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+
+    /* ===== SECTION COMMON ===== */
+    section { padding: 100px 32px; }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+
+    /* ===== AGENT PROFILE SECTION ===== */
+    .agent-profile {
+      padding: 80px 32px;
+      scroll-margin-top: 80px;
+    }
+    .agent-profile:nth-child(even) {
+      background: var(--bg-light);
+    }
+    .agent-profile-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 60px;
+      align-items: start;
+    }
+
+    /* Agent Identity Card */
+    .agent-identity {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 40px 32px;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(0,0,0,0.04);
+      position: sticky;
+      top: 100px;
+    }
+    .agent-identity .avatar-large {
+      width: 100px; height: 100px;
+      border-radius: 28px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 48px;
+      margin: 0 auto 20px;
+    }
+    .agent-identity .agent-name {
+      font-size: 32px; font-weight: 900;
+      color: var(--text-dark); letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+    .agent-identity .agent-role {
+      font-size: 15px; font-weight: 600;
+      color: var(--text-muted); margin-bottom: 20px;
+    }
+    .agent-identity .score-ring {
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 8px;
+      position: relative;
+    }
+    .agent-identity .score-ring svg {
+      position: absolute; top: 0; left: 0;
+      width: 120px; height: 120px;
+      transform: rotate(-90deg);
+    }
+    .agent-identity .score-ring circle {
+      fill: none; stroke-width: 6;
+      stroke-linecap: round;
+    }
+    .agent-identity .score-ring .bg { stroke: rgba(0,0,0,0.06); }
+    .agent-identity .score-value {
+      font-size: 36px; font-weight: 900;
+      color: var(--text-dark);
+      position: relative; z-index: 1;
+    }
+    .agent-identity .score-label {
+      font-size: 12px; font-weight: 600;
+      color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: 1px; margin-bottom: 24px;
+    }
+    .agent-identity .status-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 18px; border-radius: 50px;
+      font-size: 13px; font-weight: 700;
+    }
+    .agent-identity .status-badge .pulse {
+      width: 8px; height: 8px; border-radius: 50%;
+      animation: pulse-anim 2s ease-in-out infinite;
+    }
+    @keyframes pulse-anim {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
+    }
+
+    /* Agent Details */
+    .agent-details { display: flex; flex-direction: column; gap: 32px; }
+
+    .detail-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    .agent-profile:nth-child(even) .detail-card {
+      background: var(--white);
+    }
+    .detail-card-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 20px;
+    }
+    .detail-card-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .detail-card-icon .material-icons-round { font-size: 20px; color: #fff; }
+    .detail-card-title {
+      font-size: 18px; font-weight: 800;
+      color: var(--text-dark);
+    }
+
+    /* Skills */
+    .skills-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    .skill-item {
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .skill-label {
+      display: flex; justify-content: space-between;
+      font-size: 13px; font-weight: 600;
+    }
+    .skill-name { color: var(--text-dark); }
+    .skill-pct { color: var(--text-muted); }
+    .skill-bar {
+      height: 6px; background: rgba(0,0,0,0.06);
+      border-radius: 3px; overflow: hidden;
+    }
+    .skill-fill {
+      height: 100%; border-radius: 3px;
+      transition: width 1.2s ease;
+      width: 0;
+    }
+
+    /* KPIs */
+    .kpi-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    }
+    .kpi-item {
+      background: var(--bg-light);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    .kpi-value {
+      font-size: 28px; font-weight: 900;
+      color: var(--text-dark); letter-spacing: -0.5px;
+    }
+    .kpi-label {
+      font-size: 12px; font-weight: 500;
+      color: var(--text-muted); margin-top: 4px;
+    }
+    .kpi-trend {
+      font-size: 11px; font-weight: 700;
+      margin-top: 4px;
+    }
+    .kpi-trend.up { color: var(--accent-green); }
+
+    /* Activity Feed */
+    .activity-list { display: flex; flex-direction: column; gap: 12px; }
+    .activity-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 16px;
+      background: var(--bg-light);
+      border-radius: 10px;
+    }
+    .activity-time {
+      font-size: 12px; font-weight: 700;
+      color: var(--text-muted);
+      min-width: 50px;
+      padding-top: 2px;
+    }
+    .activity-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      margin-top: 6px; flex-shrink: 0;
+    }
+    .activity-text {
+      font-size: 14px; color: var(--text-dark);
+      font-weight: 500; line-height: 1.5;
+    }
+
+    /* Capabilities */
+    .capabilities-list {
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .capability-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 16px;
+      background: var(--bg-light);
+      border-radius: 12px;
+    }
+    .capability-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .capability-icon .material-icons-round { font-size: 18px; color: #fff; }
+    .capability-title {
+      font-size: 14px; font-weight: 700;
+      color: var(--text-dark); margin-bottom: 4px;
+    }
+    .capability-desc {
+      font-size: 13px; color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Tech Stack */
+    .tech-tags {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .tech-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 8px;
+      font-size: 13px; font-weight: 600;
+      background: var(--bg-light);
+      color: var(--text-dark);
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    .tech-tag .material-icons-round { font-size: 16px; }
+
+    /* ===== COLLABORATION SECTION ===== */
+    .collab-section {
+      padding: 100px 32px;
+      background: var(--bg-light);
+    }
+    .collab-inner {
+      max-width: 1000px; margin: 0 auto;
+      text-align: center;
+    }
+    .collab-title {
+      font-size: 36px; font-weight: 900;
+      color: var(--text-dark); letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+    .collab-subtitle {
+      font-size: 17px; color: var(--text-muted);
+      max-width: 600px; margin: 0 auto 48px;
+      line-height: 1.7;
+    }
+    .collab-flow {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; flex-wrap: wrap;
+    }
+    .collab-agent {
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      padding: 24px 20px;
+    }
+    .collab-avatar {
+      width: 72px; height: 72px;
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+      box-shadow: var(--shadow-md);
+    }
+    .collab-name {
+      font-size: 14px; font-weight: 800;
+      color: var(--text-dark);
+    }
+    .collab-step {
+      font-size: 11px; font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .collab-arrow {
+      font-size: 24px; color: var(--text-muted);
+      padding: 0 8px;
+    }
+    .collab-arrow .material-icons-round { font-size: 28px; }
+
+    /* ===== CTA ===== */
+    .cta {
+      padding: 80px 32px;
+      background: var(--gradient-main);
+      text-align: center;
+    }
+    .cta h2 {
+      font-size: 32px; font-weight: 900;
+      color: #fff; margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+    .cta p {
+      font-size: 17px; color: rgba(255,255,255,0.85);
+      margin-bottom: 32px; max-width: 500px;
+      margin-left: auto; margin-right: auto;
+    }
+    .btn-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff; color: var(--accent-blue);
+      padding: 16px 36px; border-radius: 12px;
+      font-size: 16px; font-weight: 800;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+    .btn-cta .material-icons-round { font-size: 20px; }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background: #1a1d2e; padding: 60px 32px 30px;
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px; margin-bottom: 40px;
+    }
+    .footer-brand {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 16px;
+    }
+    .footer-logo {
+      width: 36px; height: 36px;
+      background: var(--gradient-main);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .footer-logo .material-icons-round { font-size: 18px; color: #fff; }
+    .footer-brand-name {
+      font-size: 16px; font-weight: 800; color: #fff;
+    }
+    .footer-desc {
+      font-size: 14px; color: rgba(255,255,255,0.5);
+      line-height: 1.7;
+    }
+    .footer-col-title {
+      font-size: 13px; font-weight: 700;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+    .footer-links {
+      list-style: none; display: flex;
+      flex-direction: column; gap: 10px;
+    }
+    .footer-links a {
+      color: rgba(255,255,255,0.65);
+      text-decoration: none; font-size: 14px;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: #fff; }
+    .footer-bottom {
+      max-width: 1200px; margin: 0 auto;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex; justify-content: space-between;
+      font-size: 13px; color: rgba(255,255,255,0.35);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .agent-profile-inner {
+        grid-template-columns: 1fr;
+      }
+      .agent-identity {
+        position: static;
+        max-width: 400px;
+        margin: 0 auto;
+      }
+      .skills-grid { grid-template-columns: 1fr; }
+      .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .navbar-links { display: none; }
+      .menu-toggle { display: block; }
+      .navbar-links.open {
+        display: flex; flex-direction: column;
+        position: absolute; top: 72px; left: 0; right: 0;
+        background: var(--white);
+        padding: 24px; gap: 16px;
+        box-shadow: var(--shadow-lg);
+      }
+      .hero-agents-page h1 { font-size: 32px; }
+      .hero-agents-page { padding: 120px 20px 60px; }
+      .agent-profile { padding: 60px 20px; }
+      .kpi-grid { grid-template-columns: 1fr 1fr; }
+      .collab-flow { flex-direction: column; }
+      .collab-arrow { transform: rotate(90deg); }
+      .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .hero-agents-page h1 { font-size: 28px; }
+      .kpi-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="navbar-brand">
+      <div class="navbar-logo">
+        <span class="material-icons-round">auto_awesome</span>
+      </div>
+      <span class="navbar-title">Portage AI</span>
+    </a>
+    <ul class="navbar-links" id="navLinks">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="agents.html" class="active">Agents IA</a></li>
+      <li><a href="index.html#features">Fonctionnalités</a></li>
+      <li><a href="index.html#pipeline">Pipeline</a></li>
+      <li><a href="dashboard.html" class="btn-nav">Accéder au Dashboard</a></li>
+    </ul>
+    <button class="menu-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')">
+      <span class="material-icons-round">menu</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-agents-page">
+  <div class="hero-agents-inner">
+    <div class="hero-badge">
+      <span class="material-icons-round">smart_toy</span>
+      Force Commerciale IA
+    </div>
+    <h1>Rencontrez vos <span>5 agents IA</span></h1>
+    <p class="hero-desc">
+      Chaque agent est un spécialiste autonome, entraîné pour exceller dans une étape précise du cycle commercial. Ensemble, ils forment une équipe de vente infatigable, disponible 24h/24.
+    </p>
+    <div class="agent-avatars-row">
+      <a href="#aria" class="agent-mini"><div class="dot" style="background:#3b82f6"></div> ARIA</a>
+      <a href="#max" class="agent-mini"><div class="dot" style="background:#f43f5e"></div> MAX</a>
+      <a href="#noah" class="agent-mini"><div class="dot" style="background:#10b981"></div> NOAH</a>
+      <a href="#luna" class="agent-mini"><div class="dot" style="background:#f59e0b"></div> LUNA</a>
+      <a href="#alex" class="agent-mini"><div class="dot" style="background:#8b5cf6"></div> ALEX</a>
+    </div>
+  </div>
+</section>
+
+<!-- ========== ARIA ========== -->
+<section class="agent-profile" id="aria">
+  <div class="agent-profile-inner">
+    <div class="agent-identity">
+      <div class="avatar-large" style="background:rgba(59,130,246,0.1)">🔍</div>
+      <div class="agent-name">ARIA</div>
+      <div class="agent-role">Prospection & Qualification</div>
+      <div class="score-ring">
+        <svg viewBox="0 0 120 120">
+          <circle class="bg" cx="60" cy="60" r="52"/>
+          <circle cx="60" cy="60" r="52" stroke="#3b82f6" stroke-dasharray="326.7" stroke-dashoffset="19.6"/>
+        </svg>
+        <span class="score-value">94</span>
+      </div>
+      <div class="score-label">Score de performance</div>
+      <div class="status-badge" style="background:rgba(59,130,246,0.1);color:#3b82f6">
+        <div class="pulse" style="background:#3b82f6"></div>
+        Active en continu
+      </div>
+    </div>
+    <div class="agent-details">
+      <!-- Mission -->
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div class="detail-card-icon" style="background:var(--accent-blue)">
+            <span class="material-icons-round">flag</span>
+          </div>
+          <div class="detail-card-title">Mission</div>
+        </div>
+        <p style="font-size:15px;line-height:1.8;color:var(--text-body)">
+          ARIA est le premier maillon de la chaîne commerciale. Elle identifie, contacte et qualifie les prospects à fort potentiel dans les secteurs Data, IA, Cloud et Conseil. Grâce à son algorithme de scoring multicritères, elle évalue chaque lead sur 15 dimensions et ne transmet que les opportunités les plus prometteuses au reste de l'équipe.
+        </p>
+      </div>
+      <!-- Compétences -->
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div class="detail-card-icon" style="background:var(--accent-blue)">
+            <span class="material-icons-round">psychology</span>
+          </div>
+          <div class="detail-card-title">Compétences</div>
+        </div>
+        <div class="skills-grid">
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Scraping LinkedIn</span><span class="skill-pct">97%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="97" style="background:#3b82f6"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Scoring multicritères</span><span class="skill-pct">95%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="95" style="background:#3b82f6"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Enrichissement données</span><span class="skill-pct">93%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="93" style="background:#3b82f6"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Qualification B2B</span><span class="skill-pct">96%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="96" style="background:#3b82f6"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Détection d'intention</span><span class="skill-pct">91%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="91" style="background:#3b82f6"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Segmentation sectorielle</span><span class="skill-pct">94%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="94" style="background:#3b82f6"></div></div>
+          </div>
+        </div>
+      </div>
+      <!-- KPIs -->
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div class="detail-card-icon" style="background:var(--accent-blue)">
+            <span class="material-icons-round">insights</span>
+          </div>
+          <div class="detail-card-title">Performances clés</div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-item">
+            <div class="kpi-value">2 057</div>
+            <div class="kpi-label">Contacts générés</div>
+            <div class="kpi-trend up">+18% ce mois</div>
+          </div>
+          <div class="kpi-item">
+            <div class="kpi-value">666</div>
+            <div class="kpi-label">Leads qualifiés</div>
+            <div class="kpi-trend up">+24% ce mois</div>
+          </div>
+          <div class="kpi-item">
+            <div class="kpi-value">32%</div>
+            <div class="kpi-label">Taux de qualification</div>
+            <div class="kpi-trend up">+3pts</div>
+          </div>
+        </div>
+      </div>
+      <!-- Activité récente -->
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div class="detail-card-icon" style="background:var(--accent-blue)">
+            <span class="material-icons-round">history</span>
+          </div>
+          <div class="detail-card-title">Activité récente</div>
+        </div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <span class="activity-time">14:32</span>
+            <div class="activity-dot" style="background:#3b82f6"></div>
+            <span class="activity-text">A qualifié 3 nouveaux leads B2B dans le secteur ESN</span>
+          </div>
+          <div class="activity-item">
+            <span class="activity-time">12:55</span>
+            <div class="activity-dot" style="background:#3b82f6"></div>
+            <span class="activity-text">A identifié 12 profils LinkedIn Data/IA à contacter</span>
+          </div>
+          <div class="activity-item">
+            <span class="activity-time">10:20</span>
+            <div class="activity-dot" style="background:#3b82f6"></div>
+            <span class="activity-text">A enrichi 45 fiches prospects avec données SIRENE</span>
+          </div>
+          <div class="activity-item">
+            <span class="activity-time">08:00</span>
+            <div class="activity-dot" style="background:#3b82f6"></div>
+            <span class="activity-text">Lancement du scan matinal — 200 nouveaux profils analysés</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== MAX ========== -->
+<section class="agent-profile" id="max">
+  <div class="agent-profile-inner">
+    <div class="agent-identity">
+      <div class="avatar-large" style="background:rgba(244,63,94,0.1)">📊</div>
+      <div class="agent-name">MAX</div>
+      <div class="agent-role">Analytics & Reporting</div>
+      <div class="score-ring">
+        <svg viewBox="0 0 120 120">
+          <circle class="bg" cx="60" cy="60" r="52"/>
+          <circle cx="60" cy="60" r="52" stroke="#f43f5e" stroke-dasharray="326.7" stroke-dashoffset="26.1"/>
+        </svg>
+        <span class="score-value">92</span>
+      </div>
+      <div class="score-label">Score de performance</div>
+      <div class="status-badge" style="background:rgba(244,63,94,0.1);color:#f43f5e">
+        <div class="pulse" style="background:#f43f5e"></div>
+        Actif en continu
+      </div>
+    </div>
+    <div class="agent-details">
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div class="detail-card-icon" style="background:#f43f5e">
+            <span class="material-icons-round">flag</span>
+          </div>
+          <div class="detail-card-title">Mission</div>
+        </div>
+        <p style="font-size:15px;line-height:1.8;color:var(--text-body)">
+          MAX est le cerveau analytique de l'équipe. Il collecte, agrège et analyse l'ensemble des données commerciales en temps réel. Il génère des rapports de performance hebdomadaires, identifie les tendances, détecte les anomalies et formule des recommandations stratégiques pour optimiser chaque étape du funnel de conversion.
+        </p>
+      </div>
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div class="detail-card-icon" style="background:#f43f5e">
+            <span class="material-icons-round">psychology</span>
+          </div>
+          <div class="detail-card-title">Compétences</div>
+        </div>
+        <div class="skills-grid">
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Data Visualization</span><span class="skill-pct">96%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="96" style="background:#f43f5e"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Analyse prédictive</span><span class="skill-pct">93%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="93" style="background:#f43f5e"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Reporting automatisé</span><span class="skill-pct">97%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="97" style="background:#f43f5e"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Détection d'anomalies</span><span class="skill-pct">90%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="90" style="background:#f43f5e"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">KPI Tracking</span><span class="skill-pct">95%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="95" style="background:#f43f5e"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Forecasting</span><span class="skill-pct">88%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="88" style="background:#f43f5e"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div class="detail-card-icon" style="background:#f43f5e">
+            <span class="material-icons-round">insights</span>
+          </div>
+          <div class="detail-card-title">Performances clés</div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-item">
+            <div class="kpi-value">156</div>
+            <div class="kpi-label">Rapports générés</div>
+            <div class="kpi-trend up">+22% ce mois</div>
+          </div>
+          <div class="kpi-item">
+            <div class="kpi-value">12</div>
+            <div class="kpi-label">Alertes déclenchées</div>
+            <div class="kpi-trend up">Temps réel</div>
+          </div>
+          <div class="kpi-item">
+            <div class="kpi-value">99.8%</div>
+            <div class="kpi-label">Précision données</div>
+            <div class="kpi-trend up">+0.3pts</div>
+          </div>
+        </div>
+      </div>
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div class="detail-card-icon" style="background:#f43f5e">
+            <span class="material-icons-round">history</span>
+          </div>
+          <div class="detail-card-title">Activité récente</div>
+        </div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <span class="activity-time">13:20</span>
+            <div class="activity-dot" style="background:#f43f5e"></div>
+            <span class="activity-text">A généré le rapport de performance hebdomadaire</span>
+          </div>
+          <div class="activity-item">
+            <span class="activity-time">11:00</span>
+            <div class="activity-dot" style="background:#f43f5e"></div>
+            <span class="activity-text">Alerte : taux de conversion B2C en hausse de 5pts</span>
+          </div>
+          <div class="activity-item">
+            <span class="activity-time">09:15</span>
+            <div class="activity-dot" style="background:#f43f5e"></div>
+            <span class="activity-text">Mise à jour du dashboard avec les KPIs du matin</span>
+          </div>
+          <div class="activity-item">
+            <span class="activity-time">07:00</span>
+            <div class="activity-dot" style="background:#f43f5e"></div>
+            <span class="activity-text">Agrégation automatique des données nocturnes terminée</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== NOAH ========== -->
+<section class="agent-profile" id="noah">
+  <div class="agent-profile-inner">
+    <div class="agent-identity">
+      <div class="avatar-large" style="background:rgba(16,185,129,0.1)">🤝</div>
+      <div class="agent-name">NOAH</div>
+      <div class="agent-role">Négociation & Closing</div>
+      <div class="score-ring">
+        <svg viewBox="0 0 120 120">
+          <circle class="bg" cx="60" cy="60" r="52"/>
+          <circle cx="60" cy="60" r="52" stroke="#10b981" stroke-dasharray="326.7" stroke-dashoffset="29.4"/>
+        </svg>
+        <span class="score-value">91</span>
+      </div>
+      <div class="score-label">Score de performance</div>
+      <div class="status-badge" style="background:rgba(16,185,129,0.1);color:#10b981">
+        <div class="pulse" style="background:#10b981"></div>
+        Actif en continu
+      </div>
+    </div>
+    <div class="agent-details">
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div class="detail-card-icon" style="background:#10b981">
+            <span class="material-icons-round">flag</span>
+          </div>
+          <div class="detail-card-title">Mission</div>
+        </div>
+        <p style="font-size:15px;line-height:1.8;color:var(--text-body)">
+          NOAH est le closer de l'équipe. Il prend en charge les leads qualifiés par ARIA et les transforme en clients signés. Expert en négociation commerciale, il génère des propositions personnalisées, gère les objections, programme les rendez-vous de closing et assure le suivi jusqu'à la signature du contrat de portage salarial.
+        </p>
+      </div>
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div class="detail-card-icon" style="background:#10b981">
+            <span class="material-icons-round">psychology</span>
+          </div>
+          <div class="detail-card-title">Compétences</div>
+        </div>
+        <div class="skills-grid">
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Proposition commerciale</span><span class="skill-pct">95%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="95" style="background:#10b981"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Gestion des objections</span><span class="skill-pct">93%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="93" style="background:#10b981"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Closing B2B</span><span class="skill-pct">91%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="91" style="background:#10b981"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Planification RDV</span><span class="skill-pct">94%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="94" style="background:#10b981"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Simulation financière</span><span class="skill-pct">89%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="89" style="background:#10b981"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Suivi pipeline</span><span class="skill-pct">92%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="92" style="background:#10b981"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div class="detail-card-icon" style="background:#10b981">
+            <span class="material-icons-round">insights</span>
+          </div>
+          <div class="detail-card-title">Performances clés</div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-item">
+            <div class="kpi-value">307</div>
+            <div class="kpi-label">Propositions envoyées</div>
+            <div class="kpi-trend up">+12% ce mois</div>
+          </div>
+          <div class="kpi-item">
+            <div class="kpi-value">89</div>
+            <div class="kpi-label">Contrats signés</div>
+            <div class="kpi-trend up">+15% ce mois</div>
+          </div>
+          <div class="kpi-item">
+            <div class="kpi-value">29%</div>
+            <div class="kpi-label">Taux de closing</div>
+            <div class="kpi-trend up">+4pts</div>
+          </div>
+        </div>
+      </div>
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div class="detail-card-icon" style="background:#10b981">
+            <span class="material-icons-round">history</span>
+          </div>
+          <div class="detail-card-title">Activité récente</div>
+        </div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <span class="activity-time">14:15</span>
+            <div class="activity-dot" style="background:#10b981"></div>
+            <span class="activity-text">A envoyé une proposition commerciale à Capgemini Engineering</span>
+          </div>
+          <div class="activity-item">
+            <span class="activity-time">11:45</span>
+            <div class="activity-dot" style="background:#10b981"></div>
+            <span class="activity-text">A programmé un RDV closing avec Alten pour vendredi</span>
+          </div>
+          <div class="activity-item">
+            <span class="activity-time">09:30</span>
+            <div class="activity-dot" style="background:#10b981"></div>
+            <span class="activity-text">Relance automatique de 15 propositions en attente</span>
+          </div>
+          <div class="activity-item">
+            <span class="activity-time">08:15</span>
+            <div class="activity-dot" style="background:#10b981"></div>
+            <span class="activity-text">Signature obtenue — Jean Dupont (consultant SAP, 650€/j)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== LUNA ========== -->
+<section class="agent-profile" id="luna">
+  <div class="agent-profile-inner">
+    <div class="agent-identity">
+      <div class="avatar-large" style="background:rgba(245,158,11,0.1)">✨</div>
+      <div class="agent-name">LUNA</div>
+      <div class="agent-role">Marketing & Nurturing</div>
+      <div class="score-ring">
+        <svg viewBox="0 0 120 120">
+          <circle class="bg" cx="60" cy="60" r="52"/>
+          <circle cx="60" cy="60" r="52" stroke="#f59e0b" stroke-dasharray="326.7" stroke-dashoffset="39.2"/>
+        </svg>
+        <span class="score-value">88</span>
+      </div>
+      <div class="score-label">Score de performance</div>
+      <div class="status-badge" style="background:rgba(245,158,11,0.1);color:#f59e0b">
+        <div class="pulse" style="background:#f59e0b"></div>
+        Active en continu
+      </div>
+    </div>
+    <div class="agent-details">
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div class="detail-card-icon" style="background:#f59e0b">
+            <span class="material-icons-round">flag</span>
+          </div>
+          <div class="detail-card-title">Mission</div>
+        </div>
+        <p style="font-size:15px;line-height:1.8;color:var(--text-body)">
+          LUNA est la stratège marketing de l'équipe. Elle conçoit et exécute des campagnes d'emailing ciblées, des séquences de nurturing personnalisées et des contenus engageants pour maintenir le lien avec les prospects tout au long du cycle de décision. Elle alimente le pipeline B2C et transforme les contacts froids en leads chauds prêts pour NOAH.
+        </p>
+      </div>
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div class="detail-card-icon" style="background:#f59e0b">
+            <span class="material-icons-round">psychology</span>
+          </div>
+          <div class="detail-card-title">Compétences</div>
+        </div>
+        <div class="skills-grid">
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Email Marketing</span><span class="skill-pct">94%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="94" style="background:#f59e0b"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Copywriting IA</span><span class="skill-pct">91%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="91" style="background:#f59e0b"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Séquences nurturing</span><span class="skill-pct">93%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="93" style="background:#f59e0b"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Segmentation audience</span><span class="skill-pct">89%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="89" style="background:#f59e0b"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">A/B Testing</span><span class="skill-pct">86%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="86" style="background:#f59e0b"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Content Strategy</span><span class="skill-pct">88%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="88" style="background:#f59e0b"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div class="detail-card-icon" style="background:#f59e0b">
+            <span class="material-icons-round">insights</span>
+          </div>
+          <div class="detail-card-title">Performances clés</div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-item">
+            <div class="kpi-value">4 520</div>
+            <div class="kpi-label">Emails envoyés</div>
+            <div class="kpi-trend up">+28% ce mois</div>
+          </div>
+          <div class="kpi-item">
+            <div class="kpi-value">34%</div>
+            <div class="kpi-label">Taux d'ouverture</div>
+            <div class="kpi-trend up">+6pts</div>
+          </div>
+          <div class="kpi-item">
+            <div class="kpi-value">12%</div>
+            <div class="kpi-label">Taux de clic</div>
+            <div class="kpi-trend up">+3pts</div>
+          </div>
+        </div>
+      </div>
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div class="detail-card-icon" style="background:#f59e0b">
+            <span class="material-icons-round">history</span>
+          </div>
+          <div class="detail-card-title">Activité récente</div>
+        </div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <span class="activity-time">13:58</span>
+            <div class="activity-dot" style="background:#f59e0b"></div>
+            <span class="activity-text">A lancé la campagne email "Découvrez le portage salarial"</span>
+          </div>
+          <div class="activity-item">
+            <span class="activity-time">12:30</span>
+            <div class="activity-dot" style="background:#f59e0b"></div>
+            <span class="activity-text">A envoyé 450 emails de nurturing aux leads B2C</span>
+          </div>
+          <div class="activity-item">
+            <span class="activity-time">10:00</span>
+            <div class="activity-dot" style="background:#f59e0b"></div>
+            <span class="activity-text">A/B test terminé — variante B retenue (+8% taux clic)</span>
+          </div>
+          <div class="activity-item">
+            <span class="activity-time">08:30</span>
+            <div class="activity-dot" style="background:#f59e0b"></div>
+            <span class="activity-text">Création de 3 nouvelles séquences pour le secteur Cloud</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== ALEX ========== -->
+<section class="agent-profile" id="alex">
+  <div class="agent-profile-inner">
+    <div class="agent-identity">
+      <div class="avatar-large" style="background:rgba(139,92,246,0.1)">🎯</div>
+      <div class="agent-name">ALEX</div>
+      <div class="agent-role">Onboarding & Fidélisation</div>
+      <div class="score-ring">
+        <svg viewBox="0 0 120 120">
+          <circle class="bg" cx="60" cy="60" r="52"/>
+          <circle cx="60" cy="60" r="52" stroke="#8b5cf6" stroke-dasharray="326.7" stroke-dashoffset="45.7"/>
+        </svg>
+        <span class="score-value">86</span>
+      </div>
+      <div class="score-label">Score de performance</div>
+      <div class="status-badge" style="background:rgba(139,92,246,0.1);color:#8b5cf6">
+        <div class="pulse" style="background:#8b5cf6"></div>
+        Actif en continu
+      </div>
+    </div>
+    <div class="agent-details">
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div class="detail-card-icon" style="background:#8b5cf6">
+            <span class="material-icons-round">flag</span>
+          </div>
+          <div class="detail-card-title">Mission</div>
+        </div>
+        <p style="font-size:15px;line-height:1.8;color:var(--text-body)">
+          ALEX est le garant de l'expérience client. Il prend le relais après la signature pour accompagner chaque nouveau consultant dans son parcours d'onboarding : création du dossier, configuration du compte, formation aux outils, et suivi de satisfaction. Il assure ensuite la fidélisation à long terme en anticipant les besoins et en maintenant un engagement constant.
+        </p>
+      </div>
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div class="detail-card-icon" style="background:#8b5cf6">
+            <span class="material-icons-round">psychology</span>
+          </div>
+          <div class="detail-card-title">Compétences</div>
+        </div>
+        <div class="skills-grid">
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Onboarding automatisé</span><span class="skill-pct">92%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="92" style="background:#8b5cf6"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Suivi satisfaction</span><span class="skill-pct">89%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="89" style="background:#8b5cf6"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Gestion documentaire</span><span class="skill-pct">94%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="94" style="background:#8b5cf6"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Rétention client</span><span class="skill-pct">87%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="87" style="background:#8b5cf6"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Formation utilisateur</span><span class="skill-pct">85%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="85" style="background:#8b5cf6"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-label"><span class="skill-name">Anticipation besoins</span><span class="skill-pct">83%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="83" style="background:#8b5cf6"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div class="detail-card-icon" style="background:#8b5cf6">
+            <span class="material-icons-round">insights</span>
+          </div>
+          <div class="detail-card-title">Performances clés</div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-item">
+            <div class="kpi-value">89</div>
+            <div class="kpi-label">Consultants onboardés</div>
+            <div class="kpi-trend up">+15% ce mois</div>
+          </div>
+          <div class="kpi-item">
+            <div class="kpi-value">96%</div>
+            <div class="kpi-label">Satisfaction client</div>
+            <div class="kpi-trend up">+2pts</div>
+          </div>
+          <div class="kpi-item">
+            <div class="kpi-value">91%</div>
+            <div class="kpi-label">Taux de rétention</div>
+            <div class="kpi-trend up">+5pts</div>
+          </div>
+        </div>
+      </div>
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <div class="detail-card-icon" style="background:#8b5cf6">
+            <span class="material-icons-round">history</span>
+          </div>
+          <div class="detail-card-title">Activité récente</div>
+        </div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <span class="activity-time">13:42</span>
+            <div class="activity-dot" style="background:#8b5cf6"></div>
+            <span class="activity-text">A finalisé l'onboarding de Sophie Martin (SAP)</span>
+          </div>
+          <div class="activity-item">
+            <span class="activity-time">11:15</span>
+            <div class="activity-dot" style="background:#8b5cf6"></div>
+            <span class="activity-text">Envoi du questionnaire de satisfaction à 25 consultants</span>
+          </div>
+          <div class="activity-item">
+            <span class="activity-time">09:45</span>
+            <div class="activity-dot" style="background:#8b5cf6"></div>
+            <span class="activity-text">Configuration automatique du compte Pierre Leroy (Data Engineer)</span>
+          </div>
+          <div class="activity-item">
+            <span class="activity-time">08:00</span>
+            <div class="activity-dot" style="background:#8b5cf6"></div>
+            <span class="activity-text">Rappel de renouvellement envoyé à 8 consultants</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COLLABORATION -->
+<section class="collab-section">
+  <div class="collab-inner">
+    <h2 class="collab-title">Comment ils collaborent</h2>
+    <p class="collab-subtitle">Un flux de travail orchestré où chaque agent passe le relais au suivant, créant une chaîne commerciale sans faille.</p>
+    <div class="collab-flow">
+      <div class="collab-agent">
+        <div class="collab-avatar" style="background:rgba(59,130,246,0.1)">🔍</div>
+        <div class="collab-name">ARIA</div>
+        <div class="collab-step">Prospection</div>
+      </div>
+      <div class="collab-arrow"><span class="material-icons-round">arrow_forward</span></div>
+      <div class="collab-agent">
+        <div class="collab-avatar" style="background:rgba(245,158,11,0.1)">✨</div>
+        <div class="collab-name">LUNA</div>
+        <div class="collab-step">Nurturing</div>
+      </div>
+      <div class="collab-arrow"><span class="material-icons-round">arrow_forward</span></div>
+      <div class="collab-agent">
+        <div class="collab-avatar" style="background:rgba(16,185,129,0.1)">🤝</div>
+        <div class="collab-name">NOAH</div>
+        <div class="collab-step">Closing</div>
+      </div>
+      <div class="collab-arrow"><span class="material-icons-round">arrow_forward</span></div>
+      <div class="collab-agent">
+        <div class="collab-avatar" style="background:rgba(139,92,246,0.1)">🎯</div>
+        <div class="collab-name">ALEX</div>
+        <div class="collab-step">Onboarding</div>
+      </div>
+      <div class="collab-arrow"><span class="material-icons-round">arrow_forward</span></div>
+      <div class="collab-agent">
+        <div class="collab-avatar" style="background:rgba(244,63,94,0.1)">📊</div>
+        <div class="collab-name">MAX</div>
+        <div class="collab-step">Analytics</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Mettez vos agents IA au travail</h2>
+  <p>Accédez au dashboard et pilotez votre force commerciale augmentée en temps réel.</p>
+  <a href="dashboard.html" class="btn-cta">
+    <span class="material-icons-round">rocket_launch</span>
+    Lancer le Dashboard
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <span class="material-icons-round">auto_awesome</span>
+        </div>
+        <span class="footer-brand-name">Portage AI</span>
+      </div>
+      <p class="footer-desc">Sales Force Command Center — La force commerciale augmentée par l'intelligence artificielle pour le portage salarial.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Plateforme</div>
+      <ul class="footer-links">
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="agents.html">Agents IA</a></li>
+        <li><a href="index.html#pipeline">Pipeline</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Outils</div>
+      <ul class="footer-links">
+        <li><a href="dashboard.html">Simulateur</a></li>
+        <li><a href="dashboard.html">CRM</a></li>
+        <li><a href="dashboard.html">Campagnes</a></li>
+        <li><a href="dashboard.html">LinkedIn</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Ressources</div>
+      <ul class="footer-links">
+        <li><a href="#">Documentation</a></li>
+        <li><a href="#">API</a></li>
+        <li><a href="#">Support</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2025 Portage AI — Tous droits réservés</span>
+    <span>Propulsé par l'Intelligence Artificielle</span>
+  </div>
+</footer>
+
+<script>
+  // Navbar scroll effect
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10);
+  });
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('navLinks').classList.remove('open');
+    });
+  });
+
+  // Animate skill bars on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Animate skill bars
+        entry.target.querySelectorAll('.skill-fill').forEach(bar => {
+          bar.style.width = bar.dataset.width + '%';
+        });
+        // Fade in cards
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.agent-profile, .detail-card, .collab-agent, .kpi-item').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
