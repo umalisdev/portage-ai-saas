@@ -1,8 +1,0 @@
-Page agents.html - Vérification visuelle :
-1. Hero section : "Rencontrez vos 5 agents IA" avec badges cliquables ARIA/MAX/NOAH/LUNA/ALEX - OK
-2. Profil ARIA : carte identité sticky à gauche avec avatar, score circulaire 94, badge "Active en continu" - OK
-3. Compétences ARIA : barres de progression animées (Scraping LinkedIn 97%, Scoring 95%, etc.) - OK
-4. KPIs ARIA : 2057 contacts, 666 leads, 32% qualification - OK
-5. Activité récente ARIA : feed avec horodatage - OK
-6. Navigation : Accueil, Agents IA (active), Fonctionnalités, Pipeline, Dashboard - OK
-7. Le contenu markdown confirme les 5 profils complets + section collaboration + CTA + footer

@@ -197,11 +197,18 @@
       top: 100px;
     }
     .agent-identity .avatar-large {
-      width: 100px; height: 100px;
-      border-radius: 28px;
+      width: 120px; height: 120px;
+      border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       font-size: 48px;
       margin: 0 auto 20px;
+      overflow: hidden;
+      border: 4px solid rgba(255,255,255,0.9);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    }
+    .agent-identity .avatar-large img {
+      width: 100%; height: 100%;
+      object-fit: cover;
     }
     .agent-identity .agent-name {
       font-size: 32px; font-weight: 900;
@@ -610,7 +617,7 @@
 <section class="agent-profile" id="aria">
   <div class="agent-profile-inner">
     <div class="agent-identity">
-      <div class="avatar-large" style="background:rgba(59,130,246,0.1)">🔍</div>
+      <div class="avatar-large" style="background:rgba(59,130,246,0.1)"><img src="img/aria.png" alt="ARIA"></div>
       <div class="agent-name">ARIA</div>
       <div class="agent-role">Prospection & Qualification</div>
       <div class="score-ring">
@@ -739,7 +746,7 @@
 <section class="agent-profile" id="max">
   <div class="agent-profile-inner">
     <div class="agent-identity">
-      <div class="avatar-large" style="background:rgba(244,63,94,0.1)">📊</div>
+      <div class="avatar-large" style="background:rgba(244,63,94,0.1)"><img src="img/max.png" alt="MAX"></div>
       <div class="agent-name">MAX</div>
       <div class="agent-role">Analytics & Reporting</div>
       <div class="score-ring">
@@ -864,7 +871,7 @@
 <section class="agent-profile" id="noah">
   <div class="agent-profile-inner">
     <div class="agent-identity">
-      <div class="avatar-large" style="background:rgba(16,185,129,0.1)">🤝</div>
+      <div class="avatar-large" style="background:rgba(16,185,129,0.1)"><img src="img/noah.png" alt="NOAH"></div>
       <div class="agent-name">NOAH</div>
       <div class="agent-role">Négociation & Closing</div>
       <div class="score-ring">
@@ -989,7 +996,7 @@
 <section class="agent-profile" id="luna">
   <div class="agent-profile-inner">
     <div class="agent-identity">
-      <div class="avatar-large" style="background:rgba(245,158,11,0.1)">✨</div>
+      <div class="avatar-large" style="background:rgba(245,158,11,0.1)"><img src="img/luna.png" alt="LUNA"></div>
       <div class="agent-name">LUNA</div>
       <div class="agent-role">Marketing & Nurturing</div>
       <div class="score-ring">
@@ -1114,7 +1121,7 @@
 <section class="agent-profile" id="alex">
   <div class="agent-profile-inner">
     <div class="agent-identity">
-      <div class="avatar-large" style="background:rgba(139,92,246,0.1)">🎯</div>
+      <div class="avatar-large" style="background:rgba(139,92,246,0.1)"><img src="img/alex.png" alt="ALEX"></div>
       <div class="agent-name">ALEX</div>
       <div class="agent-role">Onboarding & Fidélisation</div>
       <div class="score-ring">
