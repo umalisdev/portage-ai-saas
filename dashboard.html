@@ -705,14 +705,14 @@ const CAMPAIGNS = [
 ];
 
 const LINKEDIN_PROFILES = [
-  { name:'Thomas Durand', title:'DevOps Senior', company:'Freelance', location:'Paris', score:92, status:'interested', agent:'LUNA', skills:['AWS','Kubernetes','Terraform'], tjm:650 },
-  { name:'Sophie Martin', title:'Consultante SAP', company:'Accenture', location:'Lyon', score:88, status:'meeting', agent:'ALEX', skills:['SAP S/4HANA','ABAP','Fiori'], tjm:720 },
-  { name:'Pierre Lambert', title:'Architecte Cloud', company:'Capgemini', location:'Nantes', score:85, status:'contacted', agent:'LUNA', skills:['Azure','GCP','Microservices'], tjm:800 },
-  { name:'Marie Chevalier', title:'Data Analyst', company:'Freelance', location:'Bordeaux', score:78, status:'new', agent:'ARIA', skills:['Python','Power BI','SQL'], tjm:580 },
-  { name:'Jean Rousseau', title:'Chef de Projet IT', company:'Sopra Steria', location:'Toulouse', score:82, status:'contacted', agent:'LUNA', skills:['Agile','JIRA','PMO'], tjm:600 },
-  { name:'Claire Bonnet', title:'UX Designer Senior', company:'Freelance', location:'Paris', score:90, status:'interested', agent:'ALEX', skills:['Figma','Design System','User Research'], tjm:550 },
-  { name:'Karim Amrani', title:'Ingénieur IA/ML', company:'Thales', location:'Paris', score:95, status:'new', agent:'ARIA', skills:['PyTorch','NLP','MLOps'], tjm:900 },
-  { name:'Nadia Faure', title:'Formatrice Digitale', company:'Freelance', location:'Marseille', score:72, status:'converted', agent:'ALEX', skills:['E-learning','Moodle','Pédagogie'], tjm:450 }
+  { name:'Thomas Durand', title:'DevOps Senior', company:'Freelance', location:'Paris', score:92, status:'interested', agent:'LUNA', skills:['AWS','Kubernetes','Terraform'], tjm:650, tags:['informatique','IT','cloud','infrastructure','devops'] },
+  { name:'Sophie Martin', title:'Consultante SAP', company:'Accenture', location:'Lyon', score:88, status:'meeting', agent:'ALEX', skills:['SAP S/4HANA','ABAP','Fiori'], tjm:720, tags:['informatique','IT','ERP','SAP','conseil','consulting'] },
+  { name:'Pierre Lambert', title:'Architecte Cloud', company:'Capgemini', location:'Nantes', score:85, status:'contacted', agent:'LUNA', skills:['Azure','GCP','Microservices'], tjm:800, tags:['informatique','IT','cloud','architecture','infrastructure'] },
+  { name:'Marie Chevalier', title:'Data Analyst', company:'Freelance', location:'Bordeaux', score:78, status:'new', agent:'ARIA', skills:['Python','Power BI','SQL'], tjm:580, tags:['informatique','IT','data','analyse','business intelligence'] },
+  { name:'Jean Rousseau', title:'Chef de Projet IT', company:'Sopra Steria', location:'Toulouse', score:82, status:'contacted', agent:'LUNA', skills:['Agile','JIRA','PMO'], tjm:600, tags:['informatique','IT','gestion de projet','management','agile'] },
+  { name:'Claire Bonnet', title:'UX Designer Senior', company:'Freelance', location:'Paris', score:90, status:'interested', agent:'ALEX', skills:['Figma','Design System','User Research'], tjm:550, tags:['informatique','IT','design','UX','digital','web'] },
+  { name:'Karim Amrani', title:'Ingénieur IA/ML', company:'Thales', location:'Paris', score:95, status:'new', agent:'ARIA', skills:['PyTorch','NLP','MLOps'], tjm:900, tags:['informatique','IT','intelligence artificielle','IA','machine learning','data science'] },
+  { name:'Nadia Faure', title:'Formatrice Digitale', company:'Freelance', location:'Marseille', score:72, status:'converted', agent:'ALEX', skills:['E-learning','Moodle','Pédagogie'], tjm:450, tags:['informatique','IT','formation','digital','e-learning'] }
 ];
 
 const MISSIONS = [
@@ -1662,10 +1662,10 @@ function resetLinkedInSearch() {
   cards.forEach(c => c.style.display = '');
 }
 function executeLinkedInSearch() {
-  const title = (document.getElementById('li-search-title').value || '').toLowerCase();
-  const company = (document.getElementById('li-search-company').value || '').toLowerCase();
-  const location = (document.getElementById('li-search-location').value || '').toLowerCase();
-  const skills = (document.getElementById('li-search-skills').value || '').toLowerCase();
+  const title = (document.getElementById('li-search-title').value || '').trim().toLowerCase();
+  const company = (document.getElementById('li-search-company').value || '').trim().toLowerCase();
+  const location = (document.getElementById('li-search-location').value || '').trim().toLowerCase();
+  const skills = (document.getElementById('li-search-skills').value || '').trim().toLowerCase();
   const tjmMin = parseFloat(document.getElementById('li-search-tjm').value) || 0;
   const scoreMin = parseFloat(document.getElementById('li-search-score').value) || 0;
 
@@ -1673,10 +1673,33 @@ function executeLinkedInSearch() {
   let matchCount = 0;
   LINKEDIN_PROFILES.forEach((p, i) => {
     let match = true;
-    if(title && !p.title.toLowerCase().includes(title)) match = false;
-    if(company && !p.company.toLowerCase().includes(company)) match = false;
-    if(location && !p.location.toLowerCase().includes(location)) match = false;
-    if(skills && !p.skills.some(s => s.toLowerCase().includes(skills))) match = false;
+    // Recherche souple sur le poste/titre : cherche dans title, name, skills ET tags
+    if(title) {
+      const titleWords = title.split(/[\s,;]+/).filter(w => w.length > 0);
+      const searchableText = [p.title, p.name, ...p.skills, ...(p.tags || [])].join(' ').toLowerCase();
+      const titleMatch = titleWords.some(w => searchableText.includes(w));
+      if(!titleMatch) match = false;
+    }
+    // Recherche souple sur l'entreprise
+    if(company) {
+      const companyWords = company.split(/[\s,;]+/).filter(w => w.length > 0);
+      const companyText = [p.company, ...(p.tags || [])].join(' ').toLowerCase();
+      const companyMatch = companyWords.some(w => companyText.includes(w));
+      if(!companyMatch) match = false;
+    }
+    // Recherche souple sur la localisation
+    if(location) {
+      const locWords = location.split(/[\s,;]+/).filter(w => w.length > 0);
+      const locMatch = locWords.some(w => p.location.toLowerCase().includes(w));
+      if(!locMatch) match = false;
+    }
+    // Recherche souple sur les compétences : cherche dans skills ET tags
+    if(skills) {
+      const skillWords = skills.split(/[\s,;]+/).filter(w => w.length > 0);
+      const allSkills = [...p.skills, ...(p.tags || [])].join(' ').toLowerCase();
+      const skillMatch = skillWords.some(w => allSkills.includes(w));
+      if(!skillMatch) match = false;
+    }
     if(tjmMin && p.tjm < tjmMin) match = false;
     if(scoreMin && p.score < scoreMin) match = false;
     if(cards[i]) cards[i].style.display = match ? '' : 'none';
