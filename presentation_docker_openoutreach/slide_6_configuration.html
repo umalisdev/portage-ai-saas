@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; }
+        .slide-container {
+            width: 1280px; min-height: 720px; box-sizing: border-box;
+            background: #0a0b0f; position: relative; overflow: hidden;
+        }
+        .grid-bg {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .glow-line { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #3b82f6, #8b5cf6, transparent); }
+        .inner { position: relative; z-index: 2; padding: 48px 60px 0 60px; }
+        .page-title { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 30px; color: #ffffff; margin-bottom: 6px; }
+        .page-subtitle { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 15px; color: #a0aec0; margin-bottom: 36px; }
+        .content-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; }
+        .config-panel {
+            background: #1e1e1e; border-radius: 8px; border: 1px solid #333;
+            overflow: hidden; height: 480px; display: flex; flex-direction: column;
+        }
+        .config-header {
+            background: #2d2d2d; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid #333;
+        }
+        .file-name { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #d4d4d4; }
+        .config-body {
+            padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 13px;
+            color: #d4d4d4; line-height: 1.8; overflow-y: auto;
+        }
+        .var-name { color: #9cdcfe; font-weight: bold; }
+        .var-val { color: #ce9178; }
+        .var-comment { color: #6a9955; display: block; margin-top: 4px; margin-bottom: 4px; }
+        .secret { color: #ce9178; filter: blur(3px); transition: filter 0.3s; }
+        .secret:hover { filter: blur(0); }
+        .explanation-list { display: flex; flex-direction: column; gap: 20px; justify-content: center; }
+        .explanation-item {
+            display: flex; gap: 16px; align-items: flex-start;
+            padding: 16px; background: rgba(255,255,255,0.03); border-radius: 6px;
+            border-left: 3px solid transparent;
+        }
+        .explanation-item.blue { border-left-color: #3b82f6; }
+        .explanation-item.purple { border-left-color: #8b5cf6; }
+        .explanation-item.green { border-left-color: #10b981; }
+        .explanation-icon {
+            width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.05); border-radius: 50%; color: #fff; font-size: 14px;
+        }
+        .explanation-content h3 {
+            font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px; color: #fff; margin-bottom: 4px;
+        }
+        .explanation-content p {
+            font-family: 'Inter', sans-serif; font-size: 12px; color: #a0aec0; line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-bg"></div>
+        <div class="glow-line"></div>
+        <div class="inner">
+            <h1 class="page-title">Configuration Sécurisée (.env)</h1>
+            <p class="page-subtitle">Centralisation des secrets et paramètres d'exécution</p>
+
+            <div class="content-grid">
+                <div class="config-panel">
+                    <div class="config-header">
+                        <span class="file-name">.env</span>
+                        <i class="fas fa-lock" style="color: #6a9955; font-size: 12px;"></i>
+                    </div>
+                    <div class="config-body">
+<span class="var-comment"># --- LinkedIn Credentials ---</span>
+<span class="var-name">LINKEDIN_USERNAME</span>=<span class="var-val">christian.person@light-portage.fr</span>
+<span class="var-name">LINKEDIN_PASSWORD</span>=<span class="secret">Landerneau2027@</span>
+
+<span class="var-comment"># --- OpenAI Integration ---</span>
+<span class="var-name">OPENAI_API_KEY</span>=<span class="secret">sk-proj-1234567890abcdef...</span>
+
+<span class="var-comment"># --- Django Settings ---</span>
+<span class="var-name">DJANGO_SECRET_KEY</span>=<span class="secret">django-insecure-key...</span>
+<span class="var-name">DEBUG</span>=<span class="var-val">False</span>
+<span class="var-name">ALLOWED_HOSTS</span>=<span class="var-val">localhost,127.0.0.1</span>
+
+<span class="var-comment"># --- Scraping Parameters ---</span>
+<span class="var-name">HEADLESS_MODE</span>=<span class="var-val">True</span>
+<span class="var-name">BROWSER_TYPE</span>=<span class="var-val">chromium</span>
+<span class="var-name">MAX_PROFILES_PER_DAY</span>=<span class="var-val">50</span>
+                    </div>
+                </div>
+
+                <div class="explanation-list">
+                    <div class="explanation-item blue">
+                        <div class="explanation-icon"><i class="fab fa-linkedin"></i></div>
+                        <div class="explanation-content">
+                            <h3>Authentification LinkedIn</h3>
+                            <p>Compte dédié au scraping. Le mot de passe est stocké uniquement dans ce fichier non versionné (ajouté au .gitignore).</p>
+                        </div>
+                    </div>
+
+                    <div class="explanation-item purple">
+                        <div class="explanation-icon"><i class="fas fa-brain"></i></div>
+                        <div class="explanation-content">
+                            <h3>Intelligence Artificielle</h3>
+                            <p>Clé API OpenAI utilisée pour le scoring et la qualification des profils. Permet d'analyser les bios et expériences.</p>
+                        </div>
+                    </div>
+
+                    <div class="explanation-item green">
+                        <div class="explanation-icon"><i class="fas fa-shield-alt"></i></div>
+                        <div class="explanation-content">
+                            <h3>Sécurité & Limites</h3>
+                            <p>Mode DEBUG désactivé en production. Limite de 50 profils/jour configurée pour éviter les blocages LinkedIn.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; }
+        .slide-container {
+            width: 1280px; min-height: 720px; box-sizing: border-box;
+            background: #0a0b0f; position: relative; overflow: hidden;
+        }
+        .grid-bg {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .glow-line { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #3b82f6, #8b5cf6, transparent); }
+        .inner { position: relative; z-index: 2; padding: 48px 60px 0 60px; }
+        .page-title { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 30px; color: #ffffff; margin-bottom: 6px; }
+        .page-subtitle { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 15px; color: #a0aec0; margin-bottom: 36px; }
+        .content-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 40px; }
+        .features-list { display: flex; flex-direction: column; gap: 24px; justify-content: center; }
+        .feature-item {
+            display: flex; gap: 16px; align-items: flex-start;
+            padding: 16px; background: rgba(255,255,255,0.03); border-radius: 6px;
+            border-left: 3px solid transparent;
+        }
+        .feature-item.blue { border-left-color: #3b82f6; }
+        .feature-item.purple { border-left-color: #8b5cf6; }
+        .feature-item.green { border-left-color: #10b981; }
+        .feature-icon {
+            width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.05); border-radius: 50%; color: #fff; font-size: 14px;
+        }
+        .feature-content h3 {
+            font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px; color: #fff; margin-bottom: 4px;
+        }
+        .feature-content p {
+            font-family: 'Inter', sans-serif; font-size: 12px; color: #a0aec0; line-height: 1.5;
+        }
+        .crm-preview {
+            background: #1e1e1e; border-radius: 8px; border: 1px solid #333;
+            overflow: hidden; height: 480px; display: flex; flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .crm-header {
+            background: #417690; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
+            color: #fff; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600;
+        }
+        .crm-body {
+            background: #f5f5f5; flex: 1; padding: 20px; font-family: 'Inter', sans-serif;
+            display: flex; gap: 20px;
+        }
+        .crm-sidebar {
+            width: 180px; background: #fff; border: 1px solid #e0e0e0; padding: 10px;
+        }
+        .crm-main {
+            flex: 1; background: #fff; border: 1px solid #e0e0e0; padding: 20px;
+        }
+        .sidebar-item {
+            padding: 8px; font-size: 12px; color: #333; border-bottom: 1px solid #eee;
+            display: flex; justify-content: space-between;
+        }
+        .sidebar-item.active { background: #eef4f8; color: #417690; font-weight: 600; }
+        .table-header {
+            display: flex; background: #f8f8f8; padding: 10px; border-bottom: 1px solid #ddd;
+            font-size: 11px; font-weight: 600; color: #666; text-transform: uppercase;
+        }
+        .table-row {
+            display: flex; padding: 10px; border-bottom: 1px solid #eee;
+            font-size: 12px; color: #333; align-items: center;
+        }
+        .col-check { width: 30px; }
+        .col-name { flex: 2; font-weight: 600; color: #417690; }
+        .col-status { flex: 1; }
+        .col-score { flex: 1; }
+        .status-badge {
+            padding: 2px 6px; border-radius: 4px; font-size: 10px; color: #fff;
+            text-transform: uppercase; font-weight: 600;
+        }
+        .status-new { background: #3b82f6; }
+        .status-qualified { background: #10b981; }
+        .score-bar {
+            height: 6px; background: #eee; border-radius: 3px; overflow: hidden; width: 60px;
+        }
+        .score-fill { height: 100%; background: #10b981; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-bg"></div>
+        <div class="glow-line"></div>
+        <div class="inner">
+            <h1 class="page-title">Interface d'Administration CRM</h1>
+            <p class="page-subtitle">Gestion centralisée des leads et campagnes via Django Admin</p>
+
+            <div class="content-grid">
+                <div class="features-list">
+                    <div class="feature-item blue">
+                        <div class="feature-icon"><i class="fas fa-users"></i></div>
+                        <div class="feature-content">
+                            <h3>Gestion des Leads</h3>
+                            <p>Visualisation, édition et suppression des profils scrapés. Filtrage par statut, score, ou date de création.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item purple">
+                        <div class="feature-icon"><i class="fas fa-bullhorn"></i></div>
+                        <div class="feature-content">
+                            <h3>Campagnes & Mots-clés</h3>
+                            <p>Configuration des campagnes de prospection et ajout de nouveaux mots-clés sans toucher au code.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item green">
+                        <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="feature-content">
+                            <h3>Statistiques & Logs</h3>
+                            <p>Suivi des performances de scraping et historique des actions effectuées par le daemon.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="crm-preview">
+                    <div class="crm-header">
+                        <span>OpenOutreach Administration</span>
+                        <span style="font-size: 11px; font-weight: 400;">Bienvenue, admin</span>
+                    </div>
+                    <div class="crm-body">
+                        <div class="crm-sidebar">
+                            <div class="sidebar-item active">Leads <span style="background:#417690; color:#fff; padding:0 4px; border-radius:10px; font-size:10px;">47</span></div>
+                            <div class="sidebar-item">Campagnes</div>
+                            <div class="sidebar-item">Mots-clés</div>
+                            <div class="sidebar-item">Comptes LinkedIn</div>
+                            <div class="sidebar-item">Logs d'activité</div>
+                        </div>
+                        <div class="crm-main">
+                            <div style="margin-bottom: 15px; font-size: 16px; color: #333;">Sélectionnez un lead pour modifier</div>
+                            <div class="table-header">
+                                <div class="col-check"><input type="checkbox" checked></div>
+                                <div class="col-name">Nom complet</div>
+                                <div class="col-status">Statut</div>
+                                <div class="col-score">Score IA</div>
+                            </div>
+                            <div class="table-row">
+                                <div class="col-check"><input type="checkbox"></div>
+                                <div class="col-name">Jean Dupont</div>
+                                <div class="col-status"><span class="status-badge status-qualified">Qualified</span></div>
+                                <div class="col-score">
+                                    <div class="score-bar"><div class="score-fill" style="width: 95%"></div></div>
+                                    <span style="font-size:10px; margin-left:4px;">95/100</span>
+                                </div>
+                            </div>
+                            <div class="table-row">
+                                <div class="col-check"><input type="checkbox"></div>
+                                <div class="col-name">Marie Martin</div>
+                                <div class="col-status"><span class="status-badge status-new">New</span></div>
+                                <div class="col-score">
+                                    <div class="score-bar"><div class="score-fill" style="width: 82%"></div></div>
+                                    <span style="font-size:10px; margin-left:4px;">82/100</span>
+                                </div>
+                            </div>
+                            <div class="table-row">
+                                <div class="col-check"><input type="checkbox"></div>
+                                <div class="col-name">Pierre Durand</div>
+                                <div class="col-status"><span class="status-badge status-qualified">Qualified</span></div>
+                                <div class="col-score">
+                                    <div class="score-bar"><div class="score-fill" style="width: 88%"></div></div>
+                                    <span style="font-size:10px; margin-left:4px;">88/100</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

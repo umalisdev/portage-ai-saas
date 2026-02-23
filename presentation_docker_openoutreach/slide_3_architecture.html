@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; }
+        .slide-container {
+            width: 1280px; min-height: 720px; box-sizing: border-box;
+            background: #0a0b0f; position: relative; overflow: hidden;
+        }
+        .grid-bg {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .glow-line { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #3b82f6, #8b5cf6, transparent); }
+        .inner { position: relative; z-index: 2; padding: 48px 60px 0 60px; }
+        .page-title { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 30px; color: #ffffff; margin-bottom: 6px; }
+        .page-subtitle { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 15px; color: #a0aec0; margin-bottom: 36px; }
+        .flow-container { display: flex; align-items: flex-start; gap: 0; justify-content: center; }
+        .service-block { width: 230px; }
+        .service-header {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px;
+            font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700;
+            color: #fff;
+        }
+        .service-header.blue { background: rgba(59,130,246,0.15); border-top: 2px solid #3b82f6; }
+        .service-header.purple { background: rgba(139,92,246,0.15); border-top: 2px solid #8b5cf6; }
+        .service-header.green { background: rgba(16,185,129,0.15); border-top: 2px solid #10b981; }
+        .service-header.orange { background: rgba(249,115,22,0.15); border-top: 2px solid #f97316; }
+        .service-header i { font-size: 16px; }
+        .service-header.blue i { color: #3b82f6; }
+        .service-header.purple i { color: #8b5cf6; }
+        .service-header.green i { color: #10b981; }
+        .service-header.orange i { color: #f97316; }
+        .service-body {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+            border-top: none; padding: 14px 16px;
+        }
+        .service-body p { font-family: 'Inter', sans-serif; font-size: 12px; color: #a0aec0; line-height: 1.6; margin-bottom: 10px; }
+        .service-tag {
+            font-family: 'JetBrains Mono', monospace; font-size: 10px;
+            padding: 3px 8px; display: inline-block; margin-right: 4px; margin-bottom: 4px;
+        }
+        .tag-blue { background: rgba(59,130,246,0.1); color: #3b82f6; }
+        .tag-purple { background: rgba(139,92,246,0.1); color: #8b5cf6; }
+        .tag-green { background: rgba(16,185,129,0.1); color: #10b981; }
+        .tag-orange { background: rgba(249,115,22,0.1); color: #f97316; }
+        .arrow-col {
+            display: flex; align-items: center; justify-content: center;
+            width: 50px; padding-top: 60px;
+            font-size: 20px; color: rgba(59,130,246,0.4);
+        }
+        .pipeline-section { margin-top: 36px; }
+        .pipeline-label {
+            font-family: 'JetBrains Mono', monospace; font-size: 11px;
+            text-transform: uppercase; letter-spacing: 2px; color: #a0aec0; margin-bottom: 16px;
+        }
+        .pipeline-row {
+            display: flex; align-items: center; gap: 0;
+            background: rgba(255,255,255,0.02); padding: 16px 24px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .pipeline-step {
+            display: flex; align-items: center; gap: 10px;
+            font-family: 'Inter', sans-serif; font-size: 13px; color: #fff;
+        }
+        .pipeline-step .step-num {
+            width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+            font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
+        }
+        .step-num.blue { background: rgba(59,130,246,0.2); color: #3b82f6; }
+        .step-num.purple { background: rgba(139,92,246,0.2); color: #8b5cf6; }
+        .step-num.green { background: rgba(16,185,129,0.2); color: #10b981; }
+        .step-num.orange { background: rgba(249,115,22,0.2); color: #f97316; }
+        .pipeline-arrow { margin: 0 14px; color: rgba(160,174,192,0.3); font-size: 16px; }
+        .volumes-section { margin-top: 20px; display: flex; gap: 20px; }
+        .volume-item {
+            display: flex; align-items: center; gap: 10px;
+            font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #a0aec0;
+        }
+        .volume-item i { color: #3b82f6; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-bg"></div>
+        <div class="glow-line"></div>
+        <div class="inner">
+            <h1 class="page-title">Architecture du Package Docker</h1>
+            <p class="page-subtitle">4 services orchestrés pour un pipeline de prospection automatisé de bout en bout</p>
+
+            <div class="flow-container">
+                <div class="service-block">
+                    <div class="service-header blue"><i class="fas fa-play-circle"></i> init</div>
+                    <div class="service-body">
+                        <p>Initialisation unique : migrations BDD, création campagne, injection des 12 mots-clés de recherche.</p>
+                        <span class="service-tag tag-blue">run-once</span>
+                        <span class="service-tag tag-blue">setup</span>
+                    </div>
+                </div>
+                <div class="arrow-col"><i class="fas fa-chevron-right"></i></div>
+                <div class="service-block">
+                    <div class="service-header purple"><i class="fas fa-spider"></i> app</div>
+                    <div class="service-body">
+                        <p>Daemon scraping LinkedIn 24/7 via Playwright + Chromium headless avec xvfb.</p>
+                        <span class="service-tag tag-purple">daemon</span>
+                        <span class="service-tag tag-purple">2 CPU</span>
+                        <span class="service-tag tag-purple">2 Go RAM</span>
+                    </div>
+                </div>
+                <div class="arrow-col"><i class="fas fa-chevron-right"></i></div>
+                <div class="service-block">
+                    <div class="service-header green"><i class="fas fa-server"></i> crm</div>
+                    <div class="service-body">
+                        <p>Interface web CRM Django pour gérer les leads, campagnes et statistiques.</p>
+                        <span class="service-tag tag-green">port 8000</span>
+                        <span class="service-tag tag-green">healthcheck</span>
+                    </div>
+                </div>
+                <div class="arrow-col"><i class="fas fa-chevron-right"></i></div>
+                <div class="service-block">
+                    <div class="service-header orange"><i class="fas fa-file-export"></i> exporter</div>
+                    <div class="service-body">
+                        <p>Export automatique des profils vers le Dashboard Portage AI toutes les heures.</p>
+                        <span class="service-tag tag-orange">cron 1h</span>
+                        <span class="service-tag tag-orange">scoring IA</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pipeline-section">
+                <div class="pipeline-label"><i class="fas fa-stream"></i> Flux de données</div>
+                <div class="pipeline-row">
+                    <div class="pipeline-step"><span class="step-num blue">1</span> LinkedIn</div>
+                    <span class="pipeline-arrow"><i class="fas fa-long-arrow-alt-right"></i></span>
+                    <div class="pipeline-step"><span class="step-num purple">2</span> Scraping Playwright</div>
+                    <span class="pipeline-arrow"><i class="fas fa-long-arrow-alt-right"></i></span>
+                    <div class="pipeline-step"><span class="step-num green">3</span> CRM Django (SQLite)</div>
+                    <span class="pipeline-arrow"><i class="fas fa-long-arrow-alt-right"></i></span>
+                    <div class="pipeline-step"><span class="step-num orange">4</span> Scoring IA (GPT-4)</div>
+                    <span class="pipeline-arrow"><i class="fas fa-long-arrow-alt-right"></i></span>
+                    <div class="pipeline-step"><span class="step-num blue">5</span> Dashboard Portage AI</div>
+                </div>
+            </div>
+
+            <div class="volumes-section">
+                <div class="volume-item"><i class="fas fa-hdd"></i> openoutreach_data (BDD + cookies LinkedIn)</div>
+                <div class="volume-item"><i class="fas fa-hdd"></i> dashboard_html (fichier dashboard.html)</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

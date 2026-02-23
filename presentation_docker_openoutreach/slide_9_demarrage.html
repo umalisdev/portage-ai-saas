@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; }
+        .slide-container {
+            width: 1280px; min-height: 720px; box-sizing: border-box;
+            background: #0a0b0f; position: relative; overflow: hidden;
+        }
+        .grid-bg {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .glow-line { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #3b82f6, #8b5cf6, transparent); }
+        .inner { position: relative; z-index: 2; padding: 48px 60px 0 60px; }
+        .page-title { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 30px; color: #ffffff; margin-bottom: 6px; }
+        .page-subtitle { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 15px; color: #a0aec0; margin-bottom: 36px; }
+        .content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .command-panel {
+            display: flex; flex-direction: column; gap: 24px;
+        }
+        .command-box {
+            background: #1e1e1e; border-radius: 6px; padding: 16px;
+            border: 1px solid #333;
+        }
+        .command-title {
+            font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px; color: #fff; margin-bottom: 8px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .code-block {
+            font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #d4d4d4;
+            background: #2d2d2d; padding: 10px; border-radius: 4px;
+        }
+        .logs-panel {
+            background: #1e1e1e; border-radius: 8px; border: 1px solid #333;
+            overflow: hidden; height: 480px; display: flex; flex-direction: column;
+        }
+        .logs-header {
+            background: #2d2d2d; padding: 8px 12px; display: flex; gap: 6px;
+            border-bottom: 1px solid #333;
+        }
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27c93f; }
+        .logs-body {
+            padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 11px;
+            color: #d4d4d4; line-height: 1.6; overflow-y: auto;
+        }
+        .log-time { color: #6b7280; margin-right: 8px; }
+        .log-service { color: #569cd6; margin-right: 8px; font-weight: bold; }
+        .log-info { color: #d4d4d4; }
+        .log-success { color: #10b981; }
+        .log-warn { color: #f59e0b; }
+        .status-indicator {
+            display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+            background: #10b981; margin-right: 6px;
+            box-shadow: 0 0 8px rgba(16,185,129,0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-bg"></div>
+        <div class="glow-line"></div>
+        <div class="inner">
+            <h1 class="page-title">Monitoring & Logs</h1>
+            <p class="page-subtitle">Suivi en temps réel de l'activité du scraper et des services</p>
+
+            <div class="content-grid">
+                <div class="command-panel">
+                    <div class="command-box">
+                        <div class="command-title"><i class="fas fa-list"></i> Vérifier les conteneurs actifs</div>
+                        <div class="code-block">$ docker compose ps</div>
+                        <div style="margin-top: 10px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #a0aec0;">
+                            <span class="status-indicator"></span>openoutreach-daemon (Up)<br>
+                            <span class="status-indicator"></span>openoutreach-crm (Up)<br>
+                            <span class="status-indicator"></span>openoutreach-exporter (Up)
+                        </div>
+                    </div>
+
+                    <div class="command-box">
+                        <div class="command-title"><i class="fas fa-terminal"></i> Suivre les logs en direct</div>
+                        <div class="code-block">$ docker compose logs -f daemon</div>
+                        <p style="margin-top: 8px; font-size: 12px; color: #a0aec0;">Affiche l'activité de scraping en temps réel.</p>
+                    </div>
+
+                    <div class="command-box">
+                        <div class="command-title"><i class="fas fa-bug"></i> Debugging (si nécessaire)</div>
+                        <div class="code-block">$ docker compose exec daemon bash</div>
+                        <p style="margin-top: 8px; font-size: 12px; color: #a0aec0;">Ouvre un shell dans le conteneur pour inspection manuelle.</p>
+                    </div>
+                </div>
+
+                <div class="logs-panel">
+                    <div class="logs-header">
+                        <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+                    </div>
+                    <div class="logs-body">
+<span class="log-time">[10:00:01]</span><span class="log-service">daemon   |</span> <span class="log-info">Starting OpenOutreach daemon...</span>
+<span class="log-time">[10:00:02]</span><span class="log-service">daemon   |</span> <span class="log-info">Connected to database (SQLite)</span>
+<span class="log-time">[10:00:05]</span><span class="log-service">daemon   |</span> <span class="log-info">Launching Chromium (headless=True)...</span>
+<span class="log-time">[10:00:12]</span><span class="log-service">daemon   |</span> <span class="log-success">✓ LinkedIn login successful (christian.person@...)</span>
+<span class="log-time">[10:00:15]</span><span class="log-service">daemon   |</span> <span class="log-info">Starting search for keyword: "DevOps freelance"</span>
+<span class="log-time">[10:00:20]</span><span class="log-service">daemon   |</span> <span class="log-info">Scraping page 1/5...</span>
+<span class="log-time">[10:00:25]</span><span class="log-service">daemon   |</span> <span class="log-success">Found profile: Jean Dupont (DevOps Engineer)</span>
+<span class="log-time">[10:00:28]</span><span class="log-service">daemon   |</span> <span class="log-success">Found profile: Marie Martin (Cloud Architect)</span>
+<span class="log-time">[10:00:32]</span><span class="log-service">daemon   |</span> <span class="log-success">Found profile: Pierre Durand (SRE)</span>
+<span class="log-time">[10:00:45]</span><span class="log-service">daemon   |</span> <span class="log-info">Page 1 complete. Sleeping 15s to avoid detection...</span>
+<span class="log-time">[10:01:00]</span><span class="log-service">exporter |</span> <span class="log-info">Running hourly export job...</span>
+<span class="log-time">[10:01:02]</span><span class="log-service">exporter |</span> <span class="log-success">✓ Exported 3 new profiles to dashboard.html</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

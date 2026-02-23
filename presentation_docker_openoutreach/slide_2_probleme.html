@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; }
+        .slide-container {
+            width: 1280px; min-height: 720px; box-sizing: border-box;
+            background: #0a0b0f;
+            position: relative; overflow: hidden;
+        }
+        .grid-bg {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .glow-line { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #3b82f6, #8b5cf6, transparent); }
+        .inner { position: relative; z-index: 2; padding: 48px 60px 0 60px; }
+        .page-title {
+            font-family: 'Inter', sans-serif; font-weight: 800; font-size: 30px;
+            color: #ffffff; margin-bottom: 8px;
+        }
+        .page-subtitle {
+            font-family: 'Inter', sans-serif; font-weight: 300; font-size: 15px;
+            color: #a0aec0; margin-bottom: 36px;
+        }
+        .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .col-label {
+            font-family: 'JetBrains Mono', monospace; font-size: 11px;
+            font-weight: 600; text-transform: uppercase; letter-spacing: 2px;
+            margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+        }
+        .col-label.red { color: #ef4444; }
+        .col-label.green { color: #10b981; }
+        .problem-item {
+            display: flex; align-items: flex-start; gap: 14px;
+            margin-bottom: 18px;
+        }
+        .problem-icon {
+            width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+            background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2);
+            color: #ef4444; font-size: 14px; flex-shrink: 0;
+        }
+        .problem-text { font-family: 'Inter', sans-serif; font-size: 14px; color: #a0aec0; line-height: 1.5; }
+        .problem-text strong { color: #ffffff; font-weight: 600; }
+        .solution-item {
+            display: flex; align-items: flex-start; gap: 14px;
+            margin-bottom: 18px;
+        }
+        .solution-icon {
+            width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+            background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2);
+            color: #10b981; font-size: 14px; flex-shrink: 0;
+        }
+        .solution-text { font-family: 'Inter', sans-serif; font-size: 14px; color: #a0aec0; line-height: 1.5; }
+        .solution-text strong { color: #ffffff; font-weight: 600; }
+        .cost-bar {
+            margin-top: 32px; padding: 24px 60px 0 60px;
+            position: relative; z-index: 2;
+        }
+        .cost-label {
+            font-family: 'JetBrains Mono', monospace; font-size: 11px;
+            text-transform: uppercase; letter-spacing: 2px; color: #a0aec0;
+            margin-bottom: 14px;
+        }
+        .bar-row { display: flex; align-items: center; gap: 16px; margin-bottom: 10px; }
+        .bar-label {
+            font-family: 'Inter', sans-serif; font-size: 13px; color: #a0aec0;
+            width: 120px; text-align: right;
+        }
+        .bar-track { flex: 1; height: 28px; background: rgba(255,255,255,0.04); position: relative; }
+        .bar-fill-red {
+            height: 100%; background: linear-gradient(90deg, #ef4444, #f97316);
+            display: flex; align-items: center; justify-content: flex-end; padding-right: 12px;
+            font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: #fff;
+        }
+        .bar-fill-green {
+            height: 100%; background: linear-gradient(90deg, #10b981, #3b82f6);
+            display: flex; align-items: center; justify-content: flex-end; padding-right: 12px;
+            font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: #fff;
+        }
+        .savings {
+            font-family: 'JetBrains Mono', monospace; font-size: 14px;
+            color: #10b981; text-align: right; margin-top: 8px;
+        }
+        .savings i { margin-right: 6px; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-bg"></div>
+        <div class="glow-line"></div>
+        <div class="inner">
+            <h1 class="page-title">La prospection manuelle ne passe pas à l'échelle</h1>
+            <p class="page-subtitle">15 heures/semaine perdues en recherche, copier-coller et qualification de profils</p>
+            <div class="columns">
+                <div>
+                    <div class="col-label red"><i class="fas fa-exclamation-triangle"></i> PROBLÈMES ACTUELS</div>
+                    <div class="problem-item">
+                        <div class="problem-icon"><i class="fas fa-clock"></i></div>
+                        <div class="problem-text"><strong>3 à 5 profils/heure</strong> en recherche manuelle sur LinkedIn — un commercial passe 60% de son temps à chercher</div>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-icon"><i class="fas fa-copy"></i></div>
+                        <div class="problem-text"><strong>Copier-coller dans le CRM</strong> — erreurs de saisie, doublons, données incomplètes et obsolètes</div>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-icon"><i class="fas fa-brain"></i></div>
+                        <div class="problem-text"><strong>Aucune qualification automatique</strong> — scoring subjectif, pas de priorisation intelligente des leads</div>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="problem-text"><strong>Impossible de scaler</strong> — plafond de 25-40 profils/semaine par commercial</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="col-label green"><i class="fas fa-rocket"></i> SOLUTION OPENOUTREACH</div>
+                    <div class="solution-item">
+                        <div class="solution-icon"><i class="fas fa-bolt"></i></div>
+                        <div class="solution-text"><strong>50+ profils/heure</strong> en scraping automatisé — le daemon tourne 24/7 sans intervention</div>
+                    </div>
+                    <div class="solution-item">
+                        <div class="solution-icon"><i class="fas fa-database"></i></div>
+                        <div class="solution-text"><strong>Injection directe dans le CRM</strong> — données structurées, dédupliquées, enrichies automatiquement</div>
+                    </div>
+                    <div class="solution-item">
+                        <div class="solution-icon"><i class="fas fa-robot"></i></div>
+                        <div class="solution-text"><strong>Scoring IA automatique</strong> — qualification GPT-4, priorisation par score 0-100, tags sémantiques</div>
+                    </div>
+                    <div class="solution-item">
+                        <div class="solution-icon"><i class="fas fa-infinity"></i></div>
+                        <div class="solution-text"><strong>Scalable à l'infini</strong> — 500+ profils/semaine avec un seul compte LinkedIn dédié</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="cost-bar">
+            <div class="cost-label"><i class="fas fa-euro-sign"></i> Comparatif des coûts mensuels</div>
+            <div class="bar-row">
+                <div class="bar-label">SaaS classique</div>
+                <div class="bar-track"><div class="bar-fill-red" style="width:100%">1 500 €/mois</div></div>
+            </div>
+            <div class="bar-row">
+                <div class="bar-label">Open Source</div>
+                <div class="bar-track"><div class="bar-fill-green" style="width:6%">90 €</div></div>
+            </div>
+            <div class="savings"><i class="fas fa-arrow-down"></i> Économie : 16 920 €/an (−94%)</div>
+        </div>
+    </div>
+</body>
+</html>

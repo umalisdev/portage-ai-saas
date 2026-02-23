@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; }
+        .slide-container {
+            width: 1280px; min-height: 720px; box-sizing: border-box;
+            background: #0a0b0f; position: relative; overflow: hidden;
+        }
+        .grid-bg {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .glow-line { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #3b82f6, #8b5cf6, transparent); }
+        .inner { position: relative; z-index: 2; padding: 48px 60px 0 60px; }
+        .page-title { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 30px; color: #ffffff; margin-bottom: 6px; }
+        .page-subtitle { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 15px; color: #a0aec0; margin-bottom: 36px; }
+        .content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .code-panel {
+            background: #1e1e1e; border-radius: 8px; border: 1px solid #333;
+            overflow: hidden; height: 480px; display: flex; flex-direction: column;
+        }
+        .code-header {
+            background: #2d2d2d; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid #333;
+        }
+        .file-name { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #d4d4d4; }
+        .code-body {
+            padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px;
+            color: #d4d4d4; line-height: 1.6; overflow-y: auto;
+        }
+        .kwd { color: #569cd6; font-weight: bold; }
+        .str { color: #ce9178; }
+        .key { color: #9cdcfe; }
+        .val { color: #ce9178; }
+        .diagram-container {
+            display: flex; flex-direction: column; gap: 20px; justify-content: center; height: 480px;
+        }
+        .container-box {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; padding: 16px; position: relative;
+        }
+        .container-header {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+            font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 14px; color: #fff;
+        }
+        .container-header i { font-size: 16px; }
+        .container-details {
+            font-family: 'Inter', sans-serif; font-size: 12px; color: #a0aec0;
+            display: flex; flex-direction: column; gap: 6px;
+        }
+        .detail-row { display: flex; align-items: center; gap: 8px; }
+        .detail-icon { width: 16px; text-align: center; color: #6b7280; }
+        .volume-line {
+            position: absolute; right: -20px; top: 50%; width: 20px; height: 2px;
+            background: rgba(59,130,246,0.3);
+        }
+        .shared-volume {
+            position: absolute; right: -140px; top: 50%; transform: translateY(-50%);
+            width: 120px; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.3);
+            border-radius: 6px; padding: 12px; text-align: center;
+            font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #3b82f6;
+        }
+        .network-line {
+            position: absolute; left: 20px; bottom: -20px; width: 2px; height: 20px;
+            background: rgba(139,92,246,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-bg"></div>
+        <div class="glow-line"></div>
+        <div class="inner">
+            <h1 class="page-title">Orchestration Docker Compose</h1>
+            <p class="page-subtitle">Définition déclarative des services, réseaux et volumes persistants</p>
+
+            <div class="content-grid">
+                <div class="code-panel">
+                    <div class="code-header">
+                        <span class="file-name">docker-compose.yml</span>
+                    </div>
+                    <div class="code-body">
+<span class="key">services:</span>
+  <span class="key">daemon:</span>
+    <span class="key">build:</span> <span class="val">.</span>
+    <span class="key">command:</span> <span class="val">daemon</span>
+    <span class="key">volumes:</span>
+      <span class="val">- openoutreach_data:/app/db</span>
+    <span class="key">env_file:</span> <span class="val">.env</span>
+    <span class="key">restart:</span> <span class="val">unless-stopped</span>
+
+  <span class="key">crm:</span>
+    <span class="key">build:</span> <span class="val">.</span>
+    <span class="key">command:</span> <span class="val">crm</span>
+    <span class="key">ports:</span>
+      <span class="val">- "8000:8000"</span>
+    <span class="key">volumes:</span>
+      <span class="val">- openoutreach_data:/app/db</span>
+
+  <span class="key">exporter:</span>
+    <span class="key">build:</span> <span class="val">.</span>
+    <span class="key">command:</span> <span class="val">exporter</span>
+    <span class="key">volumes:</span>
+      <span class="val">- openoutreach_data:/app/db</span>
+      <span class="val">- ./dashboard.html:/app/dashboard.html</span>
+
+<span class="key">volumes:</span>
+  <span class="key">openoutreach_data:</span>
+                    </div>
+                </div>
+
+                <div class="diagram-container">
+                    <div class="container-box" style="border-left: 3px solid #8b5cf6;">
+                        <div class="container-header"><i class="fas fa-spider" style="color:#8b5cf6"></i> daemon</div>
+                        <div class="container-details">
+                            <div class="detail-row"><div class="detail-icon"><i class="fas fa-cog"></i></div> Processus de fond</div>
+                            <div class="detail-row"><div class="detail-icon"><i class="fas fa-database"></i></div> Écrit en BDD</div>
+                        </div>
+                        <div class="volume-line"></div>
+                    </div>
+
+                    <div class="container-box" style="border-left: 3px solid #10b981;">
+                        <div class="container-header"><i class="fas fa-server" style="color:#10b981"></i> crm</div>
+                        <div class="container-details">
+                            <div class="detail-row"><div class="detail-icon"><i class="fas fa-globe"></i></div> Port 8000</div>
+                            <div class="detail-row"><div class="detail-icon"><i class="fas fa-database"></i></div> Lit/Écrit BDD</div>
+                        </div>
+                        <div class="volume-line"></div>
+                        <div class="shared-volume">
+                            <i class="fas fa-hdd"></i><br>Volume<br>Data
+                        </div>
+                    </div>
+
+                    <div class="container-box" style="border-left: 3px solid #f97316;">
+                        <div class="container-header"><i class="fas fa-file-export" style="color:#f97316"></i> exporter</div>
+                        <div class="container-details">
+                            <div class="detail-row"><div class="detail-icon"><i class="fas fa-clock"></i></div> Cron job (1h)</div>
+                            <div class="detail-row"><div class="detail-icon"><i class="fas fa-file-code"></i></div> Modifie HTML</div>
+                        </div>
+                        <div class="volume-line"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

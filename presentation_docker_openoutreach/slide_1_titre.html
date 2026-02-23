@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; }
+        .slide-container {
+            width: 1280px; min-height: 720px; box-sizing: border-box;
+            background: #0a0b0f;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .grid-bg {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(59,130,246,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59,130,246,0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .glow-line-top {
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, #3b82f6, #8b5cf6, transparent);
+        }
+        .glow-line-bottom {
+            position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, #8b5cf6, #3b82f6, transparent);
+        }
+        .terminal-bg {
+            position: absolute; top: 40px; right: 40px; width: 320px;
+            font-family: 'JetBrains Mono', monospace; font-size: 11px;
+            color: rgba(59,130,246,0.15); line-height: 1.6;
+        }
+        .terminal-bg-left {
+            position: absolute; bottom: 40px; left: 40px; width: 280px;
+            font-family: 'JetBrains Mono', monospace; font-size: 10px;
+            color: rgba(139,92,246,0.12); line-height: 1.6;
+        }
+        .content {
+            position: relative; z-index: 2;
+            text-align: center;
+            max-width: 900px;
+        }
+        .docker-icon {
+            font-size: 48px; color: #3b82f6;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(59,130,246,0.4);
+        }
+        .main-title {
+            font-family: 'Inter', sans-serif; font-weight: 800;
+            font-size: 52px; color: #ffffff;
+            line-height: 1.15; margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+        .main-title span.highlight-blue {
+            color: #3b82f6;
+            text-shadow: 0 0 20px rgba(59,130,246,0.3);
+        }
+        .main-title span.highlight-purple {
+            color: #8b5cf6;
+            text-shadow: 0 0 20px rgba(139,92,246,0.3);
+        }
+        .subtitle {
+            font-family: 'Inter', sans-serif; font-weight: 300;
+            font-size: 22px; color: #a0aec0;
+            margin-bottom: 40px;
+        }
+        .badges {
+            display: flex; gap: 16px; justify-content: center; align-items: center;
+        }
+        .badge {
+            font-family: 'JetBrains Mono', monospace; font-size: 13px;
+            font-weight: 600; padding: 8px 20px; border-radius: 4px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .badge-blue {
+            background: rgba(59,130,246,0.12); color: #3b82f6;
+            border: 1px solid rgba(59,130,246,0.3);
+        }
+        .badge-purple {
+            background: rgba(139,92,246,0.12); color: #8b5cf6;
+            border: 1px solid rgba(139,92,246,0.3);
+        }
+        .badge-green {
+            background: rgba(16,185,129,0.12); color: #10b981;
+            border: 1px solid rgba(16,185,129,0.3);
+        }
+        .version-tag {
+            position: absolute; bottom: 30px; right: 40px;
+            font-family: 'JetBrains Mono', monospace; font-size: 12px;
+            color: rgba(160,174,192,0.4);
+        }
+        .portage-tag {
+            position: absolute; bottom: 30px; left: 40px;
+            font-family: 'Inter', sans-serif; font-size: 14px;
+            color: rgba(160,174,192,0.5); font-weight: 600;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .portage-tag .dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #3b82f6;
+            box-shadow: 0 0 10px rgba(59,130,246,0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-bg"></div>
+        <div class="glow-line-top"></div>
+        <div class="glow-line-bottom"></div>
+        <div class="terminal-bg">
+            $ docker compose up -d<br>
+            Creating openoutreach-init ...<br>
+            Creating openoutreach-daemon ...<br>
+            Creating openoutreach-crm ...<br>
+            Creating openoutreach-exporter ...<br>
+            ✓ All services started<br>
+            $ docker compose logs -f app<br>
+            [daemon] Scraping LinkedIn...<br>
+            [daemon] Found 47 profiles<br>
+        </div>
+        <div class="terminal-bg-left">
+            FROM python:3.12-slim<br>
+            RUN pip install playwright<br>
+            RUN playwright install chromium<br>
+            COPY export_to_dashboard.py<br>
+            ENTRYPOINT ["entrypoint.sh"]<br>
+            CMD ["daemon"]<br>
+        </div>
+        <div class="content">
+            <div class="docker-icon"><i class="fab fa-docker"></i></div>
+            <h1 class="main-title">
+                Package <span class="highlight-blue">Docker</span><br>
+                <span class="highlight-purple">OpenOutreach</span>
+            </h1>
+            <p class="subtitle">Scraping LinkedIn automatisé — Déploiement clé en main pour Portage AI</p>
+            <div class="badges">
+                <span class="badge badge-blue"><i class="fab fa-docker"></i> Docker Compose</span>
+                <span class="badge badge-purple"><i class="fab fa-linkedin"></i> LinkedIn Scraper</span>
+                <span class="badge badge-green"><i class="fas fa-lock-open"></i> Open Source</span>
+            </div>
+        </div>
+        <div class="portage-tag"><span class="dot"></span> Portage AI — Sales Force Command Center</div>
+        <div class="version-tag">v1.0.0 // 2026</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; }
+        .slide-container {
+            width: 1280px; min-height: 720px; box-sizing: border-box;
+            background: #0a0b0f; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .grid-bg {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .glow-line { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #3b82f6, #8b5cf6, transparent); }
+        .inner { position: relative; z-index: 2; text-align: center; max-width: 900px; }
+        .page-title { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 42px; color: #ffffff; margin-bottom: 16px; }
+        .page-subtitle { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 20px; color: #a0aec0; margin-bottom: 60px; }
+        .steps-container { display: flex; gap: 40px; justify-content: center; }
+        .step-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px; padding: 32px; width: 260px;
+            display: flex; flex-direction: column; align-items: center;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .step-card:hover { transform: translateY(-5px); border-color: rgba(59,130,246,0.3); }
+        .step-icon {
+            width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 28px; margin-bottom: 24px;
+            background: rgba(59,130,246,0.1); color: #3b82f6;
+            box-shadow: 0 0 20px rgba(59,130,246,0.2);
+        }
+        .step-title {
+            font-family: 'Inter', sans-serif; font-weight: 700; font-size: 18px; color: #fff; margin-bottom: 12px;
+        }
+        .step-desc {
+            font-family: 'Inter', sans-serif; font-size: 14px; color: #a0aec0; line-height: 1.6;
+        }
+        .final-cta {
+            margin-top: 60px;
+            font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #6b7280;
+        }
+        .final-cta span { color: #10b981; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-bg"></div>
+        <div class="glow-line"></div>
+        <div class="inner">
+            <h1 class="page-title">Prêt pour le Déploiement</h1>
+            <p class="page-subtitle">Transformez votre prospection dès aujourd'hui avec OpenOutreach</p>
+
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-icon"><i class="fas fa-rocket"></i></div>
+                    <h3 class="step-title">1. Déployer</h3>
+                    <p class="step-desc">Clonez le repo sur votre serveur et lancez <code>./start.sh</code>. Le système s'initialise en 2 minutes.</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-icon" style="background: rgba(139,92,246,0.1); color: #8b5cf6; box-shadow: 0 0 20px rgba(139,92,246,0.2);"><i class="fas fa-eye"></i></div>
+                    <h3 class="step-title">2. Monitorer</h3>
+                    <p class="step-desc">Vérifiez les logs du daemon et attendez la première injection de leads dans le dashboard (H+1).</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-icon" style="background: rgba(16,185,129,0.1); color: #10b981; box-shadow: 0 0 20px rgba(16,185,129,0.2);"><i class="fas fa-chart-line"></i></div>
+                    <h3 class="step-title">3. Scaler</h3>
+                    <p class="step-desc">Après 1 semaine de rodage, augmentez progressivement la limite à 80-100 profils/jour.</p>
+                </div>
+            </div>
+
+            <div class="final-cta">
+                Status: <span>READY_TO_LAUNCH</span> // Package v1.0.0
+            </div>
+        </div>
+    </div>
+</body>
+</html>

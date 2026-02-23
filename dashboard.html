@@ -553,6 +553,9 @@
         <div class="nav-item" data-page="recherche-linkedin" onclick="navigate('recherche-linkedin')">
           <span class="material-icons-round">work</span><span>Recherche LinkedIn</span>
         </div>
+        <div class="nav-item" data-page="docker-deploy" onclick="navigate('docker-deploy')">
+          <span class="material-icons-round">cloud_upload</span><span>Déploiement Docker</span>
+        </div>
       </div>
       <div class="nav-section">
         <div class="nav-section-title">Système</div>
@@ -1529,6 +1532,78 @@ function buildAllPages() {
     <iframe src="recherche-linkedin.html" style="width:100%;height:calc(100vh - 120px);border:none;border-radius:12px;background:var(--bg-card)"></iframe>
   </div>`;
 
+  // PAGE DEPLOIEMENT DOCKER
+  mc.innerHTML += `<div class="page" id="page-docker-deploy">
+    <div class="page-header">
+      <div>
+        <div class="page-title">D\u00e9ploiement Docker OpenOutreach</div>
+        <div class="page-subtitle">Package cl\u00e9 en main pour le scraping LinkedIn automatis\u00e9</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <a href="https://github.com/umalisdev/portage-ai-saas/tree/main/openoutreach-deploy" target="_blank" style="display:flex;align-items:center;gap:8px;background:rgba(139,92,246,0.12);color:var(--accent-purple);padding:8px 16px;border-radius:12px;font-size:13px;font-weight:700;text-decoration:none;border:1px solid rgba(139,92,246,0.2)">
+          <span class="material-icons-round" style="font-size:16px">code</span> Voir sur GitHub
+        </a>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center">
+        <span class="material-icons-round" style="font-size:28px;color:var(--accent-purple);display:block;margin-bottom:8px">inventory_2</span>
+        <div style="font-size:22px;font-weight:800;color:var(--text-primary)">9</div>
+        <div style="font-size:11px;color:var(--text-muted)">Fichiers dans le package</div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center">
+        <span class="material-icons-round" style="font-size:28px;color:var(--accent-blue);display:block;margin-bottom:8px">dns</span>
+        <div style="font-size:22px;font-weight:800;color:var(--text-primary)">3</div>
+        <div style="font-size:11px;color:var(--text-muted)">Services Docker</div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center">
+        <span class="material-icons-round" style="font-size:28px;color:var(--accent-green);display:block;margin-bottom:8px">timer</span>
+        <div style="font-size:22px;font-weight:800;color:var(--text-primary)">2 min</div>
+        <div style="font-size:11px;color:var(--text-muted)">Temps de d\u00e9ploiement</div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center">
+        <span class="material-icons-round" style="font-size:28px;color:var(--accent-yellow);display:block;margin-bottom:8px">search</span>
+        <div style="font-size:22px;font-weight:800;color:var(--text-primary)">12</div>
+        <div style="font-size:11px;color:var(--text-muted)">Mots-cl\u00e9s pr\u00e9configur\u00e9s</div>
+      </div>
+    </div>
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div style="font-size:16px;font-weight:700">Pr\u00e9sentation du Package Docker</div>
+        <div style="display:flex;gap:8px">
+          <span style="display:flex;align-items:center;gap:6px;background:rgba(139,92,246,0.1);padding:6px 14px;border-radius:20px">
+            <span class="material-icons-round" style="font-size:16px;color:#8b5cf6">slideshow</span>
+            <span style="font-size:12px;font-weight:600;color:#8b5cf6">12 slides</span>
+          </span>
+          <button style="background:rgba(59,130,246,0.1);color:#3b82f6;font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid rgba(59,130,246,0.2);cursor:pointer" onclick="document.getElementById('docker-pres-frame').requestFullscreen()">
+            <span class="material-icons-round" style="font-size:14px;vertical-align:middle;margin-right:4px">fullscreen</span>Plein \u00e9cran
+          </button>
+        </div>
+      </div>
+      <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border);aspect-ratio:16/9;background:#0a0b0f">
+        <iframe id="docker-pres-frame" src="presentation_docker_openoutreach/slide_1_titre.html" style="width:100%;height:100%;border:none;transform-origin:0 0" onload="if(this.contentDocument)this.contentDocument.body.style.overflow='hidden'"></iframe>
+      </div>
+      <div style="display:flex;justify-content:center;align-items:center;gap:16px;margin-top:16px">
+        <button style="background:var(--bg-input);color:var(--text-secondary);padding:8px 16px;border-radius:8px;border:1px solid var(--border);cursor:pointer" onclick="changeDockerSlide(-1)">
+          <span class="material-icons-round" style="font-size:18px;vertical-align:middle">chevron_left</span> Pr\u00e9c\u00e9dent
+        </button>
+        <span id="docker-slide-counter" style="font-size:14px;font-weight:700;color:var(--text-secondary)">1 / 12</span>
+        <button style="background:var(--bg-input);color:var(--text-secondary);padding:8px 16px;border-radius:8px;border:1px solid var(--border);cursor:pointer" onclick="changeDockerSlide(1)">
+          Suivant <span class="material-icons-round" style="font-size:18px;vertical-align:middle">chevron_right</span>
+        </button>
+      </div>
+    </div>
+    <div style="margin-top:20px;background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:20px">
+      <div style="font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px"><span class="material-icons-round" style="color:var(--accent-green)">terminal</span> D\u00e9marrage Rapide</div>
+      <div style="background:var(--bg-input);border-radius:10px;padding:16px;font-family:monospace;font-size:13px;color:var(--text-secondary);line-height:2">
+        <div><span style="color:var(--accent-blue);font-weight:700">$</span> git clone https://github.com/umalisdev/portage-ai-saas.git</div>
+        <div><span style="color:var(--accent-blue);font-weight:700">$</span> cd portage-ai-saas/openoutreach-deploy</div>
+        <div><span style="color:var(--accent-blue);font-weight:700">$</span> cp .env.example .env && nano .env <span style="color:var(--text-muted)"># Ajouter identifiants LinkedIn</span></div>
+        <div><span style="color:var(--accent-blue);font-weight:700">$</span> chmod +x start.sh && ./start.sh</div>
+      </div>
+    </div>
+  </div>`;
+
   mc.innerHTML += `<div class="page" id="page-config">
     <div class="page-header"><div><div class="page-title">Configuration</div><div class="page-subtitle">Paramètres de la plateforme commerciale</div></div></div>
     <div class="grid-2">
@@ -1928,6 +2003,30 @@ function changeSlide(dir) {
   if(frame) frame.src = SLIDE_FILES[currentSlide];
   const counter = document.getElementById('slide-counter');
   if(counter) counter.textContent = (currentSlide + 1) + ' / ' + SLIDE_FILES.length;
+}
+
+// ===== DOCKER SLIDE NAVIGATION =====
+const DOCKER_SLIDE_FILES = [
+  'presentation_docker_openoutreach/slide_1_titre.html',
+  'presentation_docker_openoutreach/slide_2_probleme.html',
+  'presentation_docker_openoutreach/slide_3_architecture.html',
+  'presentation_docker_openoutreach/slide_4_dockerfile.html',
+  'presentation_docker_openoutreach/slide_5_docker_compose.html',
+  'presentation_docker_openoutreach/slide_6_configuration.html',
+  'presentation_docker_openoutreach/slide_7_init_script.html',
+  'presentation_docker_openoutreach/slide_8_export_script.html',
+  'presentation_docker_openoutreach/slide_9_demarrage.html',
+  'presentation_docker_openoutreach/slide_10_interface_crm.html',
+  'presentation_docker_openoutreach/slide_11_securite.html',
+  'presentation_docker_openoutreach/slide_12_conclusion.html'
+];
+let currentDockerSlide = 0;
+function changeDockerSlide(dir) {
+  currentDockerSlide = Math.max(0, Math.min(DOCKER_SLIDE_FILES.length - 1, currentDockerSlide + dir));
+  const frame = document.getElementById('docker-pres-frame');
+  if(frame) frame.src = DOCKER_SLIDE_FILES[currentDockerSlide];
+  const counter = document.getElementById('docker-slide-counter');
+  if(counter) counter.textContent = (currentDockerSlide + 1) + ' / ' + DOCKER_SLIDE_FILES.length;
 }
 
 // ===== INIT =====

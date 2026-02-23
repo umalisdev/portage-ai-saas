@@ -1,0 +1,156 @@
+{
+  "project_info": {
+    "title": "Package Docker OpenOutreach — Déploiement Clé en Main",
+    "created": 1771870383.6261146,
+    "last_updated": 1771871528.3493536,
+    "total_slides": 12
+  },
+  "slides": [
+    {
+      "id": "slide_1_titre",
+      "state": "edited",
+      "pageNum": 1
+    },
+    {
+      "id": "slide_2_probleme",
+      "state": "edited",
+      "pageNum": 2
+    },
+    {
+      "id": "slide_3_architecture",
+      "state": "edited",
+      "pageNum": 3
+    },
+    {
+      "id": "slide_4_dockerfile",
+      "state": "edited",
+      "pageNum": 4
+    },
+    {
+      "id": "slide_5_docker_compose",
+      "state": "edited",
+      "pageNum": 5
+    },
+    {
+      "id": "slide_6_configuration",
+      "state": "edited",
+      "pageNum": 6
+    },
+    {
+      "id": "slide_7_init_script",
+      "state": "edited",
+      "pageNum": 7
+    },
+    {
+      "id": "slide_8_export_script",
+      "state": "edited",
+      "pageNum": 8
+    },
+    {
+      "id": "slide_9_demarrage",
+      "state": "edited",
+      "pageNum": 9
+    },
+    {
+      "id": "slide_10_interface_crm",
+      "state": "edited",
+      "pageNum": 10
+    },
+    {
+      "id": "slide_11_securite",
+      "state": "edited",
+      "pageNum": 11
+    },
+    {
+      "id": "slide_12_conclusion",
+      "state": "edited",
+      "pageNum": 12
+    }
+  ],
+  "outline": [
+    {
+      "id": "slide_1_titre",
+      "title": "Package Docker OpenOutreach — Déploiement Clé en Main",
+      "summary": "Titre principal, sous-titre et contexte de la solution de prospection open source conteneurisée.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_2_probleme",
+      "title": "Le Problème : Prospection Manuelle Coûteuse",
+      "summary": "Analyse des limites de la prospection manuelle (temps, erreurs) et comparaison des coûts SaaS vs Open Source.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_3_architecture",
+      "title": "Architecture du Package Docker",
+      "summary": "Présentation des 4 services Docker orchestrés (init, app, crm, exporter) et du flux de données automatisé.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_4_dockerfile",
+      "title": "Le Dockerfile : Image Custom Optimisée",
+      "summary": "Détails techniques de l'image Docker basée sur Python 3.12-slim avec Playwright et dépendances pré-installées.",
+      "image_plan": "/home/ubuntu/upload/pasted_file_4ELZlJ_image.png - This image shows a LinkedIn prospecting interface with profiles, scores, and contact statuses, directly illustrating the functionality of OpenOutreach for LinkedIn scraping and qualification.",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_5_docker_compose",
+      "title": "Docker Compose : Orchestration des Services",
+      "summary": "Configuration des services, dépendances, healthchecks, limites de ressources et volumes persistants.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_6_configuration",
+      "title": "Configuration Simplifiée via .env",
+      "summary": "Présentation des 5 variables d'environnement nécessaires et des bonnes pratiques de sécurité.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_7_init_script",
+      "title": "Script d'Initialisation Automatique",
+      "summary": "Fonctionnement du script init_portage_ai.py pour la configuration de la campagne et des mots-clés.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_8_export_script",
+      "title": "Script d'Export vers Dashboard",
+      "summary": "Détails du script export_to_dashboard.py : extraction, scoring IA, mapping statuts et injection HTML.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_9_demarrage",
+      "title": "Démarrage en 3 Commandes",
+      "summary": "Guide étape par étape pour lancer le scraping en moins de 5 minutes avec le script start.sh.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_10_interface_crm",
+      "title": "Interface CRM Django",
+      "summary": "Présentation des fonctionnalités de gestion des leads, campagnes et statistiques via l'interface web.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_11_securite",
+      "title": "Sécurité et Bonnes Pratiques",
+      "summary": "Recommandations pour protéger le compte LinkedIn et sécuriser les données sensibles.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_12_conclusion",
+      "title": "Conclusion et Prochaines Étapes",
+      "summary": "Synthèse des bénéfices (économie, souveraineté) et ouverture vers l'enrichissement IA et l'automatisation.",
+      "image_plan": "",
+      "slide_template_key": ""
+    }
+  ]
+}
