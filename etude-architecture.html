@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Étude & Architecture — Portage AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg-primary: #0a0b0f;
+      --bg-secondary: #10111a;
+      --bg-card: #181920;
+      --bg-input: #12131a;
+      --border: #1e1f2e;
+      --border-hover: #2a2b3a;
+      --text-primary: #e8e9f0;
+      --text-secondary: #8b8ca0;
+      --text-muted: #5c5d70;
+      --text-dim: #3d3e50;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-yellow: #f59e0b;
+      --accent-purple: #8b5cf6;
+      --accent-red: #f43f5e;
+      --accent-cyan: #06b6d4;
+      --accent-linkedin: #0077b5;
+    }
+    [data-theme="light"] {
+      --bg-primary: #f5f6fa;
+      --bg-secondary: #ffffff;
+      --bg-card: #ffffff;
+      --bg-input: #f0f1f5;
+      --border: #e2e4ea;
+      --border-hover: #d0d2da;
+      --text-primary: #1a1b2e;
+      --text-secondary: #5c5d70;
+      --text-muted: #8b8ca0;
+      --text-dim: #b0b1c0;
+      --accent-blue: #2563eb;
+      --accent-green: #059669;
+      --accent-yellow: #d97706;
+      --accent-purple: #7c3aed;
+      --accent-red: #e11d48;
+      --accent-cyan: #0891b2;
+      --accent-linkedin: #0066a0;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* === LAYOUT === */
+    .page-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 32px 80px;
+    }
+
+    /* === HEADER === */
+    .study-header {
+      text-align: center;
+      margin-bottom: 60px;
+      padding: 60px 40px;
+      background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.08));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .study-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 40%, rgba(59,130,246,0.06) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 60%, rgba(139,92,246,0.06) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .study-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.2);
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-green);
+      margin-bottom: 20px;
+    }
+    .study-header h1 {
+      font-size: 42px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--text-primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .study-header .subtitle {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 700px;
+      margin: 0 auto 28px;
+    }
+    .study-meta {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .study-meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .study-meta .material-icons-round { font-size: 16px; }
+
+    /* === TABLE OF CONTENTS === */
+    .toc {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 48px;
+    }
+    .toc-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .toc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 32px;
+    }
+    .toc-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .toc-item:hover {
+      background: rgba(59,130,246,0.08);
+      color: var(--accent-blue);
+    }
+    .toc-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--bg-input);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      flex-shrink: 0;
+    }
+
+    /* === SECTIONS === */
+    .section {
+      margin-bottom: 56px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--border);
+    }
+    .section-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .section-header h2 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .section-header .section-tag {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 12px;
+    }
+
+    /* === CARDS === */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: border-color 0.2s;
+    }
+    .card:hover { border-color: var(--border-hover); }
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* === GRIDS === */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+    /* === ARCHITECTURE DIAGRAM === */
+    .arch-diagram {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 32px;
+    }
+    .arch-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .arch-block {
+      background: var(--bg-input);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 24px;
+      text-align: center;
+      min-width: 180px;
+      transition: all 0.2s;
+    }
+    .arch-block:hover { transform: translateY(-2px); }
+    .arch-block .material-icons-round { font-size: 36px; display: block; margin-bottom: 8px; }
+    .arch-block-name { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+    .arch-block-desc { font-size: 11px; color: var(--text-muted); }
+    .arch-arrow {
+      font-size: 28px;
+      color: var(--text-dim);
+    }
+
+    /* === TOOL DEEP DIVE === */
+    .tool-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .tool-logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+    .tool-info h3 { font-size: 22px; font-weight: 800; }
+    .tool-info .tool-tagline { font-size: 13px; color: var(--text-muted); }
+    .tool-stats {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 20px;
+    }
+    .tool-stat {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .tool-stat .material-icons-round { font-size: 16px; }
+    .tool-stat strong { color: var(--text-primary); font-weight: 700; }
+
+    /* === FEATURE LIST === */
+    .feature-list { list-style: none; }
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .feature-item:last-child { border-bottom: none; }
+    .feature-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .feature-item strong { color: var(--text-primary); }
+
+    /* === TABLE === */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .data-table thead tr {
+      border-bottom: 2px solid var(--border);
+    }
+    .data-table th {
+      padding: 14px 12px;
+      text-align: left;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .data-table td {
+      padding: 14px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .data-table tbody tr:hover { background: rgba(59,130,246,0.04); }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .badge-green { background: rgba(16,185,129,0.12); color: var(--accent-green); }
+    .badge-blue { background: rgba(59,130,246,0.12); color: var(--accent-blue); }
+    .badge-purple { background: rgba(139,92,246,0.12); color: var(--accent-purple); }
+    .badge-yellow { background: rgba(245,158,11,0.12); color: var(--accent-yellow); }
+    .badge-red { background: rgba(244,63,94,0.12); color: var(--accent-red); }
+
+    /* === STATE MACHINE === */
+    .state-flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .state-node {
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .state-arrow { color: var(--text-dim); font-size: 20px; }
+
+    /* === COST COMPARISON === */
+    .cost-card {
+      text-align: center;
+      padding: 24px;
+    }
+    .cost-price {
+      font-size: 36px;
+      font-weight: 900;
+      margin: 8px 0;
+    }
+    .cost-period { font-size: 12px; color: var(--text-muted); }
+    .cost-label { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+
+    /* === TIMELINE === */
+    .timeline { position: relative; padding-left: 32px; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 12px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 28px;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: -32px;
+      top: 4px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #fff;
+      font-weight: 800;
+      z-index: 1;
+    }
+    .timeline-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+    .timeline-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .timeline-desc { font-size: 13px; color: var(--text-secondary); }
+    .timeline-duration {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      margin-top: 6px;
+    }
+
+    /* === GITHUB LINKS === */
+    .github-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: all 0.2s;
+    }
+    .github-link:hover {
+      border-color: var(--accent-blue);
+      transform: translateY(-2px);
+    }
+    .github-link .material-icons-round { font-size: 24px; }
+    .github-link-info { flex: 1; }
+    .github-link-name { font-size: 14px; font-weight: 700; }
+    .github-link-stars { font-size: 12px; color: var(--text-muted); }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .arch-flow { flex-direction: column; }
+      .arch-arrow { transform: rotate(90deg); }
+      .toc-grid { grid-template-columns: 1fr; }
+      .study-header h1 { font-size: 28px; }
+      .study-header { padding: 32px 20px; }
+    }
+
+    /* === PRINT === */
+    @media print {
+      body { background: #fff; color: #000; }
+      .card, .arch-diagram, .toc { border: 1px solid #ddd; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- HEADER -->
+  <header class="study-header">
+    <div class="study-badge">
+      <span class="material-icons-round" style="font-size:14px">science</span>
+      Document stratégique interne
+    </div>
+    <h1>Étude & Architecture de Prospection Open Source</h1>
+    <p class="subtitle">Analyse comparative et recommandation d'une infrastructure modulaire pour automatiser la prospection B2B de Portage AI avec des outils open source.</p>
+    <div class="study-meta">
+      <span><span class="material-icons-round">calendar_today</span> Février 2026</span>
+      <span><span class="material-icons-round">business</span> Portage AI — Sales Force Command Center</span>
+      <span><span class="material-icons-round">verified</span> v1.0</span>
+    </div>
+  </header>
+
+  <!-- TABLE OF CONTENTS -->
+  <nav class="toc">
+    <div class="toc-title"><span class="material-icons-round" style="color:var(--accent-blue)">toc</span> Sommaire</div>
+    <div class="toc-grid">
+      <a href="#contexte" class="toc-item"><div class="toc-num">1</div> Contexte & Enjeux</a>
+      <a href="#architecture" class="toc-item"><div class="toc-num">2</div> Architecture Cible</a>
+      <a href="#openoutreach" class="toc-item"><div class="toc-num">3</div> Brique 1 — OpenOutreach</a>
+      <a href="#fireenrich" class="toc-item"><div class="toc-num">4</div> Brique 2 — Fire-Enrich</a>
+      <a href="#twentycrm" class="toc-item"><div class="toc-num">5</div> Brique 3 — Twenty CRM</a>
+      <a href="#n8n" class="toc-item"><div class="toc-num">6</div> Brique 4 — n8n</a>
+      <a href="#comparatif" class="toc-item"><div class="toc-num">7</div> Comparatif des Outils</a>
+      <a href="#couts" class="toc-item"><div class="toc-num">8</div> Analyse des Coûts</a>
+      <a href="#pipeline" class="toc-item"><div class="toc-num">9</div> Pipeline & Machine d'État</a>
+      <a href="#deploiement" class="toc-item"><div class="toc-num">10</div> Plan de Déploiement</a>
+    </div>
+  </nav>
+
+  <!-- SECTION 1: CONTEXTE -->
+  <section class="section" id="contexte">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)">
+        <span class="material-icons-round">analytics</span>
+      </div>
+      <div>
+        <h2>Contexte & Enjeux</h2>
+      </div>
+      <div class="section-tag" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)">Analyse</div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:24px">
+      <div class="card">
+        <div class="card-title"><span class="material-icons-round" style="color:var(--accent-red)">warning</span> Le problème</div>
+        <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px">
+          La prospection B2B dans le secteur du portage salarial repose encore largement sur des processus manuels coûteux et peu scalables. Les équipes commerciales passent en moyenne <strong style="color:var(--text-primary)">60% de leur temps</strong> sur des tâches répétitives de recherche et qualification de prospects.
+        </p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div style="background:var(--bg-input);border-radius:10px;padding:14px;text-align:center">
+            <div style="font-size:28px;font-weight:900;color:var(--accent-red)">4h/jour</div>
+            <div style="font-size:11px;color:var(--text-muted)">Recherche manuelle</div>
+          </div>
+          <div style="background:var(--bg-input);border-radius:10px;padding:14px;text-align:center">
+            <div style="font-size:28px;font-weight:900;color:var(--accent-yellow)">12%</div>
+            <div style="font-size:11px;color:var(--text-muted)">Taux de conversion moyen</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="material-icons-round" style="color:var(--accent-green)">lightbulb</span> L'opportunité</div>
+        <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px">
+          L'écosystème open source offre désormais des outils matures capables de rivaliser avec les solutions SaaS propriétaires (Salesforce, HubSpot, Apollo, Clay) à une fraction du coût, tout en garantissant la <strong style="color:var(--text-primary)">souveraineté des données</strong>.
+        </p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div style="background:var(--bg-input);border-radius:10px;padding:14px;text-align:center">
+            <div style="font-size:28px;font-weight:900;color:var(--accent-green)">-94%</div>
+            <div style="font-size:11px;color:var(--text-muted)">Réduction des coûts</div>
+          </div>
+          <div style="background:var(--bg-input);border-radius:10px;padding:14px;text-align:center">
+            <div style="font-size:28px;font-weight:900;color:var(--accent-blue)">100%</div>
+            <div style="font-size:11px;color:var(--text-muted)">Propriété des données</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="material-icons-round" style="color:var(--accent-purple)">target</span> Objectifs de l'étude</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+        <div style="padding:16px;background:var(--bg-input);border-radius:12px">
+          <div style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:6px">Identifier</div>
+          <div style="font-size:12px;color:var(--text-muted)">Les meilleurs outils open source pour chaque étape du pipeline de prospection B2B</div>
+        </div>
+        <div style="padding:16px;background:var(--bg-input);border-radius:12px">
+          <div style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:6px">Architecturer</div>
+          <div style="font-size:12px;color:var(--text-muted)">Une solution modulaire intégrée, self-hosted, avec orchestration automatisée</div>
+        </div>
+        <div style="padding:16px;background:var(--bg-input);border-radius:12px">
+          <div style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:6px">Chiffrer</div>
+          <div style="font-size:12px;color:var(--text-muted)">Le ROI et le plan de déploiement pour une mise en production en 8 semaines</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: ARCHITECTURE -->
+  <section class="section" id="architecture">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(139,92,246,0.12);color:var(--accent-purple)">
+        <span class="material-icons-round">hub</span>
+      </div>
+      <div>
+        <h2>Architecture Cible</h2>
+      </div>
+      <div class="section-tag" style="background:rgba(16,185,129,0.12);color:var(--accent-green)">Recommandation</div>
+    </div>
+
+    <div class="card" style="margin-bottom:24px;background:linear-gradient(135deg,rgba(16,185,129,0.06),rgba(59,130,246,0.06));border-color:var(--accent-green)">
+      <p style="font-size:15px;color:var(--text-secondary);line-height:1.8">
+        Pour l'écosystème <strong style="color:var(--text-primary)">Portage AI</strong>, nous recommandons une architecture modulaire combinant <strong style="color:var(--accent-green)">4 briques open source</strong> complémentaires, orchestrées par n8n pour créer un pipeline de prospection automatisé de bout en bout. Chaque brique est indépendante, remplaçable, et communique via des API standardisées.
+      </p>
+    </div>
+
+    <div class="arch-diagram">
+      <div style="font-size:14px;font-weight:700;text-align:center;margin-bottom:24px;color:var(--text-muted)">FLUX DE DONNÉES — DE LINKEDIN AU CONTRAT</div>
+      <div class="arch-flow">
+        <div class="arch-block" style="border-color:var(--accent-linkedin)">
+          <span class="material-icons-round" style="color:var(--accent-linkedin)">person_search</span>
+          <div class="arch-block-name">OpenOutreach</div>
+          <div class="arch-block-desc">Scraping & Qualification ML</div>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-block" style="border-color:var(--accent-yellow)">
+          <span class="material-icons-round" style="color:var(--accent-yellow)">auto_fix_high</span>
+          <div class="arch-block-name">Fire-Enrich</div>
+          <div class="arch-block-desc">Enrichissement IA Multi-agents</div>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-block" style="border-color:var(--accent-blue)">
+          <span class="material-icons-round" style="color:var(--accent-blue)">view_kanban</span>
+          <div class="arch-block-name">Twenty CRM</div>
+          <div class="arch-block-desc">Gestion & Suivi des Leads</div>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-block" style="border-color:var(--accent-purple)">
+          <span class="material-icons-round" style="color:var(--accent-purple)">account_tree</span>
+          <div class="arch-block-name">n8n</div>
+          <div class="arch-block-desc">Orchestration & Automatisation</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-4">
+      <div class="card" style="border-top:3px solid var(--accent-linkedin)">
+        <div style="text-align:center;margin-bottom:12px">
+          <span class="material-icons-round" style="font-size:32px;color:var(--accent-linkedin)">person_search</span>
+        </div>
+        <div style="font-size:14px;font-weight:800;text-align:center;margin-bottom:4px">Brique 1</div>
+        <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:8px">Acquisition</div>
+        <div style="font-size:11px;color:var(--text-secondary);text-align:center">Scraping LinkedIn, qualification ML, envoi de connexions automatisé</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--accent-yellow)">
+        <div style="text-align:center;margin-bottom:12px">
+          <span class="material-icons-round" style="font-size:32px;color:var(--accent-yellow)">auto_fix_high</span>
+        </div>
+        <div style="font-size:14px;font-weight:800;text-align:center;margin-bottom:4px">Brique 2</div>
+        <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:8px">Enrichissement</div>
+        <div style="font-size:11px;color:var(--text-secondary);text-align:center">4 agents IA spécialisés transforment un email en dataset riche</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--accent-blue)">
+        <div style="text-align:center;margin-bottom:12px">
+          <span class="material-icons-round" style="font-size:32px;color:var(--accent-blue)">view_kanban</span>
+        </div>
+        <div style="font-size:14px;font-weight:800;text-align:center;margin-bottom:4px">Brique 3</div>
+        <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:8px">CRM Central</div>
+        <div style="font-size:11px;color:var(--text-secondary);text-align:center">Gestion des contacts, pipeline visuel, API GraphQL & REST</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--accent-purple)">
+        <div style="text-align:center;margin-bottom:12px">
+          <span class="material-icons-round" style="font-size:32px;color:var(--accent-purple)">account_tree</span>
+        </div>
+        <div style="font-size:14px;font-weight:800;text-align:center;margin-bottom:4px">Brique 4</div>
+        <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:8px">Orchestration</div>
+        <div style="font-size:11px;color:var(--text-secondary);text-align:center">500+ intégrations, éditeur visuel, agents IA natifs</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: OPENOUTREACH -->
+  <section class="section" id="openoutreach">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(0,119,181,0.12);color:var(--accent-linkedin)">
+        <span class="material-icons-round">person_search</span>
+      </div>
+      <div>
+        <h2>Brique 1 — OpenOutreach</h2>
+      </div>
+      <div class="section-tag" style="background:rgba(0,119,181,0.12);color:var(--accent-linkedin)">Scraping LinkedIn</div>
+    </div>
+
+    <div class="card" style="margin-bottom:24px">
+      <div class="tool-header">
+        <div class="tool-logo" style="background:rgba(0,119,181,0.12);color:var(--accent-linkedin)">
+          <span class="material-icons-round">person_search</span>
+        </div>
+        <div class="tool-info">
+          <h3>OpenOutreach</h3>
+          <div class="tool-tagline">Outil self-hosted d'automatisation LinkedIn B2B open source</div>
+        </div>
+      </div>
+      <div class="tool-stats">
+        <div class="tool-stat"><span class="material-icons-round">star</span> <strong>100+</strong> stars GitHub</div>
+        <div class="tool-stat"><span class="material-icons-round">code</span> Python, Playwright, Django</div>
+        <div class="tool-stat"><span class="material-icons-round">cloud_off</span> Self-hosted</div>
+        <div class="tool-stat"><span class="material-icons-round">gavel</span> Open Source</div>
+      </div>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.8">
+        OpenOutreach est un outil d'automatisation LinkedIn B2B conçu pour fonctionner en mode daemon 24/7. Il utilise l'API Voyager de LinkedIn (non officielle) via Playwright pour scraper les profils, les qualifier avec un modèle de Machine Learning (Gaussian Process Classifier + BALD active learning), et envoyer des demandes de connexion personnalisées avec des templates Jinja2.
+      </p>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:24px">
+      <div class="card">
+        <div class="card-title"><span class="material-icons-round" style="color:var(--accent-purple)">psychology</span> Qualification ML</div>
+        <ul class="feature-list">
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(139,92,246,0.12);color:var(--accent-purple)"><span class="material-icons-round" style="font-size:14px">auto_graph</span></div>
+            <div><strong>Gaussian Process Classifier (GPC)</strong> — Modèle probabiliste qui apprend à distinguer les profils pertinents des non-pertinents à partir d'exemples labellisés</div>
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)"><span class="material-icons-round" style="font-size:14px">school</span></div>
+            <div><strong>BALD Active Learning</strong> — Bayesian Active Learning by Disagreement : sélectionne les profils les plus informatifs pour améliorer le modèle avec un minimum de labels</div>
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(16,185,129,0.12);color:var(--accent-green)"><span class="material-icons-round" style="font-size:14px">tune</span></div>
+            <div><strong>Apprentissage continu</strong> — Le modèle s'améliore automatiquement à chaque interaction (acceptation/refus de connexion)</div>
+          </li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="material-icons-round" style="color:var(--accent-cyan)">schedule</span> Daemon — 6 Lanes Prioritaires</div>
+        <table class="data-table">
+          <thead><tr><th>Lane</th><th>Intervalle</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge badge-green">Connect</span></td><td>120s</td><td>Envoi de connexions ML-rankées</td></tr>
+            <tr><td><span class="badge badge-blue">Check Pending</span></td><td>24h</td><td>Vérification des acceptations</td></tr>
+            <tr><td><span class="badge badge-purple">Follow Up</span></td><td>120s</td><td>Messages de suivi personnalisés</td></tr>
+            <tr><td><span class="badge badge-yellow">Enrich</span></td><td>gap-filler</td><td>Scraping profils découverts</td></tr>
+            <tr><td><span class="badge badge-red">Qualify</span></td><td>gap-filler</td><td>Qualification ML des profils</td></tr>
+            <tr><td><span class="badge" style="background:rgba(6,182,212,0.12);color:var(--accent-cyan)">Search</span></td><td>lowest</td><td>Recherche LLM de nouveaux profils</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="material-icons-round" style="color:var(--accent-yellow)">security</span> Anti-détection & Rate Limiting</div>
+      <div class="grid-3">
+        <div style="padding:16px;background:var(--bg-input);border-radius:12px;text-align:center">
+          <div style="font-size:24px;font-weight:900;color:var(--accent-yellow)">20</div>
+          <div style="font-size:12px;color:var(--text-muted)">connexions / jour</div>
+        </div>
+        <div style="padding:16px;background:var(--bg-input);border-radius:12px;text-align:center">
+          <div style="font-size:24px;font-weight:900;color:var(--accent-yellow)">100</div>
+          <div style="font-size:12px;color:var(--text-muted)">connexions / semaine</div>
+        </div>
+        <div style="padding:16px;background:var(--bg-input);border-radius:12px;text-align:center">
+          <div style="font-size:24px;font-weight:900;color:var(--accent-green)">Configurable</div>
+          <div style="font-size:12px;color:var(--text-muted)">heures de travail simulées</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: FIRE-ENRICH -->
+  <section class="section" id="fireenrich">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(245,158,11,0.12);color:var(--accent-yellow)">
+        <span class="material-icons-round">auto_fix_high</span>
+      </div>
+      <div>
+        <h2>Brique 2 — Fire-Enrich</h2>
+      </div>
+      <div class="section-tag" style="background:rgba(245,158,11,0.12);color:var(--accent-yellow)">Enrichissement IA</div>
+    </div>
+
+    <div class="card" style="margin-bottom:24px">
+      <div class="tool-header">
+        <div class="tool-logo" style="background:rgba(245,158,11,0.12);color:var(--accent-yellow)">
+          <span class="material-icons-round">auto_fix_high</span>
+        </div>
+        <div class="tool-info">
+          <h3>Fire-Enrich</h3>
+          <div class="tool-tagline">Alternative open source à Clay — Enrichissement IA multi-agents</div>
+        </div>
+      </div>
+      <div class="tool-stats">
+        <div class="tool-stat"><span class="material-icons-round">star</span> <strong>1 100+</strong> stars GitHub</div>
+        <div class="tool-stat"><span class="material-icons-round">code</span> Python, Firecrawl, LLM</div>
+        <div class="tool-stat"><span class="material-icons-round">cloud_off</span> Self-hosted / Railway</div>
+        <div class="tool-stat"><span class="material-icons-round">gavel</span> Open Source</div>
+      </div>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.8">
+        Fire-Enrich transforme une simple liste d'emails en un dataset riche grâce à 4 agents IA spécialisés. Chaque agent utilise Firecrawl pour le web scraping et un LLM pour l'analyse et la structuration des données. Le coût par enrichissement est de 0,01 à 0,05$ en self-hosted (API OpenAI), contre 149$/mois pour Clay.
+      </p>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:24px">
+      <div class="card" style="border-left:4px solid #3b82f6">
+        <div class="card-title" style="color:#3b82f6"><span class="material-icons-round">business</span> Company Research Agent</div>
+        <p style="font-size:13px;color:var(--text-secondary)">Identifie l'industrie, la localisation, la taille de l'entreprise, le chiffre d'affaires estimé, et les informations clés du site web corporate.</p>
+      </div>
+      <div class="card" style="border-left:4px solid var(--accent-green)">
+        <div class="card-title" style="color:var(--accent-green)"><span class="material-icons-round">account_balance</span> Fundraising Intelligence Agent</div>
+        <p style="font-size:13px;color:var(--text-secondary)">Détecte les levées de fonds récentes, les investisseurs, les montants, et le stade de financement (Seed, Series A, B, etc.).</p>
+      </div>
+      <div class="card" style="border-left:4px solid var(--accent-purple)">
+        <div class="card-title" style="color:var(--accent-purple)"><span class="material-icons-round">groups</span> People & Leadership Agent</div>
+        <p style="font-size:13px;color:var(--text-secondary)">Identifie les fondateurs, les dirigeants clés, leurs parcours, et les décideurs pertinents pour la prise de contact.</p>
+      </div>
+      <div class="card" style="border-left:4px solid var(--accent-cyan)">
+        <div class="card-title" style="color:var(--accent-cyan)"><span class="material-icons-round">memory</span> Product & Technology Agent</div>
+        <p style="font-size:13px;color:var(--text-secondary)">Analyse la stack technique, les produits principaux, les technologies utilisées, et les besoins potentiels en consulting IT.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: TWENTY CRM -->
+  <section class="section" id="twentycrm">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)">
+        <span class="material-icons-round">view_kanban</span>
+      </div>
+      <div>
+        <h2>Brique 3 — Twenty CRM</h2>
+      </div>
+      <div class="section-tag" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)">CRM Open Source</div>
+    </div>
+
+    <div class="card" style="margin-bottom:24px">
+      <div class="tool-header">
+        <div class="tool-logo" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)">
+          <span class="material-icons-round">view_kanban</span>
+        </div>
+        <div class="tool-info">
+          <h3>Twenty CRM</h3>
+          <div class="tool-tagline">Le #1 CRM Open Source — Alternative moderne à Salesforce (YC S23)</div>
+        </div>
+      </div>
+      <div class="tool-stats">
+        <div class="tool-stat"><span class="material-icons-round">star</span> <strong>40 000+</strong> stars GitHub</div>
+        <div class="tool-stat"><span class="material-icons-round">code</span> TypeScript, React, GraphQL</div>
+        <div class="tool-stat"><span class="material-icons-round">cloud</span> Self-hosted ou Cloud</div>
+        <div class="tool-stat"><span class="material-icons-round">gavel</span> AGPL-3.0</div>
+      </div>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.8">
+        Twenty est le CRM open source le plus populaire au monde, soutenu par Y Combinator (batch S23) et fondé par une équipe française. Il offre une alternative crédible à Salesforce avec un modèle de données entièrement personnalisable, des API GraphQL et REST puissantes, et un écosystème d'extensions en pleine croissance.
+      </p>
+    </div>
+
+    <div class="grid-3" style="margin-bottom:24px">
+      <div class="card">
+        <div class="card-title"><span class="material-icons-round" style="color:var(--accent-blue)">view_column</span> Vues personnalisables</div>
+        <p style="font-size:13px;color:var(--text-secondary)">Kanban, Table, Timeline — chaque utilisateur peut créer ses propres vues avec filtres et tri avancés.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="material-icons-round" style="color:var(--accent-green)">api</span> API GraphQL & REST</div>
+        <p style="font-size:13px;color:var(--text-secondary)">Intégration programmatique complète. Requêtes et mutations pour toutes les entités du CRM.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="material-icons-round" style="color:var(--accent-purple)">extension</span> Extension Chrome</div>
+        <p style="font-size:13px;color:var(--text-secondary)">Capture de leads directement depuis LinkedIn ou tout site web vers le CRM en un clic.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="material-icons-round" style="color:var(--accent-yellow)">data_object</span> Objets & champs custom</div>
+        <p style="font-size:13px;color:var(--text-secondary)">Modèle de données flexible : créez vos propres entités et relations sans code.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="material-icons-round" style="color:var(--accent-cyan)">smart_toy</span> MCP Server</div>
+        <p style="font-size:13px;color:var(--text-secondary)">Intégration native avec les assistants IA via le protocole Model Context Protocol.</p>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="material-icons-round" style="color:var(--accent-red)">bolt</span> Nœud n8n</div>
+        <p style="font-size:13px;color:var(--text-secondary)">Connecteur communautaire n8n disponible pour l'automatisation des workflows CRM.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: N8N -->
+  <section class="section" id="n8n">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(139,92,246,0.12);color:var(--accent-purple)">
+        <span class="material-icons-round">account_tree</span>
+      </div>
+      <div>
+        <h2>Brique 4 — n8n</h2>
+      </div>
+      <div class="section-tag" style="background:rgba(139,92,246,0.12);color:var(--accent-purple)">Orchestration</div>
+    </div>
+
+    <div class="card" style="margin-bottom:24px">
+      <div class="tool-header">
+        <div class="tool-logo" style="background:rgba(139,92,246,0.12);color:var(--accent-purple)">
+          <span class="material-icons-round">account_tree</span>
+        </div>
+        <div class="tool-info">
+          <h3>n8n</h3>
+          <div class="tool-tagline">Plateforme d'automatisation de workflows avec IA native — 176K+ stars</div>
+        </div>
+      </div>
+      <div class="tool-stats">
+        <div class="tool-stat"><span class="material-icons-round">star</span> <strong>176 000+</strong> stars GitHub</div>
+        <div class="tool-stat"><span class="material-icons-round">code</span> TypeScript, Node.js</div>
+        <div class="tool-stat"><span class="material-icons-round">cloud</span> Self-hosted ou Cloud</div>
+        <div class="tool-stat"><span class="material-icons-round">gavel</span> Fair-code (Sustainable Use)</div>
+      </div>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.8">
+        n8n est la plateforme d'orchestration qui connecte toutes les briques entre elles. Avec plus de 500 intégrations natives, un éditeur visuel drag-and-drop, et des nœuds AI Agent natifs supportant plusieurs LLMs, n8n permet de créer des workflows complexes sans écrire une ligne de code.
+      </p>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:24px">
+      <div class="card">
+        <div class="card-title"><span class="material-icons-round" style="color:var(--accent-purple)">smart_toy</span> Agents IA natifs</div>
+        <ul class="feature-list">
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(139,92,246,0.12);color:var(--accent-purple)"><span class="material-icons-round" style="font-size:14px">check</span></div>
+            <div><strong>AI Agent nodes</strong> — Créez des agents IA autonomes directement dans vos workflows</div>
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)"><span class="material-icons-round" style="font-size:14px">check</span></div>
+            <div><strong>Multi-LLM</strong> — Support OpenAI, Anthropic, Google, Ollama et modèles locaux</div>
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(16,185,129,0.12);color:var(--accent-green)"><span class="material-icons-round" style="font-size:14px">check</span></div>
+            <div><strong>422+ intégrations IA</strong> — Connectez vos agents à n'importe quel service</div>
+          </li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="material-icons-round" style="color:var(--accent-blue)">integration_instructions</span> Cas d'usage Portage AI</div>
+        <ul class="feature-list">
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(0,119,181,0.12);color:var(--accent-linkedin)"><span class="material-icons-round" style="font-size:14px">sync</span></div>
+            <div>Synchronisation automatique OpenOutreach → Twenty CRM via webhook</div>
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(245,158,11,0.12);color:var(--accent-yellow)"><span class="material-icons-round" style="font-size:14px">sync</span></div>
+            <div>Déclenchement de l'enrichissement Fire-Enrich sur chaque nouveau lead</div>
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(16,185,129,0.12);color:var(--accent-green)"><span class="material-icons-round" style="font-size:14px">sync</span></div>
+            <div>Alertes Slack/Email automatiques pour les leads à fort score</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 7: COMPARATIF -->
+  <section class="section" id="comparatif">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(16,185,129,0.12);color:var(--accent-green)">
+        <span class="material-icons-round">compare</span>
+      </div>
+      <div>
+        <h2>Comparatif des Outils</h2>
+      </div>
+      <div class="section-tag" style="background:rgba(16,185,129,0.12);color:var(--accent-green)">Benchmark GitHub</div>
+    </div>
+
+    <div class="card">
+      <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Outil</th>
+              <th>Catégorie</th>
+              <th style="text-align:center">Stars</th>
+              <th>Stack</th>
+              <th>Points forts</th>
+              <th style="text-align:center">Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong style="color:var(--text-primary)">OpenOutreach</strong></td>
+              <td>Scraping LinkedIn</td>
+              <td style="text-align:center">100+</td>
+              <td>Python, Playwright, Django</td>
+              <td>Campagnes complètes, ML, CRM intégré, stealth</td>
+              <td style="text-align:center"><span class="badge badge-green"><span class="material-icons-round" style="font-size:12px">check_circle</span> Recommandé</span></td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--text-primary)">linkedin_scraper</strong></td>
+              <td>Scraping LinkedIn</td>
+              <td style="text-align:center">3 700</td>
+              <td>Python, Selenium</td>
+              <td>Extraction brute rapide de profils</td>
+              <td style="text-align:center"><span class="badge badge-blue">Alternatif</span></td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--text-primary)">Fire-Enrich</strong></td>
+              <td>Enrichissement IA</td>
+              <td style="text-align:center">1 100</td>
+              <td>Python, Firecrawl, LLM</td>
+              <td>Multi-agents IA, profils entreprise complets</td>
+              <td style="text-align:center"><span class="badge badge-green"><span class="material-icons-round" style="font-size:12px">check_circle</span> Recommandé</span></td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--text-primary)">theHarvester</strong></td>
+              <td>OSINT / Emails</td>
+              <td style="text-align:center">12 000</td>
+              <td>Python</td>
+              <td>20+ sources, emails et domaines</td>
+              <td style="text-align:center"><span class="badge badge-blue">Alternatif</span></td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--text-primary)">Google Maps Scraper</strong></td>
+              <td>Scraping Local</td>
+              <td style="text-align:center">3 200</td>
+              <td>Go</td>
+              <td>Prospection commerces et services locaux</td>
+              <td style="text-align:center"><span class="badge badge-blue">Alternatif</span></td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--text-primary)">Twenty CRM</strong></td>
+              <td>CRM Open Source</td>
+              <td style="text-align:center">40 000</td>
+              <td>TypeScript, React, GraphQL</td>
+              <td>Alternative Salesforce, API puissante, extensible</td>
+              <td style="text-align:center"><span class="badge badge-green"><span class="material-icons-round" style="font-size:12px">check_circle</span> Recommandé</span></td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--text-primary)">n8n</strong></td>
+              <td>Orchestration</td>
+              <td style="text-align:center">176 000</td>
+              <td>TypeScript, Node.js</td>
+              <td>500+ intégrations, éditeur visuel, IA native</td>
+              <td style="text-align:center"><span class="badge badge-green"><span class="material-icons-round" style="font-size:12px">check_circle</span> Recommandé</span></td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--text-primary)">Activepieces</strong></td>
+              <td>Orchestration</td>
+              <td style="text-align:center">21 000</td>
+              <td>TypeScript</td>
+              <td>Approche moderne, orienté IA et agents</td>
+              <td style="text-align:center"><span class="badge badge-blue">Alternatif</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 8: COUTS -->
+  <section class="section" id="couts">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(245,158,11,0.12);color:var(--accent-yellow)">
+        <span class="material-icons-round">payments</span>
+      </div>
+      <div>
+        <h2>Analyse des Coûts</h2>
+      </div>
+      <div class="section-tag" style="background:rgba(16,185,129,0.12);color:var(--accent-green)">-94% vs SaaS</div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:24px">
+      <div class="card cost-card" style="border:2px solid var(--accent-red)">
+        <div class="cost-label" style="color:var(--accent-red)">Solution SaaS Propriétaire</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Salesforce + Apollo + Clay + Zapier</div>
+        <div class="cost-price" style="color:var(--accent-red)">1 500€</div>
+        <div class="cost-period">par mois (5 utilisateurs)</div>
+        <div style="margin-top:16px;text-align:left">
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+            <span style="color:var(--text-secondary)">Salesforce Essentials</span><span style="color:var(--text-primary);font-weight:700">125€/user</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+            <span style="color:var(--text-secondary)">Apollo.io Professional</span><span style="color:var(--text-primary);font-weight:700">59€/user</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+            <span style="color:var(--text-secondary)">Clay Explorer</span><span style="color:var(--text-primary);font-weight:700">149€/mois</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:13px">
+            <span style="color:var(--text-secondary)">Zapier Team</span><span style="color:var(--text-primary);font-weight:700">69€/mois</span>
+          </div>
+        </div>
+      </div>
+      <div class="card cost-card" style="border:2px solid var(--accent-green)">
+        <div class="cost-label" style="color:var(--accent-green)">Architecture Open Source Recommandée</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">OpenOutreach + Fire-Enrich + Twenty + n8n</div>
+        <div class="cost-price" style="color:var(--accent-green)">90€</div>
+        <div class="cost-period">par mois (utilisateurs illimités)</div>
+        <div style="margin-top:16px;text-align:left">
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+            <span style="color:var(--text-secondary)">VPS dédié (Hetzner/OVH)</span><span style="color:var(--text-primary);font-weight:700">40€/mois</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+            <span style="color:var(--text-secondary)">API OpenAI (enrichissement)</span><span style="color:var(--text-primary);font-weight:700">30€/mois</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+            <span style="color:var(--text-secondary)">LinkedIn Premium (1 compte)</span><span style="color:var(--text-primary);font-weight:700">20€/mois</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:13px">
+            <span style="color:var(--text-secondary)">Licences logicielles</span><span style="color:var(--accent-green);font-weight:700">0€</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="material-icons-round" style="color:var(--accent-green)">savings</span> Économie annuelle projetée</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;text-align:center">
+        <div style="padding:16px;background:var(--bg-input);border-radius:12px">
+          <div style="font-size:28px;font-weight:900;color:var(--accent-green)">16 920€</div>
+          <div style="font-size:11px;color:var(--text-muted)">Économie annuelle</div>
+        </div>
+        <div style="padding:16px;background:var(--bg-input);border-radius:12px">
+          <div style="font-size:28px;font-weight:900;color:var(--accent-blue)">94%</div>
+          <div style="font-size:11px;color:var(--text-muted)">Réduction des coûts</div>
+        </div>
+        <div style="padding:16px;background:var(--bg-input);border-radius:12px">
+          <div style="font-size:28px;font-weight:900;color:var(--accent-purple)">∞</div>
+          <div style="font-size:11px;color:var(--text-muted)">Utilisateurs inclus</div>
+        </div>
+        <div style="padding:16px;background:var(--bg-input);border-radius:12px">
+          <div style="font-size:28px;font-weight:900;color:var(--accent-yellow)">100%</div>
+          <div style="font-size:11px;color:var(--text-muted)">Propriété données</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 9: PIPELINE -->
+  <section class="section" id="pipeline">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(6,182,212,0.12);color:var(--accent-cyan)">
+        <span class="material-icons-round">route</span>
+      </div>
+      <div>
+        <h2>Pipeline & Machine d'État</h2>
+      </div>
+      <div class="section-tag" style="background:rgba(6,182,212,0.12);color:var(--accent-cyan)">Flux automatisé</div>
+    </div>
+
+    <div class="card" style="margin-bottom:24px">
+      <div class="card-title"><span class="material-icons-round" style="color:var(--accent-cyan)">linear_scale</span> Machine d'état des profils</div>
+      <div class="state-flow">
+        <div class="state-node" style="background:rgba(0,119,181,0.15);color:var(--accent-linkedin)">Découvert</div>
+        <div class="state-arrow">→</div>
+        <div class="state-node" style="background:rgba(245,158,11,0.15);color:var(--accent-yellow)">Enrichi</div>
+        <div class="state-arrow">→</div>
+        <div class="state-node" style="background:rgba(139,92,246,0.15);color:var(--accent-purple)">Qualifié</div>
+        <div class="state-arrow">→</div>
+        <div class="state-node" style="background:rgba(59,130,246,0.15);color:var(--accent-blue)">En attente</div>
+        <div class="state-arrow">→</div>
+        <div class="state-node" style="background:rgba(16,185,129,0.15);color:var(--accent-green)">Connecté</div>
+        <div class="state-arrow">→</div>
+        <div class="state-node" style="background:rgba(16,185,129,0.25);color:var(--accent-green)">Terminé</div>
+      </div>
+      <div style="text-align:center;margin-top:8px">
+        <span class="state-node" style="background:rgba(244,63,94,0.15);color:var(--accent-red)">Disqualifié</span>
+        <span style="font-size:11px;color:var(--text-muted);margin-left:8px">(sortie possible depuis tout état)</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="material-icons-round" style="color:var(--accent-blue)">timeline</span> Pipeline complet — 8 étapes automatisées</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>#</th><th>Étape</th><th>Brique</th><th>Action</th><th>Déclencheur</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>1</strong></td><td>Recherche</td><td><span class="badge" style="background:rgba(0,119,181,0.12);color:var(--accent-linkedin)">OpenOutreach</span></td><td>Recherche LLM de profils LinkedIn ciblés</td><td>Cron quotidien</td></tr>
+          <tr><td><strong>2</strong></td><td>Scraping</td><td><span class="badge" style="background:rgba(0,119,181,0.12);color:var(--accent-linkedin)">OpenOutreach</span></td><td>Extraction des données du profil via API Voyager</td><td>Profil découvert</td></tr>
+          <tr><td><strong>3</strong></td><td>Qualification</td><td><span class="badge" style="background:rgba(0,119,181,0.12);color:var(--accent-linkedin)">OpenOutreach</span></td><td>Scoring ML (GPC + BALD)</td><td>Profil enrichi</td></tr>
+          <tr><td><strong>4</strong></td><td>Enrichissement</td><td><span class="badge badge-yellow">Fire-Enrich</span></td><td>4 agents IA analysent l'entreprise</td><td>Webhook n8n</td></tr>
+          <tr><td><strong>5</strong></td><td>Injection CRM</td><td><span class="badge badge-blue">Twenty CRM</span></td><td>Création du contact via API GraphQL</td><td>Workflow n8n</td></tr>
+          <tr><td><strong>6</strong></td><td>Connexion</td><td><span class="badge" style="background:rgba(0,119,181,0.12);color:var(--accent-linkedin)">OpenOutreach</span></td><td>Envoi de la demande de connexion LinkedIn</td><td>Score > seuil</td></tr>
+          <tr><td><strong>7</strong></td><td>Follow-up</td><td><span class="badge" style="background:rgba(0,119,181,0.12);color:var(--accent-linkedin)">OpenOutreach</span></td><td>Message personnalisé Jinja2 après acceptation</td><td>Connexion acceptée</td></tr>
+          <tr><td><strong>8</strong></td><td>Notification</td><td><span class="badge badge-purple">n8n</span></td><td>Alerte Slack/Email au commercial assigné</td><td>Réponse reçue</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECTION 10: DEPLOIEMENT -->
+  <section class="section" id="deploiement">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(16,185,129,0.12);color:var(--accent-green)">
+        <span class="material-icons-round">rocket_launch</span>
+      </div>
+      <div>
+        <h2>Plan de Déploiement</h2>
+      </div>
+      <div class="section-tag" style="background:rgba(16,185,129,0.12);color:var(--accent-green)">8 semaines</div>
+    </div>
+
+    <div class="card" style="margin-bottom:24px">
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background:var(--accent-blue)">1</div>
+          <div class="timeline-content">
+            <div class="timeline-title">Phase 1 — Infrastructure & CRM</div>
+            <div class="timeline-desc">Provisionner le VPS, déployer Twenty CRM en Docker, configurer le modèle de données (Contacts, Entreprises, Deals), importer les données existantes.</div>
+            <div class="timeline-duration">Semaines 1-2</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background:var(--accent-linkedin)">2</div>
+          <div class="timeline-content">
+            <div class="timeline-title">Phase 2 — Scraping LinkedIn</div>
+            <div class="timeline-desc">Déployer OpenOutreach, configurer les seed profiles, calibrer le modèle ML avec 50 profils labellisés, ajuster les templates Jinja2 pour les messages.</div>
+            <div class="timeline-duration">Semaines 3-4</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background:var(--accent-yellow)">3</div>
+          <div class="timeline-content">
+            <div class="timeline-title">Phase 3 — Enrichissement & Orchestration</div>
+            <div class="timeline-desc">Déployer Fire-Enrich et n8n, créer les workflows d'interconnexion (webhooks, API calls), configurer les alertes et les rapports automatiques.</div>
+            <div class="timeline-duration">Semaines 5-6</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background:var(--accent-green)">4</div>
+          <div class="timeline-content">
+            <div class="timeline-title">Phase 4 — Optimisation & Production</div>
+            <div class="timeline-desc">Tests end-to-end, ajustement des seuils ML, formation de l'équipe commerciale, monitoring et dashboards de performance, passage en production.</div>
+            <div class="timeline-duration">Semaines 7-8</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GITHUB LINKS -->
+    <div class="card">
+      <div class="card-title"><span class="material-icons-round" style="color:var(--text-muted)">link</span> Liens GitHub</div>
+      <div class="grid-4">
+        <a href="https://github.com/eracle/OpenOutreach" target="_blank" class="github-link">
+          <span class="material-icons-round" style="color:var(--accent-linkedin)">person_search</span>
+          <div class="github-link-info">
+            <div class="github-link-name">OpenOutreach</div>
+            <div class="github-link-stars">100+ stars</div>
+          </div>
+        </a>
+        <a href="https://github.com/firecrawl/fire-enrich" target="_blank" class="github-link">
+          <span class="material-icons-round" style="color:var(--accent-yellow)">auto_fix_high</span>
+          <div class="github-link-info">
+            <div class="github-link-name">Fire-Enrich</div>
+            <div class="github-link-stars">1 100+ stars</div>
+          </div>
+        </a>
+        <a href="https://github.com/twentyhq/twenty" target="_blank" class="github-link">
+          <span class="material-icons-round" style="color:var(--accent-blue)">view_kanban</span>
+          <div class="github-link-info">
+            <div class="github-link-name">Twenty CRM</div>
+            <div class="github-link-stars">40 000+ stars</div>
+          </div>
+        </a>
+        <a href="https://github.com/n8n-io/n8n" target="_blank" class="github-link">
+          <span class="material-icons-round" style="color:var(--accent-purple)">account_tree</span>
+          <div class="github-link-info">
+            <div class="github-link-name">n8n</div>
+            <div class="github-link-stars">176 000+ stars</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// Inherit theme from parent (dashboard)
+(function() {
+  try {
+    const parentTheme = window.parent.document.documentElement.getAttribute('data-theme');
+    if(parentTheme) document.documentElement.setAttribute('data-theme', parentTheme);
+  } catch(e) {}
+  // Also check localStorage
+  const saved = localStorage.getItem('portage-ai-theme');
+  if(saved) document.documentElement.setAttribute('data-theme', saved);
+})();
+
+// Smooth scroll for TOC links
+document.querySelectorAll('.toc-item').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>
