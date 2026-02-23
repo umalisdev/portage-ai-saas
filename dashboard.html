@@ -480,10 +480,10 @@
         </div>
       </div>
       <div class="nav-section">
-        <div class="nav-section-title">Ressources</div>
-        <a class="nav-item" href="prospecting-tools.html" style="text-decoration:none;">
-          <span class="material-icons-round">manage_search</span><span>Outils Prospection</span>
-        </a>
+        <div class="nav-section-title">Stratégie</div>
+        <div class="nav-item" data-page="strategie" onclick="navigate('strategie')">
+          <span class="material-icons-round">architecture</span><span>Architecture Prospection</span>
+        </div>
       </div>
       <div class="nav-section">
         <div class="nav-section-title">Système</div>
@@ -1059,10 +1059,30 @@ function buildAllPages() {
   });
   mc.innerHTML += `<div class="page" id="page-linkedin">
     <div class="page-header"><div><div class="page-title">LinkedIn</div><div class="page-subtitle">Prospection et suivi des profils LinkedIn</div></div>
-      <button class="btn btn-linkedin"><span class="material-icons-round" style="font-size:18px">search</span> Lancer une recherche</button>
+      <button class="btn btn-linkedin" onclick="openLinkedInSearch()"><span class="material-icons-round" style="font-size:18px">search</span> Lancer une recherche</button>
     </div>
-    <div class="search-box"><span class="material-icons-round">search</span><input placeholder="Rechercher un profil..."></div>
-    <div class="grid-2">${profileCards}</div>
+    <div id="linkedin-search-panel" style="display:none;margin-bottom:20px;">
+      <div class="panel" style="border:2px solid var(--accent-linkedin);">
+        <div class="panel-header"><div class="panel-title" style="color:var(--accent-linkedin);">Recherche LinkedIn avancée</div>
+          <button class="btn" style="background:var(--bg-input);color:var(--text-secondary);font-size:12px;padding:6px 12px;" onclick="closeLinkedInSearch()">Fermer</button>
+        </div>
+        <div class="grid-2" style="gap:12px;margin-bottom:16px;">
+          <div class="form-group"><label class="form-label">Poste / Titre</label><input class="form-input" id="li-search-title" placeholder="Ex: DevOps, Data Engineer, Chef de projet..."></div>
+          <div class="form-group"><label class="form-label">Entreprise</label><input class="form-input" id="li-search-company" placeholder="Ex: Capgemini, Freelance..."></div>
+          <div class="form-group"><label class="form-label">Localisation</label><input class="form-input" id="li-search-location" placeholder="Ex: Paris, Lyon, Nantes..."></div>
+          <div class="form-group"><label class="form-label">Comp\u00e9tences</label><input class="form-input" id="li-search-skills" placeholder="Ex: Python, AWS, SAP..."></div>
+          <div class="form-group"><label class="form-label">TJM minimum (\u20ac/j)</label><input class="form-input" type="number" id="li-search-tjm" placeholder="500"></div>
+          <div class="form-group"><label class="form-label">Score minimum</label><input class="form-input" type="number" id="li-search-score" placeholder="70"></div>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;">
+          <button class="btn" style="background:var(--bg-input);color:var(--text-secondary);" onclick="resetLinkedInSearch()"><span class="material-icons-round" style="font-size:16px">refresh</span> R\u00e9initialiser</button>
+          <button class="btn btn-linkedin" onclick="executeLinkedInSearch()"><span class="material-icons-round" style="font-size:16px">search</span> Rechercher</button>
+        </div>
+      </div>
+    </div>
+    <div id="linkedin-search-results" style="display:none;margin-bottom:16px;"></div>
+    <div class="search-box"><span class="material-icons-round">search</span><input placeholder="Filtrer les profils affich\u00e9s..." oninput="filterLinkedInProfiles(this.value)"></div>
+    <div class="grid-2" id="linkedin-profiles-grid">${profileCards}</div>
   </div>`;
 
   // MISSIONS
@@ -1112,6 +1132,163 @@ function buildAllPages() {
       <div class="switch ${a.status !== 'idle' ? 'on' : ''}" onclick="this.classList.toggle('on')"></div>
     </div>`;
   });
+  // STRATEGIE - build HTML with helper function
+  function buildStrategieStates() {
+    return ['DISCOVERED|D\u00e9couvert|#3b82f6|Le profil est identifi\u00e9 sur LinkedIn','ENRICHED|Enrichi|#8b5cf6|Donn\u00e9es compl\u00e8tes scrap\u00e9es via API Voyager','QUALIFIED|Qualifi\u00e9|#f59e0b|Valid\u00e9 par le mod\u00e8le ML (GPC + BALD)','PENDING|En attente|#06b6d4|Demande de connexion envoy\u00e9e','CONNECTED|Connect\u00e9|#10b981|Connexion accept\u00e9e, pr\u00eat pour follow-up','COMPLETED|Termin\u00e9|#10b981|Message de suivi envoy\u00e9 avec succ\u00e8s','DISQUALIFIED|Disqualifi\u00e9|#f43f5e|Rejet\u00e9 par le pipeline de qualification'].map(s => {
+      const [code,label,color,desc] = s.split('|');
+      return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)"><span class="stage-badge" style="background:'+color+'20;color:'+color+';min-width:100px;text-align:center;font-size:11px">'+label+'</span><div style="font-size:12px;color:var(--text-muted)">'+desc+'</div></div>';
+    }).join('');
+  }
+  function buildStrategieTable() {
+    return [
+      {name:'OpenOutreach',cat:'Scraping LinkedIn',stars:'100+',stack:'Python, Playwright, Django',pts:'Campagnes compl\u00e8tes, ML, CRM int\u00e9gr\u00e9, stealth',rec:true},
+      {name:'linkedin_scraper',cat:'Scraping LinkedIn',stars:'3 700',stack:'Python, Selenium',pts:'Extraction brute rapide de profils',rec:false},
+      {name:'Fire-Enrich',cat:'Enrichissement IA',stars:'1 100',stack:'Python, Firecrawl, LLM',pts:'Multi-agents IA, profils entreprise complets',rec:true},
+      {name:'theHarvester',cat:'OSINT / Emails',stars:'12 000',stack:'Python',pts:'20+ sources, emails et domaines',rec:false},
+      {name:'Google Maps Scraper',cat:'Scraping Local',stars:'3 200',stack:'Go',pts:'Prospection commerces et services locaux',rec:false},
+      {name:'Twenty',cat:'CRM Open Source',stars:'40 000',stack:'TypeScript, React, GraphQL',pts:'Alternative Salesforce, API puissante, extensible',rec:true},
+      {name:'n8n',cat:'Orchestration',stars:'176 000',stack:'TypeScript, Node.js',pts:'400+ int\u00e9grations, \u00e9diteur visuel, IA native',rec:true},
+      {name:'Activepieces',cat:'Orchestration',stars:'21 000',stack:'TypeScript',pts:'Approche moderne, orient\u00e9 IA et agents',rec:false}
+    ].map(t => '<tr style="border-bottom:1px solid var(--border)"><td style="padding:12px;font-weight:600;color:var(--text-primary)">'+t.name+'</td><td style="padding:12px;color:var(--text-secondary)">'+t.cat+'</td><td style="padding:12px;text-align:center;font-weight:700;color:var(--accent-yellow)">'+t.stars+'</td><td style="padding:12px;color:var(--text-muted);font-size:11px">'+t.stack+'</td><td style="padding:12px;color:var(--text-secondary);font-size:12px">'+t.pts+'</td><td style="padding:12px;text-align:center">'+(t.rec ? '<span class="material-icons-round" style="color:#10b981;font-size:20px">check_circle</span>' : '<span style="color:var(--text-muted);font-size:12px">Alternatif</span>')+'</td></tr>').join('');
+  }
+  function buildOpenOutreachDetails() {
+    return ['Connect|120s|Envoi de connexions ML-rank\u00e9es','Check Pending|24h|V\u00e9rification des acceptations','Follow Up|120s|Messages de suivi personnalis\u00e9s','Enrich|gap-filler|Scraping profils d\u00e9couverts','Qualify|gap-filler|Qualification ML des profils','Search|lowest|Recherche LLM de nouveaux profils'].map(l => {
+      const [name,interval,desc] = l.split('|');
+      return '<div style="background:var(--bg-input);border-radius:8px;padding:10px 12px"><div style="font-size:12px;font-weight:700;color:var(--text-primary)">'+name+'</div><div style="font-size:10px;color:var(--accent-blue)">Intervalle: '+interval+'</div><div style="font-size:11px;color:var(--text-muted)">'+desc+'</div></div>';
+    }).join('');
+  }
+  function buildTwentyDetails() {
+    return ['Vues Kanban / Table|Personnalisables par l\'utilisateur','Objets & champs custom|Mod\u00e8le de donn\u00e9es flexible','API GraphQL & REST|Int\u00e9gration programmatique compl\u00e8te','Extension Chrome|Capture de leads depuis le navigateur','N\u0153ud n8n|Connecteur communautaire disponible','MCP Server|Int\u00e9gration avec assistants IA'].map(f => {
+      const [title,desc] = f.split('|');
+      return '<div style="background:var(--bg-input);border-radius:8px;padding:10px 12px"><div style="font-size:12px;font-weight:700;color:var(--text-primary)">'+title+'</div><div style="font-size:11px;color:var(--text-muted)">'+desc+'</div></div>';
+    }).join('');
+  }
+  function buildGithubLinks() {
+    return [
+      {name:'OpenOutreach',url:'https://github.com/eracle/OpenOutreach',icon:'person_search',color:'#0077b5'},
+      {name:'Fire-Enrich',url:'https://github.com/firecrawl/fire-enrich',icon:'auto_fix_high',color:'#f59e0b'},
+      {name:'Twenty CRM',url:'https://github.com/twentyhq/twenty',icon:'hub',color:'#3b82f6'},
+      {name:'n8n',url:'https://github.com/n8n-io/n8n',icon:'account_tree',color:'#8b5cf6'}
+    ].map(l => '<a href="'+l.url+'" target="_blank" style="text-decoration:none;display:block;background:var(--bg-input);border-radius:12px;padding:16px;text-align:center;border:1px solid var(--border);transition:all 0.2s;cursor:pointer" onmouseover="this.style.borderColor=\''+l.color+'\';this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.transform=\'none\'"><span class="material-icons-round" style="font-size:28px;color:'+l.color+';display:block;margin-bottom:8px">'+l.icon+'</span><div style="font-size:13px;font-weight:700;color:var(--text-primary)">'+l.name+'</div><div style="font-size:10px;color:var(--text-muted);margin-top:4px">Voir sur GitHub \u2192</div></a>').join('');
+  }
+  mc.innerHTML += `<div class="page" id="page-strategie">
+    <div class="page-header"><div><div class="page-title">Architecture de Prospection</div><div class="page-subtitle">Strat\u00e9gie d'outillage open source pour la force commerciale Portage AI</div></div></div>
+
+    <div style="background:linear-gradient(135deg,rgba(16,185,129,0.08),rgba(59,130,246,0.08));border:2px solid var(--accent-green);border-radius:16px;padding:28px 32px;margin-bottom:28px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><span class="material-icons-round" style="font-size:28px;color:var(--accent-green)">tips_and_updates</span><div style="font-size:20px;font-weight:800;color:var(--accent-green)">Recommandation Strat\u00e9gique</div></div>
+      <p style="font-size:14px;line-height:1.8;color:var(--text-secondary);margin-bottom:16px">Pour l'\u00e9cosyst\u00e8me <strong style='color:var(--text-primary)'>Portage AI</strong>, nous recommandons une architecture modulaire combinant 4 briques open source compl\u00e9mentaires, orchestr\u00e9es pour cr\u00e9er un pipeline de prospection automatis\u00e9 de bout en bout.</p>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+        <div style="background:var(--bg-card);border-radius:12px;padding:16px;text-align:center;border:1px solid var(--border)">
+          <span class="material-icons-round" style="font-size:32px;color:#0077b5;display:block;margin-bottom:8px">person_search</span>
+          <div style="font-size:13px;font-weight:700;color:var(--text-primary)">OpenOutreach</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Scraping LinkedIn</div>
+        </div>
+        <div style="background:var(--bg-card);border-radius:12px;padding:16px;text-align:center;border:1px solid var(--border)">
+          <span class="material-icons-round" style="font-size:32px;color:#f59e0b;display:block;margin-bottom:8px">auto_fix_high</span>
+          <div style="font-size:13px;font-weight:700;color:var(--text-primary)">Fire-Enrich</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Enrichissement IA</div>
+        </div>
+        <div style="background:var(--bg-card);border-radius:12px;padding:16px;text-align:center;border:1px solid var(--border)">
+          <span class="material-icons-round" style="font-size:32px;color:#3b82f6;display:block;margin-bottom:8px">hub</span>
+          <div style="font-size:13px;font-weight:700;color:var(--text-primary)">Twenty CRM</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px">CRM Central</div>
+        </div>
+        <div style="background:var(--bg-card);border-radius:12px;padding:16px;text-align:center;border:1px solid var(--border)">
+          <span class="material-icons-round" style="font-size:32px;color:#8b5cf6;display:block;margin-bottom:8px">account_tree</span>
+          <div style="font-size:13px;font-weight:700;color:var(--text-primary)">n8n</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Orchestration</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px">
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Pipeline de Prospection</div><div class="panel-badge" style="background:rgba(59,130,246,0.12);color:#3b82f6">Flux automatis\u00e9</div></div>
+        <div style="padding:4px 0">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">
+            <div style="width:32px;height:32px;border-radius:8px;background:rgba(0,119,181,0.12);display:flex;align-items:center;justify-content:center"><span class="material-icons-round" style="font-size:18px;color:#0077b5">person_search</span></div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text-primary)">1. D\u00e9couverte</div><div style="font-size:11px;color:var(--text-muted)">OpenOutreach scrape les profils LinkedIn via l'API Voyager</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">
+            <div style="width:32px;height:32px;border-radius:8px;background:rgba(139,92,246,0.12);display:flex;align-items:center;justify-content:center"><span class="material-icons-round" style="font-size:18px;color:#8b5cf6">psychology</span></div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text-primary)">2. Qualification ML</div><div style="font-size:11px;color:var(--text-muted)">Gaussian Process Classifier + BALD active learning</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">
+            <div style="width:32px;height:32px;border-radius:8px;background:rgba(245,158,11,0.12);display:flex;align-items:center;justify-content:center"><span class="material-icons-round" style="font-size:18px;color:#f59e0b">auto_fix_high</span></div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text-primary)">3. Enrichissement</div><div style="font-size:11px;color:var(--text-muted)">Fire-Enrich transforme les emails en datasets riches (entreprise, funding, tech)</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">
+            <div style="width:32px;height:32px;border-radius:8px;background:rgba(59,130,246,0.12);display:flex;align-items:center;justify-content:center"><span class="material-icons-round" style="font-size:18px;color:#3b82f6">hub</span></div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text-primary)">4. Injection CRM</div><div style="font-size:11px;color:var(--text-muted)">Twenty CRM centralise les leads qualifi\u00e9s avec API GraphQL</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 0">
+            <div style="width:32px;height:32px;border-radius:8px;background:rgba(16,185,129,0.12);display:flex;align-items:center;justify-content:center"><span class="material-icons-round" style="font-size:18px;color:#10b981">send</span></div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text-primary)">5. Outreach automatis\u00e9</div><div style="font-size:11px;color:var(--text-muted)">Messages personnalis\u00e9s Jinja2 + follow-up apr\u00e8s acceptation</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Machine d'\u00c9tat des Profils</div><div class="panel-badge" style="background:rgba(139,92,246,0.12);color:#8b5cf6">OpenOutreach</div></div>
+        <div style="padding:4px 0">
+          ${buildStrategieStates()}
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-bottom:28px">
+      <div class="panel-header"><div class="panel-title">Comparatif des Outils</div><div class="panel-badge" style="background:rgba(16,185,129,0.12);color:#10b981">S\u00e9lection GitHub</div></div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:13px">
+          <thead><tr style="border-bottom:2px solid var(--border)">
+            <th style="padding:12px;text-align:left;font-weight:700;color:var(--text-primary)">Outil</th>
+            <th style="padding:12px;text-align:left;font-weight:700;color:var(--text-primary)">Cat\u00e9gorie</th>
+            <th style="padding:12px;text-align:center;font-weight:700;color:var(--text-primary)">Stars</th>
+            <th style="padding:12px;text-align:left;font-weight:700;color:var(--text-primary)">Stack</th>
+            <th style="padding:12px;text-align:left;font-weight:700;color:var(--text-primary)">Points forts</th>
+            <th style="padding:12px;text-align:center;font-weight:700;color:var(--text-primary)">Recommand\u00e9</th>
+          </tr></thead>
+          <tbody>
+            ${buildStrategieTable()}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px">
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">OpenOutreach \u2014 D\u00e9tails</div></div>
+        <div style="font-size:13px;color:var(--text-secondary);line-height:1.8;padding:4px 0">
+          <p style="margin-bottom:12px">Outil self-hosted d'automatisation LinkedIn B2B. Daemon central tournant 24/7 avec 5 lanes prioritaires :</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+            ${buildOpenOutreachDetails()}
+          </div>
+          <p><strong style="color:var(--text-primary)">Rate limiting :</strong> 20 connexions/jour, 100/semaine (configurable)</p>
+          <p><strong style="color:var(--text-primary)">D\u00e9ploiement :</strong> Docker Compose, self-hosted</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Twenty CRM \u2014 D\u00e9tails</div></div>
+        <div style="font-size:13px;color:var(--text-secondary);line-height:1.8;padding:4px 0">
+          <p style="margin-bottom:12px">Alternative open source \u00e0 Salesforce avec 40 000 stars GitHub. Fonctionnalit\u00e9s cl\u00e9s :</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+            ${buildTwentyDetails()}
+          </div>
+          <p><strong style="color:var(--text-primary)">D\u00e9ploiement :</strong> Self-hosted (Docker) ou Cloud (twenty.com)</p>
+          <p><strong style="color:var(--text-primary)">Licence :</strong> AGPL-3.0</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-bottom:28px">
+      <div class="panel-header"><div class="panel-title">Liens GitHub</div></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+        ${buildGithubLinks()}
+      </div>
+    </div>
+  </div>`;
+
   mc.innerHTML += `<div class="page" id="page-config">
     <div class="page-header"><div><div class="page-title">Configuration</div><div class="page-subtitle">Paramètres de la plateforme commerciale</div></div></div>
     <div class="grid-2">
@@ -1261,6 +1438,63 @@ function initDashboardCharts() {
     </div>`;
   });
   document.getElementById('leaderboard').innerHTML = lbHtml;
+}
+
+// ===== LINKEDIN SEARCH =====
+function openLinkedInSearch() {
+  document.getElementById('linkedin-search-panel').style.display = 'block';
+}
+function closeLinkedInSearch() {
+  document.getElementById('linkedin-search-panel').style.display = 'none';
+  document.getElementById('linkedin-search-results').style.display = 'none';
+}
+function resetLinkedInSearch() {
+  ['li-search-title','li-search-company','li-search-location','li-search-skills','li-search-tjm','li-search-score'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = '';
+  });
+  document.getElementById('linkedin-search-results').style.display = 'none';
+  // Reset grid
+  const cards = document.querySelectorAll('#linkedin-profiles-grid .profile-card');
+  cards.forEach(c => c.style.display = '');
+}
+function executeLinkedInSearch() {
+  const title = (document.getElementById('li-search-title').value || '').toLowerCase();
+  const company = (document.getElementById('li-search-company').value || '').toLowerCase();
+  const location = (document.getElementById('li-search-location').value || '').toLowerCase();
+  const skills = (document.getElementById('li-search-skills').value || '').toLowerCase();
+  const tjmMin = parseFloat(document.getElementById('li-search-tjm').value) || 0;
+  const scoreMin = parseFloat(document.getElementById('li-search-score').value) || 0;
+
+  const cards = document.querySelectorAll('#linkedin-profiles-grid .profile-card');
+  let matchCount = 0;
+  LINKEDIN_PROFILES.forEach((p, i) => {
+    let match = true;
+    if(title && !p.title.toLowerCase().includes(title)) match = false;
+    if(company && !p.company.toLowerCase().includes(company)) match = false;
+    if(location && !p.location.toLowerCase().includes(location)) match = false;
+    if(skills && !p.skills.some(s => s.toLowerCase().includes(skills))) match = false;
+    if(tjmMin && p.tjm < tjmMin) match = false;
+    if(scoreMin && p.score < scoreMin) match = false;
+    if(cards[i]) cards[i].style.display = match ? '' : 'none';
+    if(match) matchCount++;
+  });
+
+  const resDiv = document.getElementById('linkedin-search-results');
+  resDiv.style.display = 'block';
+  resDiv.innerHTML = `<div style="display:flex;align-items:center;gap:12px;padding:14px 20px;background:rgba(0,119,181,0.08);border-radius:12px;border:1px solid rgba(0,119,181,0.2)">
+    <span class="material-icons-round" style="color:#0077b5;font-size:22px">check_circle</span>
+    <div><span style="font-weight:700;color:#0077b5">${matchCount} profil${matchCount > 1 ? 's' : ''}</span> <span style="color:var(--text-secondary)">correspond${matchCount > 1 ? 'ent' : ''} \u00e0 vos crit\u00e8res de recherche</span></div>
+  </div>`;
+  showToast(`<strong>Recherche LinkedIn</strong> — ${matchCount} r\u00e9sultat${matchCount > 1 ? 's' : ''}`);
+}
+function filterLinkedInProfiles(query) {
+  const q = query.toLowerCase();
+  const cards = document.querySelectorAll('#linkedin-profiles-grid .profile-card');
+  LINKEDIN_PROFILES.forEach((p, i) => {
+    if(!cards[i]) return;
+    const text = (p.name + ' ' + p.title + ' ' + p.company + ' ' + p.location + ' ' + p.skills.join(' ')).toLowerCase();
+    cards[i].style.display = text.includes(q) ? '' : 'none';
+  });
 }
 
 // ===== INIT =====
