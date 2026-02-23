@@ -708,78 +708,6 @@ const CAMPAIGNS = [
 ];
 
 const LINKEDIN_PROFILES = [
-  { name:'Thomas Durand', title:'DevOps Senior', company:'Freelance', location:'Paris', score:92, status:'interested', agent:'LUNA', skills:['AWS','Kubernetes','Terraform'], tjm:650, tags:['informatique','IT','cloud','infrastructure','devops'],
-    linkedin:'https://www.linkedin.com/in/thomas-durand-devops/', email:'t.durand@proton.me', phone:'+33 6 12 34 56 78',
-    bio:'Expert DevOps avec 8 ans d\'expérience en automatisation d\'infrastructures cloud. Certifié AWS Solutions Architect et Kubernetes Administrator. Passionné par le GitOps et l\'Infrastructure as Code.',
-    experience:[
-      {role:'DevOps Lead',co:'BNP Paribas',period:'2023-2026',desc:'Migration cloud AWS de 40 microservices, réduction des coûts infra de 35%.'},
-      {role:'Ingénieur DevOps',co:'Société Générale',period:'2020-2023',desc:'Mise en place CI/CD GitLab, Kubernetes, monitoring Prometheus/Grafana.'},
-      {role:'Admin Système',co:'Orange',period:'2018-2020',desc:'Gestion de 200+ serveurs Linux, automatisation Ansible.'}
-    ],
-    formation:'Master Informatique — EPITA (2018)', dispo:'Disponible immédiatement', secteurs:['Banque','Assurance','Telecom'] },
-  { name:'Sophie Martin', title:'Consultante SAP', company:'Accenture', location:'Lyon', score:88, status:'meeting', agent:'ALEX', skills:['SAP S/4HANA','ABAP','Fiori'], tjm:720, tags:['informatique','IT','ERP','SAP','conseil','consulting'],
-    linkedin:'https://www.linkedin.com/in/sophie-martin-sap/', email:'s.martin@outlook.fr', phone:'+33 6 23 45 67 89',
-    bio:'Consultante SAP certifiée avec 10 ans d\'expérience sur les modules FI/CO et S/4HANA. Spécialisée dans les migrations ECC vers S/4HANA pour les grands comptes industriels.',
-    experience:[
-      {role:'Consultante SAP Senior',co:'Accenture',period:'2021-2026',desc:'Lead technique sur 3 projets de migration S/4HANA (Michelin, Sanofi, Engie).'},
-      {role:'Consultante SAP FI/CO',co:'Capgemini',period:'2018-2021',desc:'Paramétrage et développement ABAP pour le secteur automobile.'},
-      {role:'Analyste Fonctionnel SAP',co:'Atos',period:'2016-2018',desc:'Recueil des besoins et rédaction de spécifications fonctionnelles.'}
-    ],
-    formation:'Master Management des SI — EM Lyon (2016)', dispo:'Disponible mars 2026', secteurs:['Industrie','Énergie','Pharma'] },
-  { name:'Pierre Lambert', title:'Architecte Cloud', company:'Capgemini', location:'Nantes', score:85, status:'contacted', agent:'LUNA', skills:['Azure','GCP','Microservices'], tjm:800, tags:['informatique','IT','cloud','architecture','infrastructure'],
-    linkedin:'https://www.linkedin.com/in/pierre-lambert-cloud/', email:'p.lambert@gmail.com', phone:'+33 6 34 56 78 90',
-    bio:'Architecte Cloud certifié Azure et GCP avec 12 ans d\'expérience. Expert en conception d\'architectures microservices scalables et en migration cloud pour les ETI et grands comptes.',
-    experience:[
-      {role:'Architecte Cloud Senior',co:'Capgemini',period:'2022-2026',desc:'Conception d\'architectures multi-cloud (Azure + GCP) pour 5 clients grands comptes.'},
-      {role:'Lead Architecte',co:'Sopra Steria',period:'2018-2022',desc:'Migration de 15 applications legacy vers des architectures microservices sur Azure.'},
-      {role:'Développeur Full Stack',co:'Atos',period:'2014-2018',desc:'Développement Java/Spring Boot, première expérience cloud AWS.'}
-    ],
-    formation:'Ingénieur — École Centrale de Nantes (2014)', dispo:'Disponible avril 2026', secteurs:['Banque','Retail','Transport'] },
-  { name:'Marie Chevalier', title:'Data Analyst', company:'Freelance', location:'Bordeaux', score:78, status:'new', agent:'ARIA', skills:['Python','Power BI','SQL'], tjm:580, tags:['informatique','IT','data','analyse','business intelligence'],
-    linkedin:'https://www.linkedin.com/in/marie-chevalier-data/', email:'m.chevalier@free.fr', phone:'+33 6 45 67 89 01',
-    bio:'Data Analyst freelance spécialisée en Business Intelligence et visualisation de données. Expertise Python, Power BI et SQL pour transformer les données brutes en insights actionnables.',
-    experience:[
-      {role:'Data Analyst Freelance',co:'Indépendante',period:'2024-2026',desc:'Missions BI pour PME et ETI : dashboards Power BI, pipelines Python, analyses prédictives.'},
-      {role:'Data Analyst',co:'Cdiscount',period:'2021-2024',desc:'Analyse des parcours clients, segmentation, reporting automatisé Power BI.'},
-      {role:'Chargée d\'études statistiques',co:'INSEE',period:'2019-2021',desc:'Analyses statistiques et modélisation sur données démographiques.'}
-    ],
-    formation:'Master Statistiques — Université de Bordeaux (2019)', dispo:'Disponible immédiatement', secteurs:['E-commerce','Retail','Services'] },
-  { name:'Jean Rousseau', title:'Chef de Projet IT', company:'Sopra Steria', location:'Toulouse', score:82, status:'contacted', agent:'LUNA', skills:['Agile','JIRA','PMO'], tjm:600, tags:['informatique','IT','gestion de projet','management','agile'],
-    linkedin:'https://www.linkedin.com/in/jean-rousseau-pm/', email:'j.rousseau@laposte.net', phone:'+33 6 56 78 90 12',
-    bio:'Chef de Projet IT certifié PMP et SAFe avec 9 ans d\'expérience dans le pilotage de projets de transformation digitale. Expert en méthodologies Agile et en gestion de portefeuilles projets.',
-    experience:[
-      {role:'Chef de Projet Senior',co:'Sopra Steria',period:'2022-2026',desc:'Pilotage de 4 projets simultanés (budget total 2,5M€) pour Airbus et Thales.'},
-      {role:'Scrum Master / PM',co:'CGI',period:'2019-2022',desc:'Transition Agile de 3 équipes, mise en place SAFe, coaching Product Owners.'},
-      {role:'Consultant MOA',co:'Altran',period:'2017-2019',desc:'Recueil des besoins et suivi de projets pour le secteur aéronautique.'}
-    ],
-    formation:'Master Gestion de Projets — Toulouse Business School (2017)', dispo:'Disponible mai 2026', secteurs:['Aéronautique','Défense','Spatial'] },
-  { name:'Claire Bonnet', title:'UX Designer Senior', company:'Freelance', location:'Paris', score:90, status:'interested', agent:'ALEX', skills:['Figma','Design System','User Research'], tjm:550, tags:['informatique','IT','design','UX','digital','web'],
-    linkedin:'https://www.linkedin.com/in/claire-bonnet-ux/', email:'c.bonnet@designstudio.fr', phone:'+33 6 67 89 01 23',
-    bio:'UX Designer Senior freelance avec 7 ans d\'expérience. Spécialisée dans la conception de Design Systems et la recherche utilisateur pour les produits SaaS B2B. Portfolio de 30+ projets livrés.',
-    experience:[
-      {role:'UX Designer Freelance',co:'Indépendante',period:'2023-2026',desc:'Conception UX/UI pour startups et scale-ups : Qonto, Alan, Pennylane.'},
-      {role:'Lead UX Designer',co:'Doctolib',period:'2020-2023',desc:'Refonte du parcours patient, Design System, tests utilisateurs A/B.'},
-      {role:'UX Designer',co:'BlaBlaCar',period:'2019-2020',desc:'Conception de nouvelles fonctionnalités mobiles, prototypage Figma.'}
-    ],
-    formation:'Master Design d\'Interaction — Strate (2019)', dispo:'Disponible immédiatement', secteurs:['SaaS','HealthTech','FinTech'] },
-  { name:'Karim Amrani', title:'Ingénieur IA/ML', company:'Thales', location:'Paris', score:95, status:'new', agent:'ARIA', skills:['PyTorch','NLP','MLOps'], tjm:900, tags:['informatique','IT','intelligence artificielle','IA','machine learning','data science'],
-    linkedin:'https://www.linkedin.com/in/karim-amrani-ai/', email:'k.amrani@thalesgroup.com', phone:'+33 6 78 90 12 34',
-    bio:'Ingénieur IA/ML avec 6 ans d\'expérience en NLP et Computer Vision. PhD en Machine Learning. Expert PyTorch, spécialisé dans le déploiement de modèles en production (MLOps) pour les secteurs défense et aéronautique.',
-    experience:[
-      {role:'Ingénieur IA Senior',co:'Thales',period:'2023-2026',desc:'Développement de modèles NLP pour l\'analyse de renseignement, déploiement MLOps Kubernetes.'},
-      {role:'Data Scientist',co:'Airbus',period:'2020-2023',desc:'Computer Vision pour la détection de défauts sur lignes d\'assemblage, PyTorch.'},
-      {role:'Chercheur ML',co:'INRIA',period:'2018-2020',desc:'Recherche en NLP : modèles de langage, transfer learning, publications ACL/EMNLP.'}
-    ],
-    formation:'PhD Machine Learning — Université Paris-Saclay (2020)', dispo:'Disponible juin 2026', secteurs:['Défense','Aéronautique','Recherche'] },
-  { name:'Nadia Faure', title:'Formatrice Digitale', company:'Freelance', location:'Marseille', score:72, status:'converted', agent:'ALEX', skills:['E-learning','Moodle','Pédagogie'], tjm:450, tags:['informatique','IT','formation','digital','e-learning'],
-    linkedin:'https://www.linkedin.com/in/nadia-faure-formation/', email:'n.faure@formationdigitale.fr', phone:'+33 6 89 01 23 45',
-    bio:'Formatrice digitale freelance spécialisée dans la conception de parcours e-learning et la transformation digitale des organismes de formation. Certifiée Moodle et experte en ingénierie pédagogique.',
-    experience:[
-      {role:'Formatrice Digitale Freelance',co:'Indépendante',period:'2022-2026',desc:'Conception de 20+ parcours e-learning pour entreprises et universités.'},
-      {role:'Ingénieure Pédagogique',co:'OpenClassrooms',period:'2019-2022',desc:'Création de cours en ligne, mentoring, conception de parcours certifiants.'},
-      {role:'Formatrice',co:'AFPA',period:'2017-2019',desc:'Formation bureautique et digitale pour demandeurs d\'emploi.'}
-    ],
-    formation:'Master Sciences de l\'Éducation — Aix-Marseille Université (2017)', dispo:'Convertie — En portage', secteurs:['Formation','Éducation','RH'] }
 ];
 
 const MISSIONS = [
@@ -1221,23 +1149,47 @@ function buildAllPages() {
 
   // LINKEDIN
   let profileCards = '';
-  LINKEDIN_PROFILES.forEach((p, idx) => {
-    const st = getStatusInfo(p.status);
-    const scoreColor = p.score >= 85 ? '#10b981' : p.score >= 70 ? '#f59e0b' : '#5c5d70';
-    profileCards += `<div class="profile-card" style="cursor:pointer;" onclick="openProfileModal(${idx})">
-      <div class="profile-header">
-        <div class="profile-avatar">${p.name.charAt(0)}</div>
-        <div style="flex:1"><div style="font-size:15px;font-weight:700">${p.name}</div><div style="font-size:13px;color:var(--text-secondary)">${p.title}</div><div style="font-size:11px;color:var(--text-muted)">${p.company} • ${p.location}</div></div>
-        <div style="text-align:center"><div class="profile-score" style="color:${scoreColor}">${p.score}</div><div style="font-size:10px;color:var(--text-muted)">Score</div></div>
+  if(LINKEDIN_PROFILES.length === 0) {
+    profileCards = `<div style="grid-column:1/-1;text-align:center;padding:80px 40px;">
+      <div style="font-size:80px;margin-bottom:20px;">&#128269;</div>
+      <div style="font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:12px;">Aucun profil LinkedIn import\u00e9</div>
+      <div style="font-size:14px;color:var(--text-secondary);max-width:500px;margin:0 auto 30px;line-height:1.6;">Connectez vos outils de scraping (OpenOutreach, Fire-Enrich) pour importer automatiquement des profils de prospects qualifi\u00e9s depuis LinkedIn.</div>
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+        <a href="https://github.com/eracle/OpenOutreach" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--accent-linkedin);color:white;border-radius:10px;text-decoration:none;font-weight:600;font-size:14px;"><span class="material-icons-round" style="font-size:18px">download</span> Configurer OpenOutreach</a>
+        <a href="https://github.com/firecrawl/fire-enrich" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--bg-input);color:var(--text-primary);border:1px solid var(--border);border-radius:10px;text-decoration:none;font-weight:600;font-size:14px;"><span class="material-icons-round" style="font-size:18px">auto_fix_high</span> Configurer Fire-Enrich</a>
       </div>
-      <div class="profile-skills">${p.skills.map(s => `<span class="profile-skill">${s}</span>`).join('')}</div>
-      <div style="display:flex;align-items:center;gap:12px;margin-top:10px">
-        <span class="stage-badge" style="background:${st.bg};color:${st.text}">${st.label}</span>
-        <span style="font-size:12px;font-weight:600;flex:1">TJM: ${p.tjm}€/j</span>
-        <span style="font-size:11px;color:var(--text-muted);background:var(--bg-input);padding:4px 8px;border-radius:6px">${getAgent(p.agent.toLowerCase())?.emoji || ''} ${p.agent}</span>
+      <div style="margin-top:40px;padding:20px;background:var(--bg-input);border-radius:12px;max-width:600px;margin-left:auto;margin-right:auto;">
+        <div style="font-size:13px;font-weight:600;color:var(--accent-linkedin);margin-bottom:10px;">Pipeline de prospection recommand\u00e9</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;color:var(--text-secondary);flex-wrap:wrap;">
+          <span style="padding:6px 12px;background:var(--bg-secondary);border-radius:6px;font-weight:600;">OpenOutreach</span>
+          <span class="material-icons-round" style="font-size:14px;">arrow_forward</span>
+          <span style="padding:6px 12px;background:var(--bg-secondary);border-radius:6px;font-weight:600;">Fire-Enrich</span>
+          <span class="material-icons-round" style="font-size:14px;">arrow_forward</span>
+          <span style="padding:6px 12px;background:var(--bg-secondary);border-radius:6px;font-weight:600;">Twenty CRM</span>
+          <span class="material-icons-round" style="font-size:14px;">arrow_forward</span>
+          <span style="padding:6px 12px;background:var(--bg-secondary);border-radius:6px;font-weight:600;">n8n</span>
+        </div>
       </div>
     </div>`;
-  });
+  } else {
+    LINKEDIN_PROFILES.forEach((p, idx) => {
+      const st = getStatusInfo(p.status);
+      const scoreColor = p.score >= 85 ? '#10b981' : p.score >= 70 ? '#f59e0b' : '#5c5d70';
+      profileCards += `<div class="profile-card" style="cursor:pointer;" onclick="openProfileModal(${idx})">
+        <div class="profile-header">
+          <div class="profile-avatar">${p.name.charAt(0)}</div>
+          <div style="flex:1"><div style="font-size:15px;font-weight:700">${p.name}</div><div style="font-size:13px;color:var(--text-secondary)">${p.title}</div><div style="font-size:11px;color:var(--text-muted)">${p.company} • ${p.location}</div></div>
+          <div style="text-align:center"><div class="profile-score" style="color:${scoreColor}">${p.score}</div><div style="font-size:10px;color:var(--text-muted)">Score</div></div>
+        </div>
+        <div class="profile-skills">${p.skills.map(s => `<span class="profile-skill">${s}</span>`).join('')}</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:10px">
+          <span class="stage-badge" style="background:${st.bg};color:${st.text}">${st.label}</span>
+          <span style="font-size:12px;font-weight:600;flex:1">TJM: ${p.tjm}\u20ac/j</span>
+          <span style="font-size:11px;color:var(--text-muted);background:var(--bg-input);padding:4px 8px;border-radius:6px">${getAgent(p.agent.toLowerCase())?.emoji || ''} ${p.agent}</span>
+        </div>
+      </div>`;
+    });
+  }
   mc.innerHTML += `<div class="page" id="page-linkedin">
     <div class="page-header"><div><div class="page-title">LinkedIn</div><div class="page-subtitle">Prospection et suivi des profils LinkedIn</div></div>
       <button class="btn btn-linkedin" onclick="openLinkedInSearch()"><span class="material-icons-round" style="font-size:18px">search</span> Lancer une recherche</button>
