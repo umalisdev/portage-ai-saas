@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Implémentation & Suivi — Portage AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg-primary: #0a0b0f;
+      --bg-secondary: #10111a;
+      --bg-card: #181920;
+      --bg-input: #12131a;
+      --border: #1e1f2e;
+      --border-hover: #2a2b3a;
+      --text-primary: #e8e9f0;
+      --text-secondary: #8b8ca0;
+      --text-muted: #5c5d70;
+      --text-dim: #3d3e50;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-yellow: #f59e0b;
+      --accent-purple: #8b5cf6;
+      --accent-red: #f43f5e;
+      --accent-cyan: #06b6d4;
+      --accent-linkedin: #0077b5;
+    }
+    [data-theme="light"] {
+      --bg-primary: #f5f6fa;
+      --bg-secondary: #ffffff;
+      --bg-card: #ffffff;
+      --bg-input: #f0f1f5;
+      --border: #e2e4ea;
+      --border-hover: #d0d2da;
+      --text-primary: #1a1b2e;
+      --text-secondary: #5c5d70;
+      --text-muted: #8b8ca0;
+      --text-dim: #b0b1c0;
+      --accent-blue: #2563eb;
+      --accent-green: #059669;
+      --accent-yellow: #d97706;
+      --accent-purple: #7c3aed;
+      --accent-red: #e11d48;
+      --accent-cyan: #0891b2;
+      --accent-linkedin: #0066a0;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    .page-wrapper { max-width: 1200px; margin: 0 auto; padding: 40px 32px 80px; }
+
+    /* === HEADER === */
+    .study-header {
+      text-align: center; margin-bottom: 60px; padding: 60px 40px;
+      background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(6,182,212,0.08));
+      border: 1px solid var(--border); border-radius: 24px;
+      position: relative; overflow: hidden;
+    }
+    .study-header::before {
+      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: radial-gradient(circle at 30% 40%, rgba(16,185,129,0.06) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 60%, rgba(6,182,212,0.06) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .study-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.2);
+      border-radius: 20px; padding: 6px 16px; font-size: 12px; font-weight: 600;
+      color: var(--accent-cyan); margin-bottom: 20px;
+    }
+    .study-header h1 {
+      font-size: 42px; font-weight: 900; letter-spacing: -1px; line-height: 1.2; margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--text-primary), var(--accent-green));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .study-header .subtitle { font-size: 18px; color: var(--text-secondary); max-width: 700px; margin: 0 auto 28px; }
+    .study-meta { display: flex; justify-content: center; gap: 32px; font-size: 13px; color: var(--text-muted); }
+    .study-meta span { display: flex; align-items: center; gap: 6px; }
+    .study-meta .material-icons-round { font-size: 16px; }
+
+    /* === TOC === */
+    .toc { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 28px 32px; margin-bottom: 48px; }
+    .toc-title { font-size: 16px; font-weight: 800; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 32px; }
+    .toc-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 8px; font-size: 14px; color: var(--text-secondary); text-decoration: none; transition: all 0.2s; }
+    .toc-item:hover { background: rgba(16,185,129,0.08); color: var(--accent-green); }
+    .toc-num { width: 28px; height: 28px; border-radius: 8px; background: var(--bg-input); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--accent-green); flex-shrink: 0; }
+
+    /* === SECTIONS === */
+    .section { margin-bottom: 56px; }
+    .section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid var(--border); }
+    .section-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+    .section-header h2 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+    .section-header .section-tag { margin-left: auto; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 12px; }
+
+    /* === CARDS === */
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; transition: border-color 0.2s; }
+    .card:hover { border-color: var(--border-hover); }
+    .card-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+
+    /* === GRIDS === */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+    /* === BADGES === */
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; }
+    .badge-green { background: rgba(16,185,129,0.12); color: var(--accent-green); }
+    .badge-blue { background: rgba(59,130,246,0.12); color: var(--accent-blue); }
+    .badge-purple { background: rgba(139,92,246,0.12); color: var(--accent-purple); }
+    .badge-yellow { background: rgba(245,158,11,0.12); color: var(--accent-yellow); }
+    .badge-red { background: rgba(244,63,94,0.12); color: var(--accent-red); }
+    .badge-cyan { background: rgba(6,182,212,0.12); color: var(--accent-cyan); }
+
+    /* === PROGRESS BARS === */
+    .progress-track { background: var(--bg-input); border-radius: 8px; height: 12px; overflow: hidden; margin: 8px 0; }
+    .progress-fill { height: 100%; border-radius: 8px; transition: width 0.6s ease; }
+    .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    /* === CHECKLIST === */
+    .checklist { list-style: none; }
+    .check-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--text-secondary); }
+    .check-item:last-child { border-bottom: none; }
+    .check-icon { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+    .check-done { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+    .check-progress { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
+    .check-pending { background: rgba(92,93,112,0.15); color: var(--text-muted); }
+    .check-item strong { color: var(--text-primary); }
+
+    /* === TIMELINE === */
+    .timeline { position: relative; padding-left: 32px; }
+    .timeline::before { content: ''; position: absolute; left: 12px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+    .timeline-item { position: relative; margin-bottom: 28px; }
+    .timeline-dot { position: absolute; left: -32px; top: 4px; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #fff; font-weight: 800; z-index: 1; }
+    .timeline-content { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; }
+    .timeline-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .timeline-desc { font-size: 13px; color: var(--text-secondary); }
+    .timeline-duration { font-size: 11px; font-weight: 700; color: var(--accent-green); margin-top: 6px; }
+
+    /* === KPI CARDS === */
+    .kpi-card { text-align: center; padding: 24px; }
+    .kpi-value { font-size: 36px; font-weight: 900; margin: 8px 0; }
+    .kpi-label { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .kpi-sublabel { font-size: 11px; color: var(--text-muted); }
+    .kpi-trend { font-size: 12px; font-weight: 700; margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 4px; }
+
+    /* === RISK TABLE === */
+    .risk-row { display: grid; grid-template-columns: 2fr 1fr 1fr 3fr; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); align-items: center; font-size: 13px; }
+    .risk-row:last-child { border-bottom: none; }
+    .risk-header { font-weight: 700; color: var(--text-primary); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* === GANTT-LIKE === */
+    .gantt-row { display: grid; grid-template-columns: 160px 1fr; gap: 16px; padding: 8px 0; align-items: center; }
+    .gantt-label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .gantt-bar-track { background: var(--bg-input); border-radius: 6px; height: 28px; position: relative; overflow: hidden; }
+    .gantt-bar { position: absolute; height: 100%; border-radius: 6px; display: flex; align-items: center; padding: 0 10px; font-size: 10px; font-weight: 700; color: #fff; white-space: nowrap; }
+
+    /* === DATA TABLE === */
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .data-table thead tr { border-bottom: 2px solid var(--border); }
+    .data-table th { padding: 14px 12px; text-align: left; font-weight: 700; color: var(--text-primary); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .data-table td { padding: 14px 12px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+    .data-table tbody tr:hover { background: rgba(16,185,129,0.04); }
+
+    /* === FEATURE LIST === */
+    .feature-list { list-style: none; }
+    .feature-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+    .feature-item:last-child { border-bottom: none; }
+    .feature-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+    .feature-item strong { color: var(--text-primary); }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .toc-grid { grid-template-columns: 1fr; }
+      .study-header { padding: 32px 20px; }
+      .study-header h1 { font-size: 28px; }
+      .risk-row { grid-template-columns: 1fr; gap: 4px; }
+      .gantt-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- HEADER -->
+  <div class="study-header">
+    <div class="study-badge"><span class="material-icons-round" style="font-size:14px">engineering</span> Document opérationnel interne</div>
+    <h1>Implémentation & Suivi</h1>
+    <p class="subtitle">Plan de déploiement opérationnel, suivi d'avancement et indicateurs de performance pour l'architecture de prospection Portage AI.</p>
+    <div class="study-meta">
+      <span><span class="material-icons-round">calendar_today</span> Février 2026</span>
+      <span><span class="material-icons-round">business</span> Portage AI — Sales Force Command Center</span>
+      <span><span class="material-icons-round">verified</span> v1.0</span>
+    </div>
+  </div>
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <div class="toc-title"><span class="material-icons-round" style="font-size:18px">toc</span> Sommaire</div>
+    <div class="toc-grid">
+      <a href="#avancement" class="toc-item"><span class="toc-num">1</span> Avancement Global</a>
+      <a href="#phases" class="toc-item"><span class="toc-num">2</span> Phases de Déploiement</a>
+      <a href="#checklist-openoutreach" class="toc-item"><span class="toc-num">3</span> Checklist — OpenOutreach</a>
+      <a href="#checklist-fireenrich" class="toc-item"><span class="toc-num">4</span> Checklist — Fire-Enrich</a>
+      <a href="#checklist-twenty" class="toc-item"><span class="toc-num">5</span> Checklist — Twenty CRM</a>
+      <a href="#checklist-n8n" class="toc-item"><span class="toc-num">6</span> Checklist — n8n</a>
+      <a href="#kpis" class="toc-item"><span class="toc-num">7</span> KPIs & Métriques Cibles</a>
+      <a href="#risques" class="toc-item"><span class="toc-num">8</span> Matrice des Risques</a>
+      <a href="#gantt" class="toc-item"><span class="toc-num">9</span> Planning Gantt</a>
+      <a href="#revues" class="toc-item"><span class="toc-num">10</span> Revues & Points de Contrôle</a>
+    </div>
+  </div>
+
+  <!-- SECTION 1: AVANCEMENT GLOBAL -->
+  <div class="section" id="avancement">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(16,185,129,0.12);color:var(--accent-green)"><span class="material-icons-round">speed</span></div>
+      <h2>Avancement Global</h2>
+      <span class="section-tag badge-green">Tableau de bord</span>
+    </div>
+
+    <div class="grid-4" style="margin-bottom:28px">
+      <div class="card kpi-card">
+        <div class="kpi-label" style="color:var(--accent-linkedin)">OpenOutreach</div>
+        <div class="kpi-value" style="color:var(--accent-linkedin)">0%</div>
+        <div class="progress-track"><div class="progress-fill" style="width:0%;background:var(--accent-linkedin)"></div></div>
+        <div class="kpi-sublabel">Phase : Non démarré</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-label" style="color:var(--accent-yellow)">Fire-Enrich</div>
+        <div class="kpi-value" style="color:var(--accent-yellow)">0%</div>
+        <div class="progress-track"><div class="progress-fill" style="width:0%;background:var(--accent-yellow)"></div></div>
+        <div class="kpi-sublabel">Phase : Non démarré</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-label" style="color:var(--accent-blue)">Twenty CRM</div>
+        <div class="kpi-value" style="color:var(--accent-blue)">0%</div>
+        <div class="progress-track"><div class="progress-fill" style="width:0%;background:var(--accent-blue)"></div></div>
+        <div class="kpi-sublabel">Phase : Non démarré</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-label" style="color:var(--accent-purple)">n8n</div>
+        <div class="kpi-value" style="color:var(--accent-purple)">0%</div>
+        <div class="progress-track"><div class="progress-fill" style="width:0%;background:var(--accent-purple)"></div></div>
+        <div class="kpi-sublabel">Phase : Non démarré</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:28px">
+      <div class="card-title"><span class="material-icons-round" style="color:var(--accent-green)">pie_chart</span> Progression Consolidée</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center">
+        <div style="height:260px"><canvas id="chart-progress"></canvas></div>
+        <div>
+          <div style="margin-bottom:20px">
+            <div style="font-size:48px;font-weight:900;color:var(--accent-green)">0%</div>
+            <div style="font-size:14px;color:var(--text-muted)">Avancement global du projet</div>
+          </div>
+          <div style="display:grid;gap:12px">
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 12px;background:var(--bg-input);border-radius:8px">
+              <span style="color:var(--text-secondary)">Tâches terminées</span><strong style="color:var(--accent-green)">0 / 28</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 12px;background:var(--bg-input);border-radius:8px">
+              <span style="color:var(--text-secondary)">Tâches en cours</span><strong style="color:var(--accent-blue)">0 / 28</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 12px;background:var(--bg-input);border-radius:8px">
+              <span style="color:var(--text-secondary)">Tâches en attente</span><strong style="color:var(--text-muted)">28 / 28</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 12px;background:var(--bg-input);border-radius:8px">
+              <span style="color:var(--text-secondary)">Date de fin prévue</span><strong style="color:var(--accent-cyan)">Avril 2026</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: PHASES DE DEPLOIEMENT -->
+  <div class="section" id="phases">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)"><span class="material-icons-round">timeline</span></div>
+      <h2>Phases de Déploiement</h2>
+      <span class="section-tag badge-blue">4 phases — 8 semaines</span>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:var(--accent-blue)">1</div>
+        <div class="timeline-content">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="timeline-title">Phase 1 — Infrastructure & CRM</div>
+            <span class="badge badge-yellow">En attente</span>
+          </div>
+          <div class="timeline-desc">Déploiement de Twenty CRM (Docker), configuration des objets custom (Consultant, Mission, Entreprise), import des données existantes, configuration SMTP et webhooks.</div>
+          <div class="timeline-duration"><span class="material-icons-round" style="font-size:14px">schedule</span> Semaines 1-2 — Prérequis : serveur VPS (4 vCPU, 8 Go RAM)</div>
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+            <span class="badge badge-blue">Twenty CRM</span>
+            <span class="badge badge-purple">Docker</span>
+            <span class="badge badge-green">PostgreSQL</span>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:var(--accent-purple)">2</div>
+        <div class="timeline-content">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="timeline-title">Phase 2 — Scraping & Enrichissement</div>
+            <span class="badge badge-yellow">En attente</span>
+          </div>
+          <div class="timeline-desc">Installation d'OpenOutreach, configuration des campagnes LinkedIn (profils cibles IT/Conseil), déploiement Fire-Enrich avec les 4 agents IA, connexion API vers Twenty CRM.</div>
+          <div class="timeline-duration"><span class="material-icons-round" style="font-size:14px">schedule</span> Semaines 3-4 — Prérequis : Phase 1 terminée + compte LinkedIn dédié</div>
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+            <span class="badge badge-blue">OpenOutreach</span>
+            <span class="badge badge-yellow">Fire-Enrich</span>
+            <span class="badge badge-cyan">Firecrawl API</span>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:var(--accent-green)">3</div>
+        <div class="timeline-content">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="timeline-title">Phase 3 — Orchestration & Automatisation</div>
+            <span class="badge badge-yellow">En attente</span>
+          </div>
+          <div class="timeline-desc">Déploiement n8n, création des workflows automatisés (scraping → enrichissement → CRM → email), configuration des triggers et des alertes, tests end-to-end.</div>
+          <div class="timeline-duration"><span class="material-icons-round" style="font-size:14px">schedule</span> Semaines 5-6 — Prérequis : Phases 1 & 2 terminées</div>
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+            <span class="badge badge-purple">n8n</span>
+            <span class="badge badge-green">Webhooks</span>
+            <span class="badge badge-blue">API REST</span>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:var(--accent-cyan)">4</div>
+        <div class="timeline-content">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="timeline-title">Phase 4 — Optimisation & Production</div>
+            <span class="badge badge-yellow">En attente</span>
+          </div>
+          <div class="timeline-desc">Calibration du modèle ML de qualification, optimisation des taux de réponse, formation de l'équipe commerciale, monitoring des KPIs, passage en production complète.</div>
+          <div class="timeline-duration"><span class="material-icons-round" style="font-size:14px">schedule</span> Semaines 7-8 — Prérequis : Phase 3 terminée + données de test validées</div>
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+            <span class="badge badge-green">ML Tuning</span>
+            <span class="badge badge-cyan">Monitoring</span>
+            <span class="badge badge-yellow">Formation</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: CHECKLIST OPENOUTREACH -->
+  <div class="section" id="checklist-openoutreach">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(0,119,181,0.12);color:var(--accent-linkedin)"><span class="material-icons-round">person_search</span></div>
+      <h2>Checklist — OpenOutreach</h2>
+      <span class="section-tag badge-blue">7 tâches</span>
+    </div>
+    <div class="card">
+      <ul class="checklist">
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Cloner le repo et installer les dépendances</strong><br><span style="font-size:12px;color:var(--text-muted)">git clone, pip install -r requirements.txt, configuration Django</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Configurer les credentials LinkedIn</strong><br><span style="font-size:12px;color:var(--text-muted)">Compte dédié, cookies de session, proxy résidentiel rotatif</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Définir les campagnes de scraping</strong><br><span style="font-size:12px;color:var(--text-muted)">Profils cibles : DevOps, Data, Cloud, SAP, Chef de projet IT — Freelance & ESN</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Configurer les 6 lanes daemon prioritaires</strong><br><span style="font-size:12px;color:var(--text-muted)">Scraper, Enricher, Qualifier, Connector, Messenger, Syncer — intervalles et rate limits</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Calibrer le modèle ML de qualification</strong><br><span style="font-size:12px;color:var(--text-muted)">GPC + BALD, seuil de score minimum, features : compétences, localisation, TJM estimé</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Configurer le stealth mode anti-détection</strong><br><span style="font-size:12px;color:var(--text-muted)">Playwright stealth, délais aléatoires, rotation User-Agent, limites quotidiennes</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Tester le pipeline complet sur 50 profils</strong><br><span style="font-size:12px;color:var(--text-muted)">Validation end-to-end : scraping → qualification → export JSON vers Fire-Enrich</span></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 4: CHECKLIST FIRE-ENRICH -->
+  <div class="section" id="checklist-fireenrich">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(245,158,11,0.12);color:var(--accent-yellow)"><span class="material-icons-round">auto_fix_high</span></div>
+      <h2>Checklist — Fire-Enrich</h2>
+      <span class="section-tag badge-yellow">7 tâches</span>
+    </div>
+    <div class="card">
+      <ul class="checklist">
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Cloner le repo et configurer l'environnement</strong><br><span style="font-size:12px;color:var(--text-muted)">git clone, npm install, configuration des variables d'environnement</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Obtenir et configurer la clé API Firecrawl</strong><br><span style="font-size:12px;color:var(--text-muted)">Inscription sur firecrawl.dev, plan gratuit (500 crédits/mois) ou payant selon volume</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Configurer les 4 agents IA d'enrichissement</strong><br><span style="font-size:12px;color:var(--text-muted)">Company Research, Fundraising Intelligence, People & Leadership, Product & Technology</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Adapter les prompts IA au contexte Portage Salarial</strong><br><span style="font-size:12px;color:var(--text-muted)">Personnaliser les agents pour détecter : freelances, consultants IT, ESN, besoins portage</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Connecter l'input depuis OpenOutreach</strong><br><span style="font-size:12px;color:var(--text-muted)">Webhook ou fichier CSV/JSON, mapping des champs profil → enrichissement</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Configurer l'output vers Twenty CRM</strong><br><span style="font-size:12px;color:var(--text-muted)">API REST ou GraphQL de Twenty, mapping des champs enrichis → objets CRM</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Tester l'enrichissement sur 20 profils</strong><br><span style="font-size:12px;color:var(--text-muted)">Validation de la qualité des données enrichies, taux de complétion, pertinence IA</span></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 5: CHECKLIST TWENTY CRM -->
+  <div class="section" id="checklist-twenty">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)"><span class="material-icons-round">hub</span></div>
+      <h2>Checklist — Twenty CRM</h2>
+      <span class="section-tag badge-blue">7 tâches</span>
+    </div>
+    <div class="card">
+      <ul class="checklist">
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Déployer Twenty CRM via Docker Compose</strong><br><span style="font-size:12px;color:var(--text-muted)">docker-compose up -d, PostgreSQL, Redis, configuration Nginx reverse proxy</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Créer les objets custom Portage AI</strong><br><span style="font-size:12px;color:var(--text-muted)">Consultant (TJM, compétences, statut), Mission (durée, client, secteur), Pipeline B2B/B2C</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Configurer les vues et filtres personnalisés</strong><br><span style="font-size:12px;color:var(--text-muted)">Vue Kanban par statut, vue tableau par TJM, filtres par compétence/localisation/score</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Installer l'extension Chrome Twenty</strong><br><span style="font-size:12px;color:var(--text-muted)">Capture de profils LinkedIn directement depuis le navigateur vers le CRM</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Configurer les API keys et webhooks</strong><br><span style="font-size:12px;color:var(--text-muted)">GraphQL API pour Fire-Enrich et n8n, webhooks pour les changements de statut</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Importer les données existantes</strong><br><span style="font-size:12px;color:var(--text-muted)">Migration depuis Excel/CSV actuel, dédoublonnage, mapping des champs</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Configurer les utilisateurs et permissions</strong><br><span style="font-size:12px;color:var(--text-muted)">Rôles : Admin, Commercial, Agent IA — permissions par pipeline et par vue</span></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 6: CHECKLIST N8N -->
+  <div class="section" id="checklist-n8n">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(139,92,246,0.12);color:var(--accent-purple)"><span class="material-icons-round">account_tree</span></div>
+      <h2>Checklist — n8n</h2>
+      <span class="section-tag badge-purple">7 tâches</span>
+    </div>
+    <div class="card">
+      <ul class="checklist">
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Déployer n8n via Docker</strong><br><span style="font-size:12px;color:var(--text-muted)">docker run n8n, configuration SQLite/PostgreSQL, Nginx reverse proxy, SSL</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Créer le workflow "Scraping → Enrichissement"</strong><br><span style="font-size:12px;color:var(--text-muted)">Trigger CRON quotidien → appel OpenOutreach → envoi batch vers Fire-Enrich</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Créer le workflow "Enrichissement → CRM"</strong><br><span style="font-size:12px;color:var(--text-muted)">Webhook Fire-Enrich → transformation données → création/mise à jour contact Twenty</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Créer le workflow "Qualification → Email"</strong><br><span style="font-size:12px;color:var(--text-muted)">Trigger sur changement statut CRM → génération email personnalisé IA → envoi SMTP</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Créer le workflow "Alertes & Reporting"</strong><br><span style="font-size:12px;color:var(--text-muted)">Rapport quotidien Slack/Email : nouveaux leads, taux conversion, anomalies détectées</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Configurer les agents IA natifs n8n</strong><br><span style="font-size:12px;color:var(--text-muted)">Agent de scoring avancé, agent de rédaction d'emails, agent d'analyse de réponses</span></div></li>
+        <li class="check-item"><span class="check-icon check-pending"><span class="material-icons-round" style="font-size:14px">radio_button_unchecked</span></span><div><strong>Tests end-to-end de tous les workflows</strong><br><span style="font-size:12px;color:var(--text-muted)">Simulation complète : profil LinkedIn → CRM → email → suivi — validation des données à chaque étape</span></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 7: KPIs & METRIQUES -->
+  <div class="section" id="kpis">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(6,182,212,0.12);color:var(--accent-cyan)"><span class="material-icons-round">analytics</span></div>
+      <h2>KPIs & Métriques Cibles</h2>
+      <span class="section-tag badge-cyan">Objectifs à 3 mois</span>
+    </div>
+
+    <div class="grid-3" style="margin-bottom:24px">
+      <div class="card kpi-card">
+        <span class="material-icons-round" style="font-size:32px;color:var(--accent-linkedin)">person_search</span>
+        <div class="kpi-label" style="color:var(--text-primary);margin-top:8px">Profils scrapés / semaine</div>
+        <div class="kpi-value" style="color:var(--accent-linkedin)">500</div>
+        <div class="kpi-sublabel">Objectif : 2 000/mois — Source : OpenOutreach</div>
+      </div>
+      <div class="card kpi-card">
+        <span class="material-icons-round" style="font-size:32px;color:var(--accent-yellow)">auto_fix_high</span>
+        <div class="kpi-label" style="color:var(--text-primary);margin-top:8px">Taux d'enrichissement</div>
+        <div class="kpi-value" style="color:var(--accent-yellow)">85%</div>
+        <div class="kpi-sublabel">Objectif : 85% des profils enrichis — Source : Fire-Enrich</div>
+      </div>
+      <div class="card kpi-card">
+        <span class="material-icons-round" style="font-size:32px;color:var(--accent-green)">verified</span>
+        <div class="kpi-label" style="color:var(--text-primary);margin-top:8px">Taux de qualification ML</div>
+        <div class="kpi-value" style="color:var(--accent-green)">32%</div>
+        <div class="kpi-sublabel">Objectif : 640 leads qualifiés/mois — Score > 70</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:24px">
+      <div class="card-title"><span class="material-icons-round" style="color:var(--accent-cyan)">trending_up</span> Métriques de Performance Détaillées</div>
+      <table class="data-table">
+        <thead><tr><th>Métrique</th><th>Cible M1</th><th>Cible M2</th><th>Cible M3</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td><strong style="color:var(--text-primary)">Profils scrapés</strong></td><td>800</td><td>1 500</td><td>2 000</td><td><span class="badge badge-blue">OpenOutreach</span></td></tr>
+          <tr><td><strong style="color:var(--text-primary)">Profils enrichis</strong></td><td>640</td><td>1 275</td><td>1 700</td><td><span class="badge badge-yellow">Fire-Enrich</span></td></tr>
+          <tr><td><strong style="color:var(--text-primary)">Leads qualifiés (score > 70)</strong></td><td>200</td><td>450</td><td>640</td><td><span class="badge badge-green">ML Pipeline</span></td></tr>
+          <tr><td><strong style="color:var(--text-primary)">Emails envoyés</strong></td><td>150</td><td>350</td><td>500</td><td><span class="badge badge-purple">n8n Workflow</span></td></tr>
+          <tr><td><strong style="color:var(--text-primary)">Taux de réponse email</strong></td><td>8%</td><td>12%</td><td>15%</td><td><span class="badge badge-cyan">Tracking</span></td></tr>
+          <tr><td><strong style="color:var(--text-primary)">RDV obtenus</strong></td><td>12</td><td>30</td><td>50</td><td><span class="badge badge-blue">Twenty CRM</span></td></tr>
+          <tr><td><strong style="color:var(--text-primary)">Conversions (signatures)</strong></td><td>3</td><td>8</td><td>15</td><td><span class="badge badge-green">Pipeline</span></td></tr>
+          <tr><td><strong style="color:var(--text-primary)">Coût par lead qualifié</strong></td><td>< 2€</td><td>< 1,50€</td><td>< 1€</td><td><span class="badge badge-yellow">Calcul</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="material-icons-round" style="color:var(--accent-green)">bar_chart</span> Projection du ROI</div>
+      <div style="height:280px"><canvas id="chart-roi"></canvas></div>
+    </div>
+  </div>
+
+  <!-- SECTION 8: MATRICE DES RISQUES -->
+  <div class="section" id="risques">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(244,63,94,0.12);color:var(--accent-red)"><span class="material-icons-round">warning</span></div>
+      <h2>Matrice des Risques</h2>
+      <span class="section-tag badge-red">6 risques identifiés</span>
+    </div>
+    <div class="card">
+      <div class="risk-row risk-header">
+        <div>Risque</div><div>Impact</div><div>Probabilité</div><div>Mitigation</div>
+      </div>
+      <div class="risk-row">
+        <div><strong style="color:var(--text-primary)">Blocage du compte LinkedIn</strong></div>
+        <div><span class="badge badge-red">Élevé</span></div>
+        <div><span class="badge badge-yellow">Moyen</span></div>
+        <div>Proxy résidentiel rotatif, délais aléatoires (2-8s), limite 80 profils/jour, warm-up progressif du compte</div>
+      </div>
+      <div class="risk-row">
+        <div><strong style="color:var(--text-primary)">Qualité insuffisante des données enrichies</strong></div>
+        <div><span class="badge badge-yellow">Moyen</span></div>
+        <div><span class="badge badge-yellow">Moyen</span></div>
+        <div>Validation humaine sur les 100 premiers profils, ajustement des prompts IA, scoring de confiance par champ</div>
+      </div>
+      <div class="risk-row">
+        <div><strong style="color:var(--text-primary)">Indisponibilité du serveur</strong></div>
+        <div><span class="badge badge-red">Élevé</span></div>
+        <div><span class="badge badge-green">Faible</span></div>
+        <div>Monitoring Uptime Robot, alertes Slack, backups PostgreSQL quotidiens, Docker restart policy</div>
+      </div>
+      <div class="risk-row">
+        <div><strong style="color:var(--text-primary)">Dépassement des quotas API Firecrawl</strong></div>
+        <div><span class="badge badge-yellow">Moyen</span></div>
+        <div><span class="badge badge-yellow">Moyen</span></div>
+        <div>Monitoring des crédits consommés, file d'attente n8n avec rate limiting, cache des résultats déjà enrichis</div>
+      </div>
+      <div class="risk-row">
+        <div><strong style="color:var(--text-primary)">Non-conformité RGPD</strong></div>
+        <div><span class="badge badge-red">Élevé</span></div>
+        <div><span class="badge badge-green">Faible</span></div>
+        <div>Données publiques LinkedIn uniquement, opt-out automatique, suppression sur demande, registre de traitement</div>
+      </div>
+      <div class="risk-row">
+        <div><strong style="color:var(--text-primary)">Résistance au changement de l'équipe</strong></div>
+        <div><span class="badge badge-yellow">Moyen</span></div>
+        <div><span class="badge badge-yellow">Moyen</span></div>
+        <div>Formation progressive (2 sessions/semaine), documentation vidéo, champion interne, quick wins visibles</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 9: PLANNING GANTT -->
+  <div class="section" id="gantt">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(139,92,246,0.12);color:var(--accent-purple)"><span class="material-icons-round">view_timeline</span></div>
+      <h2>Planning Gantt</h2>
+      <span class="section-tag badge-purple">8 semaines</span>
+    </div>
+    <div class="card">
+      <div style="margin-bottom:16px;display:flex;gap:16px;font-size:11px;color:var(--text-muted)">
+        <span>S1</span><span>S2</span><span>S3</span><span>S4</span><span>S5</span><span>S6</span><span>S7</span><span>S8</span>
+      </div>
+      <div style="display:grid;gap:8px">
+        <div class="gantt-row">
+          <div class="gantt-label">Twenty CRM</div>
+          <div class="gantt-bar-track"><div class="gantt-bar" style="left:0%;width:25%;background:var(--accent-blue)">S1-S2</div></div>
+        </div>
+        <div class="gantt-row">
+          <div class="gantt-label">OpenOutreach</div>
+          <div class="gantt-bar-track"><div class="gantt-bar" style="left:25%;width:25%;background:var(--accent-linkedin)">S3-S4</div></div>
+        </div>
+        <div class="gantt-row">
+          <div class="gantt-label">Fire-Enrich</div>
+          <div class="gantt-bar-track"><div class="gantt-bar" style="left:25%;width:25%;background:var(--accent-yellow)">S3-S4</div></div>
+        </div>
+        <div class="gantt-row">
+          <div class="gantt-label">n8n Workflows</div>
+          <div class="gantt-bar-track"><div class="gantt-bar" style="left:50%;width:25%;background:var(--accent-purple)">S5-S6</div></div>
+        </div>
+        <div class="gantt-row">
+          <div class="gantt-label">Tests E2E</div>
+          <div class="gantt-bar-track"><div class="gantt-bar" style="left:62.5%;width:12.5%;background:var(--accent-cyan)">S6</div></div>
+        </div>
+        <div class="gantt-row">
+          <div class="gantt-label">ML Calibration</div>
+          <div class="gantt-bar-track"><div class="gantt-bar" style="left:75%;width:12.5%;background:var(--accent-green)">S7</div></div>
+        </div>
+        <div class="gantt-row">
+          <div class="gantt-label">Formation</div>
+          <div class="gantt-bar-track"><div class="gantt-bar" style="left:75%;width:25%;background:var(--accent-yellow)">S7-S8</div></div>
+        </div>
+        <div class="gantt-row">
+          <div class="gantt-label">Go Live</div>
+          <div class="gantt-bar-track"><div class="gantt-bar" style="left:87.5%;width:12.5%;background:var(--accent-green)">S8 ✓</div></div>
+        </div>
+      </div>
+      <div style="margin-top:20px;display:flex;gap:16px;flex-wrap:wrap;font-size:11px">
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:var(--accent-blue)"></span> Infrastructure</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:var(--accent-linkedin)"></span> Scraping</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:var(--accent-yellow)"></span> Enrichissement</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:var(--accent-purple)"></span> Orchestration</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:var(--accent-cyan)"></span> Tests</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border-radius:3px;background:var(--accent-green)"></span> Production</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 10: REVUES & POINTS DE CONTROLE -->
+  <div class="section" id="revues">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(16,185,129,0.12);color:var(--accent-green)"><span class="material-icons-round">fact_check</span></div>
+      <h2>Revues & Points de Contrôle</h2>
+      <span class="section-tag badge-green">4 jalons</span>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:24px">
+      <div class="card">
+        <div class="card-title"><span class="material-icons-round" style="color:var(--accent-blue)">event</span> Revue Hebdomadaire</div>
+        <ul class="feature-list">
+          <li class="feature-item"><span class="feature-icon" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)"><span class="material-icons-round" style="font-size:14px">groups</span></span><div><strong>Participants :</strong> Chef de projet, Lead Dev, Responsable commercial</div></li>
+          <li class="feature-item"><span class="feature-icon" style="background:rgba(16,185,129,0.12);color:var(--accent-green)"><span class="material-icons-round" style="font-size:14px">checklist</span></span><div><strong>Agenda :</strong> Avancement des tâches, blocages, métriques de la semaine, prochaines actions</div></li>
+          <li class="feature-item"><span class="feature-icon" style="background:rgba(139,92,246,0.12);color:var(--accent-purple)"><span class="material-icons-round" style="font-size:14px">schedule</span></span><div><strong>Durée :</strong> 30 minutes — Chaque lundi à 10h</div></li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="material-icons-round" style="color:var(--accent-green)">assessment</span> Revue Mensuelle</div>
+        <ul class="feature-list">
+          <li class="feature-item"><span class="feature-icon" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)"><span class="material-icons-round" style="font-size:14px">groups</span></span><div><strong>Participants :</strong> Direction, Chef de projet, Équipe commerciale complète</div></li>
+          <li class="feature-item"><span class="feature-icon" style="background:rgba(16,185,129,0.12);color:var(--accent-green)"><span class="material-icons-round" style="font-size:14px">insights</span></span><div><strong>Agenda :</strong> KPIs consolidés, ROI réel vs prévisionnel, ajustements stratégiques</div></li>
+          <li class="feature-item"><span class="feature-icon" style="background:rgba(139,92,246,0.12);color:var(--accent-purple)"><span class="material-icons-round" style="font-size:14px">schedule</span></span><div><strong>Durée :</strong> 1 heure — Premier vendredi du mois à 14h</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="material-icons-round" style="color:var(--accent-cyan)">flag</span> Jalons de Validation (Go/No-Go)</div>
+      <table class="data-table">
+        <thead><tr><th>Jalon</th><th>Semaine</th><th>Critères de validation</th><th>Décideur</th><th>Statut</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:var(--text-primary)">J1 — CRM opérationnel</strong></td>
+            <td>S2</td>
+            <td>Twenty déployé, objets custom créés, données importées, 3 utilisateurs actifs</td>
+            <td>Chef de projet</td>
+            <td><span class="badge badge-yellow">En attente</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--text-primary)">J2 — Pipeline de scraping validé</strong></td>
+            <td>S4</td>
+            <td>50 profils scrapés et enrichis sans erreur, données dans le CRM, qualité > 80%</td>
+            <td>Lead Dev</td>
+            <td><span class="badge badge-yellow">En attente</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--text-primary)">J3 — Automatisation complète</strong></td>
+            <td>S6</td>
+            <td>Workflows n8n opérationnels, emails envoyés automatiquement, alertes fonctionnelles</td>
+            <td>Chef de projet</td>
+            <td><span class="badge badge-yellow">En attente</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--text-primary)">J4 — Go Live Production</strong></td>
+            <td>S8</td>
+            <td>Équipe formée, KPIs M1 atteignables, monitoring en place, backup validé</td>
+            <td>Direction</td>
+            <td><span class="badge badge-yellow">En attente</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Chart: Progress Doughnut
+const ctxProgress = document.getElementById('chart-progress');
+if(ctxProgress) {
+  new Chart(ctxProgress, {
+    type: 'doughnut',
+    data: {
+      labels: ['Terminé', 'En cours', 'En attente'],
+      datasets: [{
+        data: [0, 0, 28],
+        backgroundColor: ['#10b981', '#3b82f6', '#1e1f2e'],
+        borderWidth: 0,
+        cutout: '70%'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { color: '#8b8ca0', font: { family: 'Inter', size: 11 }, padding: 16, usePointStyle: true }
+        }
+      }
+    }
+  });
+}
+
+// Chart: ROI Projection
+const ctxRoi = document.getElementById('chart-roi');
+if(ctxRoi) {
+  new Chart(ctxRoi, {
+    type: 'bar',
+    data: {
+      labels: ['Mois 1', 'Mois 2', 'Mois 3', 'Mois 4', 'Mois 5', 'Mois 6'],
+      datasets: [
+        {
+          label: 'Coût infrastructure (€)',
+          data: [290, 90, 90, 90, 90, 90],
+          backgroundColor: 'rgba(244,63,94,0.6)',
+          borderRadius: 6
+        },
+        {
+          label: 'Valeur leads générés (€)',
+          data: [300, 800, 1500, 2500, 3500, 5000],
+          backgroundColor: 'rgba(16,185,129,0.6)',
+          borderRadius: 6
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: { color: '#8b8ca0', font: { family: 'Inter', size: 11 }, usePointStyle: true }
+        }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#5c5d70', font: { family: 'Inter', size: 11 } } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#5c5d70', font: { family: 'Inter', size: 11 }, callback: v => v + '€' } }
+      }
+    }
+  });
+}
+</script>
+</body>
+</html>
