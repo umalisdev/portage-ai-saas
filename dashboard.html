@@ -637,22 +637,24 @@
 <script>
 // ===== DATA =====
 const AGENTS = [
-  { id:'aria', name:'ARIA', fullName:'Agent de Recherche et Intelligence Artificielle', role:'Prospection & Qualification', emoji:'🔍', photo:'img/aria.png', color:'#3b82f6', bg:'rgba(59,130,246,0.12)', status:'active', score:94, contacts:487, deals:23, specialties:['Scraping LinkedIn','Scoring IA','Qualification auto'], weeklyData:[42,38,55,48,62,45,52] },
-  { id:'noah', name:'NOAH', fullName:'Négociateur Optimisé par Algorithmes Heuristiques', role:'Négociation & Closing', emoji:'🤝', photo:'img/noah.png', color:'#10b981', bg:'rgba(16,185,129,0.12)', status:'active', score:91, contacts:234, deals:18, specialties:['Closing B2B','Négociation','Contrats-cadres'], weeklyData:[28,35,42,38,45,40,48] },
-  { id:'luna', name:'LUNA', fullName:'Logiciel Unifié de Nurturing Automatisé', role:'Marketing & Nurturing', emoji:'✨', photo:'img/luna.png', color:'#f59e0b', bg:'rgba(245,158,11,0.12)', status:'busy', score:88, contacts:1205, deals:45, specialties:['Email marketing','Séquences auto','Content IA'], weeklyData:[85,92,78,95,88,102,96] },
-  { id:'alex', name:'ALEX', fullName:'Agent Logistique d\'EXpérience client', role:'Onboarding & Fidélisation', emoji:'🎯', photo:'img/alex.png', color:'#8b5cf6', bg:'rgba(139,92,246,0.12)', status:'active', score:86, contacts:312, deals:67, specialties:['Onboarding','Satisfaction','Rétention'], weeklyData:[35,42,38,45,40,48,44] },
-  { id:'max', name:'MAX', fullName:'Module d\'Analyse et eXploitation des données', role:'Analytics & Reporting', emoji:'📊', photo:'img/max.png', color:'#f43f5e', bg:'rgba(244,63,94,0.12)', status:'idle', score:92, contacts:0, deals:0, specialties:['Dashboards','Prédictions','Rapports auto'], weeklyData:[12,15,18,14,20,16,22] }
+  { id:'aria', name:'ARIA', fullName:'Agent de Recherche et Intelligence Artificielle', role:'Prospection & Qualification', emoji:'🔍', photo:'img/aria.png', color:'#3b82f6', bg:'rgba(59,130,246,0.12)', status:'active', score:96, contacts:2057, deals:666, specialties:['Scraping LinkedIn 97%','Scoring multicritères 95%','Qualification B2B 96%','Enrichissement données 93%','Détection d\'intention 91%','Segmentation sectorielle 94%'], weeklyData:[58,62,71,65,78,72,85], kpis:{contacts:2057,contactsTrend:'+18%',leads:666,leadsTrend:'+24%',tauxQualif:'32%',tauxTrend:'+3pts'} },
+  { id:'noah', name:'NOAH', fullName:'Négociateur Optimisé par Algorithmes Heuristiques', role:'Négociation & Closing', emoji:'🤝', photo:'img/noah.png', color:'#10b981', bg:'rgba(16,185,129,0.12)', status:'active', score:93, contacts:307, deals:89, specialties:['Proposition commerciale 95%','Planification RDV 94%','Gestion des objections 93%','Suivi pipeline 92%','Closing B2B 91%','Simulation financière 89%'], weeklyData:[35,42,48,52,58,55,64], kpis:{propositions:307,propositionsTrend:'+12%',contrats:89,contratsTrend:'+15%',tauxClosing:'29%',closingTrend:'+4pts'} },
+  { id:'luna', name:'LUNA', fullName:'Logiciel Unifié de Nurturing Automatisé', role:'Marketing & Nurturing', emoji:'✨', photo:'img/luna.png', color:'#f59e0b', bg:'rgba(245,158,11,0.12)', status:'active', score:90, contacts:4520, deals:156, specialties:['Email Marketing 94%','Séquences nurturing 93%','Copywriting IA 91%','Segmentation audience 89%','Content Strategy 88%','A/B Testing 86%'], weeklyData:[105,118,125,132,145,152,168], kpis:{emails:4520,emailsTrend:'+28%',tauxOuverture:'34%',ouvertureTrend:'+6pts',tauxClic:'12%',clicTrend:'+3pts'} },
+  { id:'alex', name:'ALEX', fullName:'Agent Logistique d\'EXpérience client', role:'Onboarding & Fidélisation', emoji:'🎯', photo:'img/alex.png', color:'#8b5cf6', bg:'rgba(139,92,246,0.12)', status:'active', score:89, contacts:89, deals:86, specialties:['Gestion documentaire 94%','Onboarding automatisé 92%','Suivi satisfaction 89%','Rétention client 87%','Formation utilisateur 85%','Anticipation besoins 83%'], weeklyData:[42,48,52,55,58,62,68], kpis:{onboardes:89,onboardesTrend:'+15%',satisfaction:'96%',satisfactionTrend:'+2pts',retention:'91%',retentionTrend:'+5pts'} },
+  { id:'max', name:'MAX', fullName:'Module d\'Analyse et eXploitation des données', role:'Analytics & Reporting', emoji:'📊', photo:'img/max.png', color:'#f43f5e', bg:'rgba(244,63,94,0.12)', status:'active', score:94, contacts:156, deals:12, specialties:['Reporting automatisé 97%','Data Visualization 96%','KPI Tracking 95%','Analyse prédictive 93%','Détection d\'anomalies 90%','Forecasting 88%'], weeklyData:[18,22,25,28,32,35,38], kpis:{rapports:156,rapportsTrend:'+22%',alertes:12,alertesTrend:'Actif 24/7',precision:'99,8%',precisionTrend:'+0,3pts'} }
 ];
 
 const B2B_PIPELINE = [
-  { name:'Capgemini Engineering', sector:'ESN', stage:'Négociation', value:25000, agent:'noah' },
-  { name:'Sopra Steria', sector:'ESN', stage:'Proposition', value:18000, agent:'aria' },
-  { name:'Accenture France', sector:'Conseil', stage:'Qualification', value:32000, agent:'aria' },
-  { name:'Alten', sector:'Ingénierie', stage:'Closing', value:15000, agent:'noah' },
-  { name:'CGI France', sector:'ESN', stage:'Découverte', value:22000, agent:'aria' },
-  { name:'Devoteam', sector:'Conseil IT', stage:'Proposition', value:12000, agent:'noah' },
-  { name:'Atos', sector:'ESN', stage:'Négociation', value:28000, agent:'noah' },
-  { name:'Wavestone', sector:'Conseil', stage:'Qualification', value:8000, agent:'aria' }
+  { name:'Capgemini Engineering', sector:'ESN', stage:'Closing', value:25000, agent:'noah' },
+  { name:'Sopra Steria', sector:'ESN', stage:'Négociation', value:22000, agent:'noah' },
+  { name:'Accenture France', sector:'Conseil', stage:'Proposition', value:35000, agent:'aria' },
+  { name:'Alten', sector:'Ingénierie', stage:'Closing', value:18000, agent:'noah' },
+  { name:'CGI France', sector:'ESN', stage:'Qualification', value:24000, agent:'aria' },
+  { name:'Devoteam', sector:'Conseil IT', stage:'Négociation', value:15000, agent:'noah' },
+  { name:'Atos', sector:'ESN', stage:'Closing', value:32000, agent:'noah' },
+  { name:'Wavestone', sector:'Conseil', stage:'Proposition', value:12000, agent:'aria' },
+  { name:'Orange Business', sector:'Télécom', stage:'Qualification', value:28000, agent:'aria' },
+  { name:'Thales Digital', sector:'Défense', stage:'Découverte', value:20000, agent:'aria' }
 ];
 
 const B2C_PIPELINE = [
@@ -667,44 +669,46 @@ const B2C_PIPELINE = [
 ];
 
 const ACTIVITIES = [
-  { time:'14:32', agent:'ARIA', text:'a qualifié 3 nouveaux leads B2B dans le secteur ESN', color:'#3b82f6' },
-  { time:'14:15', agent:'NOAH', text:'a envoyé une proposition commerciale à Capgemini Engineering', color:'#10b981' },
-  { time:'13:58', agent:'LUNA', text:'a lancé la campagne email "Découvrez le portage salarial"', color:'#f59e0b' },
-  { time:'13:42', agent:'ALEX', text:'a finalisé l\'onboarding de Sophie Martin (SAP)', color:'#8b5cf6' },
-  { time:'13:20', agent:'MAX', text:'a généré le rapport de performance hebdomadaire', color:'#f43f5e' },
-  { time:'12:55', agent:'ARIA', text:'a identifié 12 profils LinkedIn Data/IA à contacter', color:'#3b82f6' },
-  { time:'12:30', agent:'LUNA', text:'a envoyé 450 emails de nurturing aux leads B2C', color:'#f59e0b' },
-  { time:'11:45', agent:'NOAH', text:'a programmé un RDV closing avec Alten pour vendredi', color:'#10b981' }
+  { time:'16:45', agent:'ARIA', text:'a qualifié 8 nouveaux leads B2B — score moyen 87/100 (+18% ce mois)', color:'#3b82f6' },
+  { time:'16:22', agent:'MAX', text:'a détecté une anomalie sur le taux de conversion B2C et déclenché une alerte (précision 99,8%)', color:'#f43f5e' },
+  { time:'15:58', agent:'NOAH', text:'a signé le contrat-cadre Capgemini Engineering — 25K€/mois (+15% contrats ce mois)', color:'#10b981' },
+  { time:'15:30', agent:'LUNA', text:'a envoyé 680 emails nurturing secteur Cloud — taux d\'ouverture 34% (+6pts)', color:'#f59e0b' },
+  { time:'15:05', agent:'ALEX', text:'a finalisé l\'onboarding de 3 consultants — satisfaction 96% (+2pts)', color:'#8b5cf6' },
+  { time:'14:32', agent:'ARIA', text:'a identifié 15 profils LinkedIn IA/ML seniors — enrichissement SIRENE en cours', color:'#3b82f6' },
+  { time:'14:10', agent:'MAX', text:'a généré le rapport de performance hebdomadaire — 156 rapports ce mois (+22%)', color:'#f43f5e' },
+  { time:'13:45', agent:'NOAH', text:'a programmé 4 RDV closing cette semaine — pipeline B2B à 136K€ (+31%)', color:'#10b981' },
+  { time:'13:15', agent:'LUNA', text:'a lancé l\'A/B test campagne "Portage vs Auto-entrepreneur" — 4 520 emails envoyés (+28%)', color:'#f59e0b' },
+  { time:'12:50', agent:'ALEX', text:'a envoyé les questionnaires satisfaction Q1 — taux de rétention à 91% (+5pts)', color:'#8b5cf6' }
 ];
 
 const DASHBOARD_FUNNEL = [
-  { label:'Contacts', count:2057, rate:'100%', color:'#3b82f6' },
-  { label:'Qualifiés', count:666, rate:'32%', color:'#8b5cf6' },
-  { label:'Propositions', count:307, rate:'15%', color:'#f59e0b' },
-  { label:'Négociation', count:142, rate:'6.9%', color:'#06b6d4' },
-  { label:'Signés', count:89, rate:'4.3%', color:'#10b981' }
+  { label:'Contacts', count:2340, rate:'100%', color:'#3b82f6' },
+  { label:'Qualifiés', count:782, rate:'33%', color:'#8b5cf6' },
+  { label:'Propositions', count:358, rate:'15.3%', color:'#f59e0b' },
+  { label:'Négociation', count:168, rate:'7.2%', color:'#06b6d4' },
+  { label:'Signés', count:102, rate:'4.4%', color:'#10b981' }
 ];
 
 const B2B_FUNNEL = [
-  { label:'Découverte', count:45, rate:'100%', color:'#3b82f6' },
-  { label:'Qualification', count:28, rate:'62%', color:'#8b5cf6' },
-  { label:'Proposition', count:18, rate:'40%', color:'#f59e0b' },
-  { label:'Négociation', count:12, rate:'27%', color:'#06b6d4' },
-  { label:'Closing', count:8, rate:'18%', color:'#10b981' }
+  { label:'Découverte', count:58, rate:'100%', color:'#3b82f6' },
+  { label:'Qualification', count:38, rate:'66%', color:'#8b5cf6' },
+  { label:'Proposition', count:24, rate:'41%', color:'#f59e0b' },
+  { label:'Négociation', count:16, rate:'28%', color:'#06b6d4' },
+  { label:'Closing', count:10, rate:'17%', color:'#10b981' }
 ];
 
 const B2C_FUNNEL = [
-  { label:'Contact', count:1200, rate:'100%', color:'#3b82f6' },
-  { label:'Simulation', count:420, rate:'35%', color:'#8b5cf6' },
-  { label:'Qualification', count:180, rate:'15%', color:'#f59e0b' },
-  { label:'Onboarding', count:85, rate:'7%', color:'#06b6d4' },
-  { label:'Signé', count:52, rate:'4.3%', color:'#10b981' }
+  { label:'Contact', count:1480, rate:'100%', color:'#3b82f6' },
+  { label:'Simulation', count:520, rate:'35%', color:'#8b5cf6' },
+  { label:'Qualification', count:228, rate:'15.4%', color:'#f59e0b' },
+  { label:'Onboarding', count:108, rate:'7.3%', color:'#06b6d4' },
+  { label:'Signé', count:68, rate:'4.6%', color:'#10b981' }
 ];
 
 const CAMPAIGNS = [
-  { name:'Découvrez vos revenus en portage', agent:'LUNA', agentEmoji:'✨', status:'active', type:'email', sent:2400, opened:864, clicked:312, replies:48, meetings:12, target:'Freelances IT' },
-  { name:'Offre entreprise — Contrat-cadre', agent:'ARIA', agentEmoji:'🔍', status:'active', type:'multicanal', sent:450, opened:198, clicked:67, replies:23, meetings:8, target:'DSI Grands Comptes' },
-  { name:'Webinaire Portage vs Auto-entrepreneur', agent:'LUNA', agentEmoji:'✨', status:'completed', type:'email', sent:3200, opened:1280, clicked:576, replies:89, meetings:34, target:'Indépendants' },
+  { name:'Découvrez vos revenus en portage', agent:'LUNA', agentEmoji:'✨', status:'active', type:'email', sent:3200, opened:1088, clicked:416, replies:72, meetings:18, target:'Freelances IT' },
+  { name:'Offre entreprise — Contrat-cadre', agent:'ARIA', agentEmoji:'🔍', status:'active', type:'multicanal', sent:680, opened:312, clicked:102, replies:38, meetings:14, target:'DSI Grands Comptes' },
+  { name:'Webinaire Portage vs Auto-entrepreneur', agent:'LUNA', agentEmoji:'✨', status:'completed', type:'email', sent:4520, opened:1537, clicked:723, replies:124, meetings:48, target:'Indépendants' },
   { name:'Relance prospects qualifiés Q1', agent:'NOAH', agentEmoji:'🤝', status:'active', type:'email', sent:180, opened:108, clicked:45, replies:18, meetings:6, target:'Prospects B2B chauds' },
   { name:'Nurturing nouveaux inscrits', agent:'ALEX', agentEmoji:'🎯', status:'draft', type:'email', sent:0, opened:0, clicked:0, replies:0, meetings:0, target:'Nouveaux leads B2C' },
   { name:'Prospection LinkedIn ESN', agent:'ARIA', agentEmoji:'🔍', status:'paused', type:'linkedin', sent:320, opened:160, clicked:48, replies:15, meetings:4, target:'ESN & SSII' }
@@ -713,12 +717,14 @@ const CAMPAIGNS = [
 const LINKEDIN_PROFILES = [];
 
 const MISSIONS = [
-  { title:'Prospection ESN Île-de-France', desc:'Identifier et qualifier 50 ESN en IDF pour proposer des contrats-cadres.', agent:'aria', priority:'haute', status:'en_cours', progress:68, target:'50 ESN qualifiées', deadline:'28/02/2026', metrics:[{l:'Identifiées',v:'42'},{l:'Contactées',v:'34'},{l:'Qualifiées',v:'18'}] },
-  { title:'Campagne Webinaire Mars 2026', desc:'Organiser un webinaire "Portage vs Auto-entrepreneur" — 200 inscrits.', agent:'luna', priority:'haute', status:'planifiee', progress:25, target:'200 inscrits', deadline:'15/03/2026', metrics:[{l:'Landing page',v:'OK'},{l:'Inscrits',v:'52'},{l:'Emails',v:'1200'}] },
-  { title:'Closing Capgemini Engineering', desc:'Finaliser la négociation du contrat-cadre — 25K€/mois.', agent:'noah', priority:'haute', status:'en_cours', progress:85, target:'Signature contrat', deadline:'22/02/2026', metrics:[{l:'Réunions',v:'4'},{l:'Proposition',v:'Envoyée'},{l:'Retour',v:'Positif'}] },
-  { title:'Onboarding batch février', desc:'Accompagner l\'onboarding de 12 nouveaux consultants.', agent:'alex', priority:'moyenne', status:'en_cours', progress:58, target:'12 consultants actifs', deadline:'28/02/2026', metrics:[{l:'Inscrits',v:'12'},{l:'Simulation OK',v:'8'},{l:'Contrats',v:'7'}] },
-  { title:'Rapport performance Q1', desc:'Générer le rapport trimestriel avec analyse prédictive.', agent:'max', priority:'basse', status:'planifiee', progress:10, target:'Rapport complet', deadline:'31/03/2026', metrics:[{l:'Données',v:'40%'},{l:'Analyses',v:'En cours'}] },
-  { title:'Prospection LinkedIn Data/IA', desc:'Rechercher et contacter 30 profils Data/IA seniors.', agent:'aria', priority:'moyenne', status:'terminee', progress:100, target:'30 profils contactés', deadline:'15/02/2026', metrics:[{l:'Trouvés',v:'35'},{l:'Contactés',v:'30'},{l:'Réponses',v:'12'}] }
+  { title:'Prospection ESN Île-de-France', desc:'Identifier et qualifier 50 ESN en IDF pour proposer des contrats-cadres.', agent:'aria', priority:'haute', status:'en_cours', progress:86, target:'50 ESN qualifiées', deadline:'28/02/2026', metrics:[{l:'Identifiées',v:'50'},{l:'Contactées',v:'45'},{l:'Qualifiées',v:'32'}] },
+  { title:'Campagne Webinaire Mars 2026', desc:'Organiser un webinaire "Portage vs Auto-entrepreneur" — 200 inscrits.', agent:'luna', priority:'haute', status:'en_cours', progress:65, target:'200 inscrits', deadline:'15/03/2026', metrics:[{l:'Landing page',v:'OK'},{l:'Inscrits',v:'134'},{l:'Emails',v:'4520'}] },
+  { title:'Closing Capgemini Engineering', desc:'Finaliser la négociation du contrat-cadre — 25K€/mois.', agent:'noah', priority:'haute', status:'terminee', progress:100, target:'Signature contrat', deadline:'22/02/2026', metrics:[{l:'Réunions',v:'6'},{l:'Proposition',v:'Acceptée'},{l:'Contrat',v:'Signé ✅'}] },
+  { title:'Onboarding batch février', desc:'Accompagner l\'onboarding de 12 nouveaux consultants.', agent:'alex', priority:'moyenne', status:'en_cours', progress:83, target:'12 consultants actifs', deadline:'28/02/2026', metrics:[{l:'Inscrits',v:'12'},{l:'Simulation OK',v:'12'},{l:'Contrats',v:'10'}] },
+  { title:'Rapport performance Q1', desc:'Générer le rapport trimestriel avec analyse prédictive.', agent:'max', priority:'moyenne', status:'en_cours', progress:45, target:'Rapport complet', deadline:'31/03/2026', metrics:[{l:'Données',v:'78%'},{l:'Analyses',v:'12 terminées'},{l:'Alertes',v:'3 déclenchées'}] },
+  { title:'Prospection LinkedIn Data/IA', desc:'Rechercher et contacter 30 profils Data/IA seniors.', agent:'aria', priority:'moyenne', status:'terminee', progress:100, target:'30 profils contactés', deadline:'15/02/2026', metrics:[{l:'Trouvés',v:'42'},{l:'Contactés',v:'38'},{l:'Réponses',v:'18'}] },
+  { title:'Nurturing B2C secteur Cloud', desc:'Séquence de 5 emails ciblés pour les profils Cloud/DevOps.', agent:'luna', priority:'haute', status:'en_cours', progress:72, target:'Taux ouverture >30%', deadline:'10/03/2026', metrics:[{l:'Envoyés',v:'680'},{l:'Ouverture',v:'34%'},{l:'Clics',v:'12%'}] },
+  { title:'Analyse prédictive pipeline B2B', desc:'Modèle de prédiction des closings pour le mois prochain.', agent:'max', priority:'haute', status:'en_cours', progress:60, target:'Prédiction à 95% de précision', deadline:'05/03/2026', metrics:[{l:'Modèle',v:'V2.3'},{l:'Précision',v:'93%'},{l:'Prédictions',v:'8 closings'}] }
 ];
 
 // CRM Prospects (populated by simulator)
@@ -972,23 +978,23 @@ function buildAllPages() {
     <div class="kpi-grid">
       <div class="kpi-card">
         <div class="kpi-header"><div class="kpi-icon" style="background:rgba(59,130,246,0.12)"><span class="material-icons-round" style="color:#3b82f6">contacts</span></div><div class="kpi-trend up">↗ +18%</div></div>
-        <div class="kpi-value">2 057</div><div class="kpi-label">Contacts Générés</div>
+        <div class="kpi-value">2 340</div><div class="kpi-label">Contacts Générés</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-header"><div class="kpi-icon" style="background:rgba(16,185,129,0.12)"><span class="material-icons-round" style="color:#10b981">verified</span></div><div class="kpi-trend up">↗ +24%</div></div>
-        <div class="kpi-value">666</div><div class="kpi-label">Leads Qualifiés</div>
+        <div class="kpi-value">782</div><div class="kpi-label">Leads Qualifiés</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-header"><div class="kpi-icon" style="background:rgba(245,158,11,0.12)"><span class="material-icons-round" style="color:#f59e0b">event_available</span></div><div class="kpi-trend up">↗ +12%</div></div>
-        <div class="kpi-value">307</div><div class="kpi-label">RDV Obtenus</div>
+        <div class="kpi-value">358</div><div class="kpi-label">RDV Obtenus</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-header"><div class="kpi-icon" style="background:rgba(139,92,246,0.12)"><span class="material-icons-round" style="color:#8b5cf6">trending_up</span></div><div class="kpi-trend up">↗ +3pts</div></div>
-        <div class="kpi-value">58%</div><div class="kpi-label">Taux Conv. Moy.</div>
+        <div class="kpi-value">61%</div><div class="kpi-label">Taux Conv. Moy.</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-header"><div class="kpi-icon" style="background:rgba(244,63,94,0.12)"><span class="material-icons-round" style="color:#f43f5e">account_balance</span></div><div class="kpi-trend up">↗ +31%</div></div>
-        <div class="kpi-value">136K€</div><div class="kpi-label">Pipeline B2B</div>
+        <div class="kpi-value">231K€</div><div class="kpi-label">Pipeline B2B</div>
       </div>
     </div>
     <div class="grid-2">
