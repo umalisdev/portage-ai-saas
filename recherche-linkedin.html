@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recherche LinkedIn — Portage AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg-primary: #0a0b0f;
+      --bg-secondary: #10111a;
+      --bg-card: #181920;
+      --bg-input: #12131a;
+      --border: #1e1f2e;
+      --border-hover: #2a2b3a;
+      --text-primary: #e8e9f0;
+      --text-secondary: #8b8ca0;
+      --text-muted: #5c5d70;
+      --text-dim: #3d3e50;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-yellow: #f59e0b;
+      --accent-purple: #8b5cf6;
+      --accent-red: #f43f5e;
+      --accent-cyan: #06b6d4;
+      --accent-linkedin: #0077b5;
+    }
+    [data-theme="light"] {
+      --bg-primary: #f5f6fa;
+      --bg-secondary: #ffffff;
+      --bg-card: #ffffff;
+      --bg-input: #f0f1f5;
+      --border: #e2e4ea;
+      --border-hover: #d0d2da;
+      --text-primary: #1a1b2e;
+      --text-secondary: #5c5d70;
+      --text-muted: #8b8ca0;
+      --text-dim: #b0b1c0;
+      --accent-blue: #2563eb;
+      --accent-green: #059669;
+      --accent-yellow: #d97706;
+      --accent-purple: #7c3aed;
+      --accent-red: #e11d48;
+      --accent-cyan: #0891b2;
+      --accent-linkedin: #0066a0;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    .page-wrapper { max-width: 1200px; margin: 0 auto; padding: 40px 32px 80px; }
+
+    /* === HEADER === */
+    .study-header {
+      text-align: center; margin-bottom: 60px; padding: 60px 40px;
+      background: linear-gradient(135deg, rgba(0,119,181,0.12), rgba(59,130,246,0.08));
+      border: 1px solid var(--border); border-radius: 24px;
+      position: relative; overflow: hidden;
+    }
+    .study-header::before {
+      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: radial-gradient(circle at 30% 40%, rgba(0,119,181,0.08) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 60%, rgba(59,130,246,0.06) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .study-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(0,119,181,0.12); border: 1px solid rgba(0,119,181,0.25);
+      border-radius: 20px; padding: 6px 16px; font-size: 12px; font-weight: 600;
+      color: var(--accent-linkedin); margin-bottom: 20px;
+    }
+    .study-header h1 {
+      font-size: 42px; font-weight: 900; letter-spacing: -1px; line-height: 1.2; margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--text-primary), var(--accent-linkedin));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .study-header .subtitle { font-size: 18px; color: var(--text-secondary); max-width: 700px; margin: 0 auto 28px; }
+    .study-meta { display: flex; justify-content: center; gap: 32px; font-size: 13px; color: var(--text-muted); }
+    .study-meta span { display: flex; align-items: center; gap: 6px; }
+    .study-meta .material-icons-round { font-size: 16px; }
+
+    /* === TOC === */
+    .toc { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 28px 32px; margin-bottom: 48px; }
+    .toc-title { font-size: 16px; font-weight: 800; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 32px; }
+    .toc-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 8px; font-size: 14px; color: var(--text-secondary); text-decoration: none; transition: all 0.2s; }
+    .toc-item:hover { background: rgba(0,119,181,0.08); color: var(--accent-linkedin); }
+    .toc-num { width: 28px; height: 28px; border-radius: 8px; background: var(--bg-input); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--accent-linkedin); flex-shrink: 0; }
+
+    /* === SECTIONS === */
+    .section { margin-bottom: 56px; }
+    .section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid var(--border); }
+    .section-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+    .section-header h2 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+    .section-header .section-tag { margin-left: auto; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 12px; }
+
+    /* === CARDS === */
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; transition: border-color 0.2s; }
+    .card:hover { border-color: var(--border-hover); }
+    .card-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+
+    /* === GRIDS === */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+    /* === FEATURE LIST === */
+    .feature-list { list-style: none; }
+    .feature-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+    .feature-item:last-child { border-bottom: none; }
+    .feature-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+    .feature-item strong { color: var(--text-primary); }
+
+    /* === TABLE === */
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .data-table thead tr { border-bottom: 2px solid var(--border); }
+    .data-table th { padding: 14px 12px; text-align: left; font-weight: 700; color: var(--text-primary); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .data-table td { padding: 14px 12px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+    .data-table tbody tr:hover { background: rgba(0,119,181,0.04); }
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; }
+    .badge-green { background: rgba(16,185,129,0.12); color: var(--accent-green); }
+    .badge-blue { background: rgba(59,130,246,0.12); color: var(--accent-blue); }
+    .badge-purple { background: rgba(139,92,246,0.12); color: var(--accent-purple); }
+    .badge-yellow { background: rgba(245,158,11,0.12); color: var(--accent-yellow); }
+    .badge-linkedin { background: rgba(0,119,181,0.12); color: var(--accent-linkedin); }
+
+    /* === FLOW DIAGRAM === */
+    .flow-container { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 24px 0; }
+    .flow-step { background: var(--bg-input); border: 2px solid var(--border); border-radius: 14px; padding: 16px 20px; text-align: center; min-width: 140px; }
+    .flow-step .material-icons-round { font-size: 28px; display: block; margin-bottom: 6px; }
+    .flow-step-name { font-size: 13px; font-weight: 700; }
+    .flow-step-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .flow-arrow { font-size: 24px; color: var(--text-dim); }
+
+    /* === SCREENSHOT MOCKUP === */
+    .mockup-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin: 20px 0; }
+    .mockup-header { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .mockup-title { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-left: 8px; }
+    .mockup-body { background: var(--bg-input); border-radius: 12px; padding: 20px; }
+
+    /* === PROFILE CARD DEMO === */
+    .demo-profile { background: var(--bg-input); border: 1px solid var(--border); border-radius: 14px; padding: 20px; display: flex; align-items: center; gap: 16px; }
+    .demo-avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: #fff; flex-shrink: 0; }
+    .demo-info { flex: 1; }
+    .demo-name { font-size: 15px; font-weight: 700; }
+    .demo-title { font-size: 13px; color: var(--text-secondary); }
+    .demo-score { font-size: 28px; font-weight: 900; }
+
+    /* === KPI BOXES === */
+    .kpi-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; text-align: center; }
+    .kpi-value { font-size: 32px; font-weight: 900; margin-bottom: 4px; }
+    .kpi-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+
+    /* === CODE BLOCK === */
+    .code-block { background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-secondary); overflow-x: auto; line-height: 1.8; }
+    .code-keyword { color: var(--accent-purple); font-weight: 600; }
+    .code-string { color: var(--accent-green); }
+    .code-comment { color: var(--text-dim); font-style: italic; }
+    .code-func { color: var(--accent-blue); }
+
+    /* === STATE MACHINE === */
+    .state-flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; margin: 20px 0; }
+    .state-node { padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 700; text-align: center; }
+    .state-arrow { color: var(--text-dim); font-size: 20px; }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .flow-container { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); }
+      .toc-grid { grid-template-columns: 1fr; }
+      .study-header h1 { font-size: 28px; }
+      .study-header { padding: 32px 20px; }
+    }
+
+    @media print {
+      body { background: #fff; color: #000; }
+      .card, .toc { border: 1px solid #ddd; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- HEADER -->
+  <header class="study-header">
+    <div class="study-badge">
+      <span class="material-icons-round" style="font-size:14px">work</span>
+      Module LinkedIn — Documentation fonctionnelle
+    </div>
+    <h1>Recherche & Prospection LinkedIn</h1>
+    <p class="subtitle">Guide complet des fonctionnalités de recherche avancée, fiches profil interactives et intégration CRM du module LinkedIn de Portage AI.</p>
+    <div class="study-meta">
+      <span><span class="material-icons-round">calendar_today</span> Février 2026</span>
+      <span><span class="material-icons-round">business</span> Portage AI — Sales Force Command Center</span>
+      <span><span class="material-icons-round">verified</span> v2.0</span>
+    </div>
+  </header>
+
+  <!-- TABLE OF CONTENTS -->
+  <nav class="toc">
+    <div class="toc-title"><span class="material-icons-round" style="color:var(--accent-linkedin)">toc</span> Sommaire</div>
+    <div class="toc-grid">
+      <a href="#overview" class="toc-item"><div class="toc-num">1</div> Vue d'ensemble du module</a>
+      <a href="#search" class="toc-item"><div class="toc-num">2</div> Recherche avancée multi-critères</a>
+      <a href="#profiles" class="toc-item"><div class="toc-num">3</div> Fiches profil interactives</a>
+      <a href="#scoring" class="toc-item"><div class="toc-num">4</div> Scoring & Qualification IA</a>
+      <a href="#tags" class="toc-item"><div class="toc-num">5</div> Tags sémantiques & recherche souple</a>
+      <a href="#states" class="toc-item"><div class="toc-num">6</div> Machine d'état des profils</a>
+      <a href="#agents" class="toc-item"><div class="toc-num">7</div> Agents IA assignés</a>
+      <a href="#data" class="toc-item"><div class="toc-num">8</div> Données enrichies par profil</a>
+      <a href="#integration" class="toc-item"><div class="toc-num">9</div> Intégration CRM & Workflows</a>
+      <a href="#roadmap" class="toc-item"><div class="toc-num">10</div> Roadmap & Évolutions</a>
+    </div>
+  </nav>
+
+  <!-- SECTION 1: VUE D'ENSEMBLE -->
+  <section class="section" id="overview">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(0,119,181,0.12);color:var(--accent-linkedin)">
+        <span class="material-icons-round">dashboard</span>
+      </div>
+      <h2>Vue d'ensemble du module</h2>
+      <span class="section-tag" style="background:rgba(0,119,181,0.12);color:var(--accent-linkedin)">Core Feature</span>
+    </div>
+    <p style="font-size:15px;color:var(--text-secondary);margin-bottom:24px;line-height:1.8">
+      Le module LinkedIn de Portage AI est le centre névralgique de la prospection. Il permet de rechercher, qualifier, suivre et convertir des profils de consultants freelances et salariés en portage. Chaque profil est enrichi avec des données professionnelles complètes, un scoring IA et un suivi par agent intelligent.
+    </p>
+    <div class="grid-3" style="margin-bottom:24px">
+      <div class="kpi-box">
+        <div class="kpi-value" style="color:var(--accent-linkedin)">8</div>
+        <div class="kpi-label">Profils actifs</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-value" style="color:var(--accent-green)">6</div>
+        <div class="kpi-label">Filtres de recherche</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-value" style="color:var(--accent-purple)">12</div>
+        <div class="kpi-label">Champs par profil</div>
+      </div>
+    </div>
+
+    <!-- Flow diagram -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title"><span class="material-icons-round" style="color:var(--accent-linkedin)">account_tree</span> Flux de prospection LinkedIn</div>
+      <div class="flow-container">
+        <div class="flow-step" style="border-color:var(--accent-linkedin)">
+          <span class="material-icons-round" style="color:var(--accent-linkedin)">search</span>
+          <div class="flow-step-name">Recherche</div>
+          <div class="flow-step-desc">Multi-critères</div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step" style="border-color:var(--accent-blue)">
+          <span class="material-icons-round" style="color:var(--accent-blue)">filter_alt</span>
+          <div class="flow-step-name">Filtrage</div>
+          <div class="flow-step-desc">Tags sémantiques</div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step" style="border-color:var(--accent-purple)">
+          <span class="material-icons-round" style="color:var(--accent-purple)">psychology</span>
+          <div class="flow-step-name">Scoring IA</div>
+          <div class="flow-step-desc">Qualification auto</div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step" style="border-color:var(--accent-green)">
+          <span class="material-icons-round" style="color:var(--accent-green)">person</span>
+          <div class="flow-step-name">Fiche profil</div>
+          <div class="flow-step-desc">Vue détaillée</div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step" style="border-color:var(--accent-yellow)">
+          <span class="material-icons-round" style="color:var(--accent-yellow)">handshake</span>
+          <div class="flow-step-name">Conversion</div>
+          <div class="flow-step-desc">Portage salarial</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: RECHERCHE AVANCÉE -->
+  <section class="section" id="search">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)">
+        <span class="material-icons-round">manage_search</span>
+      </div>
+      <h2>Recherche avancée multi-critères</h2>
+      <span class="section-tag" style="background:rgba(16,185,129,0.12);color:var(--accent-green)">Fonctionnel</span>
+    </div>
+    <p style="font-size:15px;color:var(--text-secondary);margin-bottom:24px;line-height:1.8">
+      Le panneau de recherche avancée permet de filtrer les profils selon 6 critères combinables. La recherche est <strong>souple et intelligente</strong> : elle accepte les termes génériques (ex: "informatique"), les recherches partielles et les multi-mots.
+    </p>
+
+    <div class="card" style="margin-bottom:24px">
+      <div class="card-title"><span class="material-icons-round" style="color:var(--accent-blue)">tune</span> Les 6 filtres de recherche</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Filtre</th><th>Type</th><th>Recherche dans</th><th>Exemple</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Poste / Titre</strong></td>
+            <td><span class="badge badge-blue">Texte libre</span></td>
+            <td>Titre, nom, compétences, tags sémantiques</td>
+            <td>"informatique", "DevOps", "chef de projet"</td>
+          </tr>
+          <tr>
+            <td><strong>Entreprise</strong></td>
+            <td><span class="badge badge-blue">Texte libre</span></td>
+            <td>Nom de l'entreprise</td>
+            <td>"Capgemini", "Freelance", "Thales"</td>
+          </tr>
+          <tr>
+            <td><strong>Localisation</strong></td>
+            <td><span class="badge badge-blue">Texte libre</span></td>
+            <td>Ville / Région</td>
+            <td>"Paris", "Lyon", "Nantes"</td>
+          </tr>
+          <tr>
+            <td><strong>Compétences</strong></td>
+            <td><span class="badge badge-purple">Multi-mots</span></td>
+            <td>Skills techniques, tags sémantiques</td>
+            <td>"Python, AWS", "SAP", "Figma"</td>
+          </tr>
+          <tr>
+            <td><strong>TJM minimum</strong></td>
+            <td><span class="badge badge-yellow">Numérique</span></td>
+            <td>Taux Journalier Moyen (€/jour)</td>
+            <td>"500", "700", "800"</td>
+          </tr>
+          <tr>
+            <td><strong>Score minimum</strong></td>
+            <td><span class="badge badge-green">Numérique</span></td>
+            <td>Score de qualification IA (0-100)</td>
+            <td>"70", "85", "90"</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="material-icons-round" style="color:var(--accent-green)">check_circle</span> Recherche souple</div>
+        <ul class="feature-list">
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(16,185,129,0.12);color:var(--accent-green)"><span class="material-icons-round" style="font-size:14px">text_fields</span></div>
+            <div><strong>Insensible à la casse</strong> — "devops", "DevOps" et "DEVOPS" donnent les mêmes résultats.</div>
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(16,185,129,0.12);color:var(--accent-green)"><span class="material-icons-round" style="font-size:14px">segment</span></div>
+            <div><strong>Recherche partielle</strong> — "cloud" matche "Architecte Cloud", "cloud computing", etc.</div>
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(16,185,129,0.12);color:var(--accent-green)"><span class="material-icons-round" style="font-size:14px">view_list</span></div>
+            <div><strong>Multi-mots</strong> — Séparez par espaces, virgules ou points-virgules : "Python, AWS, Docker".</div>
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(16,185,129,0.12);color:var(--accent-green)"><span class="material-icons-round" style="font-size:14px">label</span></div>
+            <div><strong>Tags sémantiques</strong> — "informatique" matche tous les profils IT grâce aux tags métier associés.</div>
+          </li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="material-icons-round" style="color:var(--accent-blue)">tips_and_updates</span> Exemples de recherche</div>
+        <ul class="feature-list">
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)"><span class="material-icons-round" style="font-size:14px">search</span></div>
+            <div><strong>"informatique" + "Paris"</strong> → 3 profils (Thomas Durand, Claire Bonnet, Karim Amrani)</div>
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)"><span class="material-icons-round" style="font-size:14px">search</span></div>
+            <div><strong>"Freelance" + Score ≥ 80</strong> → 3 profils (Thomas Durand 92, Claire Bonnet 90, Marie Chevalier non retenue car score 78)</div>
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)"><span class="material-icons-round" style="font-size:14px">search</span></div>
+            <div><strong>"data" + TJM ≥ 500</strong> → 2 profils (Marie Chevalier Data Analyst 580€/j, Karim Amrani IA/ML 900€/j)</div>
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)"><span class="material-icons-round" style="font-size:14px">search</span></div>
+            <div><strong>"cloud, architecture"</strong> → Pierre Lambert (Architecte Cloud, tags cloud + architecture)</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: FICHES PROFIL -->
+  <section class="section" id="profiles">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(0,119,181,0.12);color:var(--accent-linkedin)">
+        <span class="material-icons-round">contact_page</span>
+      </div>
+      <h2>Fiches profil interactives</h2>
+      <span class="section-tag" style="background:rgba(0,119,181,0.12);color:var(--accent-linkedin)">Nouveau</span>
+    </div>
+    <p style="font-size:15px;color:var(--text-secondary);margin-bottom:24px;line-height:1.8">
+      Chaque carte de profil est désormais <strong>cliquable</strong>. Un clic ouvre un modal détaillé de type "fiche LinkedIn" avec toutes les informations du consultant, des boutons d'action directs et un lien vers le profil LinkedIn réel.
+    </p>
+
+    <div class="card" style="margin-bottom:24px">
+      <div class="card-title"><span class="material-icons-round" style="color:var(--accent-linkedin)">view_agenda</span> Structure de la fiche profil</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Section</th><th>Contenu</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>En-tête LinkedIn</strong></td>
+            <td>Banner bleu LinkedIn, avatar avec initiale, nom, titre, entreprise, localisation, score</td>
+            <td>Bouton fermer (X)</td>
+          </tr>
+          <tr>
+            <td><strong>Boutons d'action</strong></td>
+            <td>3 boutons cliquables en ligne</td>
+            <td><span class="badge badge-linkedin">Voir profil LinkedIn</span> <span class="badge badge-blue">Email</span> <span class="badge badge-green">Téléphone</span></td>
+          </tr>
+          <tr>
+            <td><strong>Statut & Métriques</strong></td>
+            <td>Badge de statut, TJM, agent IA assigné, disponibilité</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>À propos</strong></td>
+            <td>Biographie professionnelle complète (2-3 phrases)</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>Compétences</strong></td>
+            <td>Tags de compétences techniques cliquables</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>Secteurs cibles</strong></td>
+            <td>Secteurs d'activité privilégiés (Banque, Industrie, SaaS...)</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>Formation</strong></td>
+            <td>Diplôme principal avec école et année</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>Expérience</strong></td>
+            <td>3 derniers postes avec rôle, entreprise, période et description</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>Pied de page</strong></td>
+            <td>2 boutons d'action</td>
+            <td><span class="badge badge-linkedin">Ouvrir LinkedIn</span> + Fermer</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="material-icons-round" style="color:var(--accent-green)">open_in_new</span> Lien LinkedIn direct</div>
+        <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:16px">
+          Chaque profil possède une URL LinkedIn associée. Le bouton <strong>"Voir le profil LinkedIn"</strong> ouvre directement le profil dans un nouvel onglet, permettant de vérifier les informations, envoyer une invitation ou un InMail.
+        </p>
+        <div style="background:var(--bg-input);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--text-muted);font-family:monospace">
+          https://www.linkedin.com/in/thomas-durand-devops/
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="material-icons-round" style="color:var(--accent-blue)">touch_app</span> Actions rapides</div>
+        <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:16px">
+          Depuis la fiche profil, 3 actions sont accessibles en un clic :
+        </p>
+        <ul class="feature-list">
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(0,119,181,0.12);color:var(--accent-linkedin)"><span class="material-icons-round" style="font-size:14px">open_in_new</span></div>
+            <div><strong>Ouvrir LinkedIn</strong> — Redirige vers le profil LinkedIn réel du consultant.</div>
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)"><span class="material-icons-round" style="font-size:14px">email</span></div>
+            <div><strong>Envoyer un email</strong> — Ouvre le client mail avec l'adresse pré-remplie.</div>
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(16,185,129,0.12);color:var(--accent-green)"><span class="material-icons-round" style="font-size:14px">phone</span></div>
+            <div><strong>Appeler</strong> — Lance un appel téléphonique direct (mobile).</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: SCORING -->
+  <section class="section" id="scoring">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(139,92,246,0.12);color:var(--accent-purple)">
+        <span class="material-icons-round">analytics</span>
+      </div>
+      <h2>Scoring & Qualification IA</h2>
+      <span class="section-tag" style="background:rgba(139,92,246,0.12);color:var(--accent-purple)">Intelligence</span>
+    </div>
+    <p style="font-size:15px;color:var(--text-secondary);margin-bottom:24px;line-height:1.8">
+      Chaque profil reçoit un <strong>score de qualification de 0 à 100</strong>, calculé par l'IA en fonction de critères pondérés. Ce score détermine la priorité de traitement par les agents commerciaux.
+    </p>
+
+    <div class="card" style="margin-bottom:24px">
+      <div class="card-title"><span class="material-icons-round" style="color:var(--accent-purple)">calculate</span> Critères de scoring</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Critère</th><th>Poids</th><th>Description</th><th>Impact score</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Adéquation profil</strong></td>
+            <td><span class="badge badge-purple">30%</span></td>
+            <td>Correspondance entre le profil et les besoins en portage salarial</td>
+            <td>0-30 pts</td>
+          </tr>
+          <tr>
+            <td><strong>TJM & Potentiel CA</strong></td>
+            <td><span class="badge badge-yellow">25%</span></td>
+            <td>Niveau de TJM et potentiel de chiffre d'affaires annuel</td>
+            <td>0-25 pts</td>
+          </tr>
+          <tr>
+            <td><strong>Disponibilité</strong></td>
+            <td><span class="badge badge-green">20%</span></td>
+            <td>Disponibilité immédiate ou à court terme</td>
+            <td>0-20 pts</td>
+          </tr>
+          <tr>
+            <td><strong>Engagement</strong></td>
+            <td><span class="badge badge-blue">15%</span></td>
+            <td>Réactivité aux contacts, ouverture au portage</td>
+            <td>0-15 pts</td>
+          </tr>
+          <tr>
+            <td><strong>Réseau & Influence</strong></td>
+            <td><span class="badge badge-linkedin">10%</span></td>
+            <td>Taille du réseau LinkedIn, recommandations, publications</td>
+            <td>0-10 pts</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid-3">
+      <div class="kpi-box" style="border-top:3px solid var(--accent-green)">
+        <div class="kpi-value" style="color:var(--accent-green)">85-100</div>
+        <div class="kpi-label">Priorité haute</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Contact immédiat</div>
+      </div>
+      <div class="kpi-box" style="border-top:3px solid var(--accent-yellow)">
+        <div class="kpi-value" style="color:var(--accent-yellow)">70-84</div>
+        <div class="kpi-label">Priorité moyenne</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Nurturing actif</div>
+      </div>
+      <div class="kpi-box" style="border-top:3px solid var(--text-muted)">
+        <div class="kpi-value" style="color:var(--text-muted)">&lt; 70</div>
+        <div class="kpi-label">Priorité basse</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Veille passive</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: TAGS SÉMANTIQUES -->
+  <section class="section" id="tags">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(245,158,11,0.12);color:var(--accent-yellow)">
+        <span class="material-icons-round">label</span>
+      </div>
+      <h2>Tags sémantiques & recherche souple</h2>
+      <span class="section-tag" style="background:rgba(245,158,11,0.12);color:var(--accent-yellow)">Innovation</span>
+    </div>
+    <p style="font-size:15px;color:var(--text-secondary);margin-bottom:24px;line-height:1.8">
+      Chaque profil est enrichi avec des <strong>tags sémantiques métier</strong> qui permettent de retrouver un profil avec des termes génériques. Par exemple, un "DevOps Senior" est aussi taggé "informatique", "IT", "cloud", "infrastructure", "devops" — ce qui permet de le trouver avec une recherche "informatique".
+    </p>
+
+    <div class="card" style="margin-bottom:24px">
+      <div class="card-title"><span class="material-icons-round" style="color:var(--accent-yellow)">sell</span> Mapping profils → Tags</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Profil</th><th>Titre</th><th>Tags sémantiques</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Thomas Durand</strong></td>
+            <td>DevOps Senior</td>
+            <td><span class="badge badge-blue">informatique</span> <span class="badge badge-blue">IT</span> <span class="badge badge-blue">cloud</span> <span class="badge badge-blue">infrastructure</span> <span class="badge badge-blue">devops</span></td>
+          </tr>
+          <tr>
+            <td><strong>Sophie Martin</strong></td>
+            <td>Consultante SAP</td>
+            <td><span class="badge badge-blue">informatique</span> <span class="badge badge-blue">IT</span> <span class="badge badge-purple">ERP</span> <span class="badge badge-purple">SAP</span> <span class="badge badge-yellow">conseil</span> <span class="badge badge-yellow">consulting</span></td>
+          </tr>
+          <tr>
+            <td><strong>Marie Chevalier</strong></td>
+            <td>Data Analyst</td>
+            <td><span class="badge badge-blue">informatique</span> <span class="badge badge-blue">IT</span> <span class="badge badge-green">data</span> <span class="badge badge-green">analyse</span> <span class="badge badge-green">business intelligence</span></td>
+          </tr>
+          <tr>
+            <td><strong>Karim Amrani</strong></td>
+            <td>Ingénieur IA/ML</td>
+            <td><span class="badge badge-blue">informatique</span> <span class="badge badge-blue">IT</span> <span class="badge badge-purple">intelligence artificielle</span> <span class="badge badge-purple">IA</span> <span class="badge badge-purple">machine learning</span> <span class="badge badge-green">data science</span></td>
+          </tr>
+          <tr>
+            <td><strong>Claire Bonnet</strong></td>
+            <td>UX Designer Senior</td>
+            <td><span class="badge badge-blue">informatique</span> <span class="badge badge-blue">IT</span> <span class="badge badge-yellow">design</span> <span class="badge badge-yellow">UX</span> <span class="badge badge-yellow">digital</span> <span class="badge badge-yellow">web</span></td>
+          </tr>
+          <tr>
+            <td><strong>Nadia Faure</strong></td>
+            <td>Formatrice Digitale</td>
+            <td><span class="badge badge-blue">informatique</span> <span class="badge badge-blue">IT</span> <span class="badge badge-yellow">formation</span> <span class="badge badge-yellow">digital</span> <span class="badge badge-yellow">e-learning</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECTION 6: MACHINE D'ÉTAT -->
+  <section class="section" id="states">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(6,182,212,0.12);color:var(--accent-cyan)">
+        <span class="material-icons-round">swap_horiz</span>
+      </div>
+      <h2>Machine d'état des profils</h2>
+      <span class="section-tag" style="background:rgba(6,182,212,0.12);color:var(--accent-cyan)">Workflow</span>
+    </div>
+    <p style="font-size:15px;color:var(--text-secondary);margin-bottom:24px;line-height:1.8">
+      Chaque profil suit un parcours de conversion structuré en <strong>6 états</strong>. Les transitions sont déclenchées automatiquement par les agents IA ou manuellement par l'équipe commerciale.
+    </p>
+
+    <div class="card" style="margin-bottom:24px">
+      <div class="state-flow">
+        <div class="state-node" style="background:rgba(59,130,246,0.15);color:var(--accent-blue)">Nouveau</div>
+        <span class="state-arrow">→</span>
+        <div class="state-node" style="background:rgba(245,158,11,0.15);color:var(--accent-yellow)">Contacté</div>
+        <span class="state-arrow">→</span>
+        <div class="state-node" style="background:rgba(139,92,246,0.15);color:var(--accent-purple)">Intéressé</div>
+        <span class="state-arrow">→</span>
+        <div class="state-node" style="background:rgba(6,182,212,0.15);color:var(--accent-cyan)">RDV planifié</div>
+        <span class="state-arrow">→</span>
+        <div class="state-node" style="background:rgba(16,185,129,0.15);color:var(--accent-green)">Converti</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="material-icons-round" style="color:var(--accent-cyan)">info</span> Détail des états</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>État</th><th>Description</th><th>Action suivante</th><th>Profils actuels</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-blue">Nouveau</span></td>
+            <td>Profil identifié, pas encore contacté</td>
+            <td>Premier contact par agent IA</td>
+            <td>Marie Chevalier, Karim Amrani</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-yellow">Contacté</span></td>
+            <td>Premier message envoyé, en attente de réponse</td>
+            <td>Relance automatique J+3</td>
+            <td>Pierre Lambert, Jean Rousseau</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-purple">Intéressé</span></td>
+            <td>Réponse positive, intérêt confirmé</td>
+            <td>Proposition de RDV</td>
+            <td>Thomas Durand, Claire Bonnet</td>
+          </tr>
+          <tr>
+            <td><span class="badge" style="background:rgba(6,182,212,0.12);color:var(--accent-cyan)">RDV planifié</span></td>
+            <td>Rendez-vous commercial programmé</td>
+            <td>Présentation offre portage</td>
+            <td>Sophie Martin</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-green">Converti</span></td>
+            <td>Contrat de portage signé</td>
+            <td>Onboarding par agent ALEX</td>
+            <td>Nadia Faure</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECTION 7: AGENTS IA -->
+  <section class="section" id="agents">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(16,185,129,0.12);color:var(--accent-green)">
+        <span class="material-icons-round">smart_toy</span>
+      </div>
+      <h2>Agents IA assignés</h2>
+      <span class="section-tag" style="background:rgba(16,185,129,0.12);color:var(--accent-green)">Automatisation</span>
+    </div>
+    <p style="font-size:15px;color:var(--text-secondary);margin-bottom:24px;line-height:1.8">
+      Chaque profil est assigné à un <strong>agent IA spécialisé</strong> qui gère automatiquement les interactions, le suivi et les relances. L'agent est visible sur la carte du profil et dans la fiche détaillée.
+    </p>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title">🔍 ARIA</div>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px"><strong>Prospection & Qualification</strong></p>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.6">Identifie les profils, calcule les scores, qualifie les leads. Gère les profils "Nouveau".</p>
+        <div style="margin-top:12px;font-size:12px;color:var(--accent-blue)">Profils : Marie Chevalier, Karim Amrani</div>
+      </div>
+      <div class="card">
+        <div class="card-title">✨ LUNA</div>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px"><strong>Marketing & Nurturing</strong></p>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.6">Envoie les premiers messages, gère les relances, nourrit la relation. Gère les profils "Contacté".</p>
+        <div style="margin-top:12px;font-size:12px;color:var(--accent-yellow)">Profils : Thomas Durand, Pierre Lambert, Jean Rousseau</div>
+      </div>
+      <div class="card">
+        <div class="card-title">🎯 ALEX</div>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px"><strong>Onboarding & Fidélisation</strong></p>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.6">Gère les profils intéressés, planifie les RDV, finalise l'onboarding. Gère les profils "Intéressé" à "Converti".</p>
+        <div style="margin-top:12px;font-size:12px;color:var(--accent-green)">Profils : Sophie Martin, Claire Bonnet, Nadia Faure</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 8: DONNÉES ENRICHIES -->
+  <section class="section" id="data">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)">
+        <span class="material-icons-round">storage</span>
+      </div>
+      <h2>Données enrichies par profil</h2>
+      <span class="section-tag" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)">Data Model</span>
+    </div>
+    <p style="font-size:15px;color:var(--text-secondary);margin-bottom:24px;line-height:1.8">
+      Chaque profil contient <strong>12 champs de données</strong> structurées, permettant une recherche fine et un affichage riche dans la fiche profil.
+    </p>
+
+    <div class="card">
+      <div class="card-title"><span class="material-icons-round" style="color:var(--accent-blue)">schema</span> Modèle de données complet</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Champ</th><th>Type</th><th>Description</th><th>Exemple</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>name</strong></td><td><span class="badge badge-blue">String</span></td><td>Nom complet</td><td>Thomas Durand</td></tr>
+          <tr><td><strong>title</strong></td><td><span class="badge badge-blue">String</span></td><td>Poste / Titre professionnel</td><td>DevOps Senior</td></tr>
+          <tr><td><strong>company</strong></td><td><span class="badge badge-blue">String</span></td><td>Entreprise actuelle</td><td>Freelance</td></tr>
+          <tr><td><strong>location</strong></td><td><span class="badge badge-blue">String</span></td><td>Ville</td><td>Paris</td></tr>
+          <tr><td><strong>score</strong></td><td><span class="badge badge-green">Number</span></td><td>Score de qualification IA (0-100)</td><td>92</td></tr>
+          <tr><td><strong>tjm</strong></td><td><span class="badge badge-yellow">Number</span></td><td>Taux Journalier Moyen (€/jour)</td><td>650</td></tr>
+          <tr><td><strong>skills</strong></td><td><span class="badge badge-purple">Array</span></td><td>Compétences techniques</td><td>['AWS','Kubernetes','Terraform']</td></tr>
+          <tr><td><strong>tags</strong></td><td><span class="badge badge-purple">Array</span></td><td>Tags sémantiques métier</td><td>['informatique','IT','cloud']</td></tr>
+          <tr><td><strong>linkedin</strong></td><td><span class="badge badge-linkedin">URL</span></td><td>Lien profil LinkedIn</td><td>linkedin.com/in/thomas-durand-devops/</td></tr>
+          <tr><td><strong>email</strong></td><td><span class="badge badge-blue">String</span></td><td>Adresse email professionnelle</td><td>t.durand@proton.me</td></tr>
+          <tr><td><strong>experience</strong></td><td><span class="badge badge-purple">Array[Object]</span></td><td>3 derniers postes (rôle, entreprise, période, description)</td><td>[{role, co, period, desc}]</td></tr>
+          <tr><td><strong>formation</strong></td><td><span class="badge badge-blue">String</span></td><td>Diplôme principal</td><td>Master Informatique — EPITA (2018)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECTION 9: INTÉGRATION CRM -->
+  <section class="section" id="integration">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(16,185,129,0.12);color:var(--accent-green)">
+        <span class="material-icons-round">hub</span>
+      </div>
+      <h2>Intégration CRM & Workflows</h2>
+      <span class="section-tag" style="background:rgba(16,185,129,0.12);color:var(--accent-green)">Connecté</span>
+    </div>
+    <p style="font-size:15px;color:var(--text-secondary);margin-bottom:24px;line-height:1.8">
+      Le module LinkedIn est conçu pour s'intégrer dans l'écosystème complet de Portage AI. Les profils qualifiés alimentent le CRM, les pipelines B2B/B2C et les campagnes de nurturing.
+    </p>
+
+    <div class="card" style="margin-bottom:24px">
+      <div class="card-title"><span class="material-icons-round" style="color:var(--accent-green)">sync</span> Flux d'intégration</div>
+      <div class="flow-container">
+        <div class="flow-step" style="border-color:var(--accent-linkedin)">
+          <span class="material-icons-round" style="color:var(--accent-linkedin)">work</span>
+          <div class="flow-step-name">LinkedIn</div>
+          <div class="flow-step-desc">Profils qualifiés</div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step" style="border-color:var(--accent-blue)">
+          <span class="material-icons-round" style="color:var(--accent-blue)">contact_page</span>
+          <div class="flow-step-name">CRM</div>
+          <div class="flow-step-desc">Fiche contact</div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step" style="border-color:var(--accent-purple)">
+          <span class="material-icons-round" style="color:var(--accent-purple)">campaign</span>
+          <div class="flow-step-name">Campagnes</div>
+          <div class="flow-step-desc">Email nurturing</div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step" style="border-color:var(--accent-green)">
+          <span class="material-icons-round" style="color:var(--accent-green)">business</span>
+          <div class="flow-step-name">Pipeline</div>
+          <div class="flow-step-desc">B2B / B2C</div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step" style="border-color:var(--accent-yellow)">
+          <span class="material-icons-round" style="color:var(--accent-yellow)">trending_up</span>
+          <div class="flow-step-name">Dashboard</div>
+          <div class="flow-step-desc">KPIs & Analytics</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="material-icons-round" style="color:var(--accent-blue)">sync_alt</span> Synchronisation CRM</div>
+        <ul class="feature-list">
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)"><span class="material-icons-round" style="font-size:14px">add_circle</span></div>
+            <div><strong>Création automatique</strong> — Les profils "Intéressé" sont automatiquement ajoutés au CRM avec toutes leurs données.</div>
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)"><span class="material-icons-round" style="font-size:14px">update</span></div>
+            <div><strong>Mise à jour bidirectionnelle</strong> — Les changements de statut dans le CRM se reflètent dans le module LinkedIn et vice-versa.</div>
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(59,130,246,0.12);color:var(--accent-blue)"><span class="material-icons-round" style="font-size:14px">history</span></div>
+            <div><strong>Historique complet</strong> — Toutes les interactions (emails, appels, RDV) sont tracées dans la timeline du contact CRM.</div>
+          </li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="material-icons-round" style="color:var(--accent-purple)">bolt</span> Automatisations n8n</div>
+        <ul class="feature-list">
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(139,92,246,0.12);color:var(--accent-purple)"><span class="material-icons-round" style="font-size:14px">notifications</span></div>
+            <div><strong>Alertes temps réel</strong> — Notification Slack/email quand un profil score ≥ 90 est identifié.</div>
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(139,92,246,0.12);color:var(--accent-purple)"><span class="material-icons-round" style="font-size:14px">schedule</span></div>
+            <div><strong>Relances programmées</strong> — Séquences de relance automatiques à J+3, J+7, J+14 pour les profils "Contacté".</div>
+          </li>
+          <li class="feature-item">
+            <div class="feature-icon" style="background:rgba(139,92,246,0.12);color:var(--accent-purple)"><span class="material-icons-round" style="font-size:14px">assessment</span></div>
+            <div><strong>Rapports hebdomadaires</strong> — Génération automatique de rapports de prospection chaque lundi matin.</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 10: ROADMAP -->
+  <section class="section" id="roadmap">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(244,63,94,0.12);color:var(--accent-red)">
+        <span class="material-icons-round">rocket_launch</span>
+      </div>
+      <h2>Roadmap & Évolutions</h2>
+      <span class="section-tag" style="background:rgba(244,63,94,0.12);color:var(--accent-red)">Futur</span>
+    </div>
+    <p style="font-size:15px;color:var(--text-secondary);margin-bottom:24px;line-height:1.8">
+      Le module LinkedIn est en évolution constante. Voici les fonctionnalités planifiées pour les prochaines versions.
+    </p>
+
+    <div class="card">
+      <div class="card-title"><span class="material-icons-round" style="color:var(--accent-red)">timeline</span> Évolutions prévues</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Version</th><th>Fonctionnalité</th><th>Description</th><th>Statut</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>v2.1</strong></td>
+            <td>Scraping LinkedIn réel</td>
+            <td>Intégration OpenOutreach pour récupérer automatiquement les profils depuis LinkedIn</td>
+            <td><span class="badge badge-yellow">Planifié</span></td>
+          </tr>
+          <tr>
+            <td><strong>v2.2</strong></td>
+            <td>Enrichissement Fire-Enrich</td>
+            <td>Enrichissement automatique des profils avec données entreprise, email vérifié, téléphone</td>
+            <td><span class="badge badge-yellow">Planifié</span></td>
+          </tr>
+          <tr>
+            <td><strong>v2.3</strong></td>
+            <td>Twenty CRM natif</td>
+            <td>Remplacement du CRM interne par Twenty CRM open source avec API GraphQL</td>
+            <td><span class="badge badge-blue">Étude</span></td>
+          </tr>
+          <tr>
+            <td><strong>v2.4</strong></td>
+            <td>Workflows n8n</td>
+            <td>Orchestration complète des workflows de prospection avec n8n</td>
+            <td><span class="badge badge-blue">Étude</span></td>
+          </tr>
+          <tr>
+            <td><strong>v3.0</strong></td>
+            <td>IA conversationnelle</td>
+            <td>Agent IA capable de mener des conversations LinkedIn automatisées et personnalisées</td>
+            <td><span class="badge badge-purple">Recherche</span></td>
+          </tr>
+          <tr>
+            <td><strong>v3.1</strong></td>
+            <td>Scoring prédictif ML</td>
+            <td>Modèle de machine learning entraîné sur les conversions passées pour prédire la probabilité de conversion</td>
+            <td><span class="badge badge-purple">Recherche</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<!-- Theme sync script -->
+<script>
+  window.addEventListener('message', function(e) {
+    if(e.data && e.data.type === 'theme-change') {
+      document.documentElement.setAttribute('data-theme', e.data.theme);
+    }
+  });
+  // Check parent theme on load
+  try {
+    const parentTheme = window.parent.document.documentElement.getAttribute('data-theme');
+    if(parentTheme) document.documentElement.setAttribute('data-theme', parentTheme);
+  } catch(e) {}
+</script>
+</body>
+</html>

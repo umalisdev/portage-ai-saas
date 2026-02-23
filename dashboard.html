@@ -550,6 +550,9 @@
         <div class="nav-item" data-page="implementation" onclick="navigate('implementation')">
           <span class="material-icons-round">engineering</span><span>Implémentation & Suivi</span>
         </div>
+        <div class="nav-item" data-page="recherche-linkedin" onclick="navigate('recherche-linkedin')">
+          <span class="material-icons-round">work</span><span>Recherche LinkedIn</span>
+        </div>
       </div>
       <div class="nav-section">
         <div class="nav-section-title">Système</div>
@@ -705,14 +708,78 @@ const CAMPAIGNS = [
 ];
 
 const LINKEDIN_PROFILES = [
-  { name:'Thomas Durand', title:'DevOps Senior', company:'Freelance', location:'Paris', score:92, status:'interested', agent:'LUNA', skills:['AWS','Kubernetes','Terraform'], tjm:650, tags:['informatique','IT','cloud','infrastructure','devops'] },
-  { name:'Sophie Martin', title:'Consultante SAP', company:'Accenture', location:'Lyon', score:88, status:'meeting', agent:'ALEX', skills:['SAP S/4HANA','ABAP','Fiori'], tjm:720, tags:['informatique','IT','ERP','SAP','conseil','consulting'] },
-  { name:'Pierre Lambert', title:'Architecte Cloud', company:'Capgemini', location:'Nantes', score:85, status:'contacted', agent:'LUNA', skills:['Azure','GCP','Microservices'], tjm:800, tags:['informatique','IT','cloud','architecture','infrastructure'] },
-  { name:'Marie Chevalier', title:'Data Analyst', company:'Freelance', location:'Bordeaux', score:78, status:'new', agent:'ARIA', skills:['Python','Power BI','SQL'], tjm:580, tags:['informatique','IT','data','analyse','business intelligence'] },
-  { name:'Jean Rousseau', title:'Chef de Projet IT', company:'Sopra Steria', location:'Toulouse', score:82, status:'contacted', agent:'LUNA', skills:['Agile','JIRA','PMO'], tjm:600, tags:['informatique','IT','gestion de projet','management','agile'] },
-  { name:'Claire Bonnet', title:'UX Designer Senior', company:'Freelance', location:'Paris', score:90, status:'interested', agent:'ALEX', skills:['Figma','Design System','User Research'], tjm:550, tags:['informatique','IT','design','UX','digital','web'] },
-  { name:'Karim Amrani', title:'Ingénieur IA/ML', company:'Thales', location:'Paris', score:95, status:'new', agent:'ARIA', skills:['PyTorch','NLP','MLOps'], tjm:900, tags:['informatique','IT','intelligence artificielle','IA','machine learning','data science'] },
-  { name:'Nadia Faure', title:'Formatrice Digitale', company:'Freelance', location:'Marseille', score:72, status:'converted', agent:'ALEX', skills:['E-learning','Moodle','Pédagogie'], tjm:450, tags:['informatique','IT','formation','digital','e-learning'] }
+  { name:'Thomas Durand', title:'DevOps Senior', company:'Freelance', location:'Paris', score:92, status:'interested', agent:'LUNA', skills:['AWS','Kubernetes','Terraform'], tjm:650, tags:['informatique','IT','cloud','infrastructure','devops'],
+    linkedin:'https://www.linkedin.com/in/thomas-durand-devops/', email:'t.durand@proton.me', phone:'+33 6 12 34 56 78',
+    bio:'Expert DevOps avec 8 ans d\'expérience en automatisation d\'infrastructures cloud. Certifié AWS Solutions Architect et Kubernetes Administrator. Passionné par le GitOps et l\'Infrastructure as Code.',
+    experience:[
+      {role:'DevOps Lead',co:'BNP Paribas',period:'2023-2026',desc:'Migration cloud AWS de 40 microservices, réduction des coûts infra de 35%.'},
+      {role:'Ingénieur DevOps',co:'Société Générale',period:'2020-2023',desc:'Mise en place CI/CD GitLab, Kubernetes, monitoring Prometheus/Grafana.'},
+      {role:'Admin Système',co:'Orange',period:'2018-2020',desc:'Gestion de 200+ serveurs Linux, automatisation Ansible.'}
+    ],
+    formation:'Master Informatique — EPITA (2018)', dispo:'Disponible immédiatement', secteurs:['Banque','Assurance','Telecom'] },
+  { name:'Sophie Martin', title:'Consultante SAP', company:'Accenture', location:'Lyon', score:88, status:'meeting', agent:'ALEX', skills:['SAP S/4HANA','ABAP','Fiori'], tjm:720, tags:['informatique','IT','ERP','SAP','conseil','consulting'],
+    linkedin:'https://www.linkedin.com/in/sophie-martin-sap/', email:'s.martin@outlook.fr', phone:'+33 6 23 45 67 89',
+    bio:'Consultante SAP certifiée avec 10 ans d\'expérience sur les modules FI/CO et S/4HANA. Spécialisée dans les migrations ECC vers S/4HANA pour les grands comptes industriels.',
+    experience:[
+      {role:'Consultante SAP Senior',co:'Accenture',period:'2021-2026',desc:'Lead technique sur 3 projets de migration S/4HANA (Michelin, Sanofi, Engie).'},
+      {role:'Consultante SAP FI/CO',co:'Capgemini',period:'2018-2021',desc:'Paramétrage et développement ABAP pour le secteur automobile.'},
+      {role:'Analyste Fonctionnel SAP',co:'Atos',period:'2016-2018',desc:'Recueil des besoins et rédaction de spécifications fonctionnelles.'}
+    ],
+    formation:'Master Management des SI — EM Lyon (2016)', dispo:'Disponible mars 2026', secteurs:['Industrie','Énergie','Pharma'] },
+  { name:'Pierre Lambert', title:'Architecte Cloud', company:'Capgemini', location:'Nantes', score:85, status:'contacted', agent:'LUNA', skills:['Azure','GCP','Microservices'], tjm:800, tags:['informatique','IT','cloud','architecture','infrastructure'],
+    linkedin:'https://www.linkedin.com/in/pierre-lambert-cloud/', email:'p.lambert@gmail.com', phone:'+33 6 34 56 78 90',
+    bio:'Architecte Cloud certifié Azure et GCP avec 12 ans d\'expérience. Expert en conception d\'architectures microservices scalables et en migration cloud pour les ETI et grands comptes.',
+    experience:[
+      {role:'Architecte Cloud Senior',co:'Capgemini',period:'2022-2026',desc:'Conception d\'architectures multi-cloud (Azure + GCP) pour 5 clients grands comptes.'},
+      {role:'Lead Architecte',co:'Sopra Steria',period:'2018-2022',desc:'Migration de 15 applications legacy vers des architectures microservices sur Azure.'},
+      {role:'Développeur Full Stack',co:'Atos',period:'2014-2018',desc:'Développement Java/Spring Boot, première expérience cloud AWS.'}
+    ],
+    formation:'Ingénieur — École Centrale de Nantes (2014)', dispo:'Disponible avril 2026', secteurs:['Banque','Retail','Transport'] },
+  { name:'Marie Chevalier', title:'Data Analyst', company:'Freelance', location:'Bordeaux', score:78, status:'new', agent:'ARIA', skills:['Python','Power BI','SQL'], tjm:580, tags:['informatique','IT','data','analyse','business intelligence'],
+    linkedin:'https://www.linkedin.com/in/marie-chevalier-data/', email:'m.chevalier@free.fr', phone:'+33 6 45 67 89 01',
+    bio:'Data Analyst freelance spécialisée en Business Intelligence et visualisation de données. Expertise Python, Power BI et SQL pour transformer les données brutes en insights actionnables.',
+    experience:[
+      {role:'Data Analyst Freelance',co:'Indépendante',period:'2024-2026',desc:'Missions BI pour PME et ETI : dashboards Power BI, pipelines Python, analyses prédictives.'},
+      {role:'Data Analyst',co:'Cdiscount',period:'2021-2024',desc:'Analyse des parcours clients, segmentation, reporting automatisé Power BI.'},
+      {role:'Chargée d\'études statistiques',co:'INSEE',period:'2019-2021',desc:'Analyses statistiques et modélisation sur données démographiques.'}
+    ],
+    formation:'Master Statistiques — Université de Bordeaux (2019)', dispo:'Disponible immédiatement', secteurs:['E-commerce','Retail','Services'] },
+  { name:'Jean Rousseau', title:'Chef de Projet IT', company:'Sopra Steria', location:'Toulouse', score:82, status:'contacted', agent:'LUNA', skills:['Agile','JIRA','PMO'], tjm:600, tags:['informatique','IT','gestion de projet','management','agile'],
+    linkedin:'https://www.linkedin.com/in/jean-rousseau-pm/', email:'j.rousseau@laposte.net', phone:'+33 6 56 78 90 12',
+    bio:'Chef de Projet IT certifié PMP et SAFe avec 9 ans d\'expérience dans le pilotage de projets de transformation digitale. Expert en méthodologies Agile et en gestion de portefeuilles projets.',
+    experience:[
+      {role:'Chef de Projet Senior',co:'Sopra Steria',period:'2022-2026',desc:'Pilotage de 4 projets simultanés (budget total 2,5M€) pour Airbus et Thales.'},
+      {role:'Scrum Master / PM',co:'CGI',period:'2019-2022',desc:'Transition Agile de 3 équipes, mise en place SAFe, coaching Product Owners.'},
+      {role:'Consultant MOA',co:'Altran',period:'2017-2019',desc:'Recueil des besoins et suivi de projets pour le secteur aéronautique.'}
+    ],
+    formation:'Master Gestion de Projets — Toulouse Business School (2017)', dispo:'Disponible mai 2026', secteurs:['Aéronautique','Défense','Spatial'] },
+  { name:'Claire Bonnet', title:'UX Designer Senior', company:'Freelance', location:'Paris', score:90, status:'interested', agent:'ALEX', skills:['Figma','Design System','User Research'], tjm:550, tags:['informatique','IT','design','UX','digital','web'],
+    linkedin:'https://www.linkedin.com/in/claire-bonnet-ux/', email:'c.bonnet@designstudio.fr', phone:'+33 6 67 89 01 23',
+    bio:'UX Designer Senior freelance avec 7 ans d\'expérience. Spécialisée dans la conception de Design Systems et la recherche utilisateur pour les produits SaaS B2B. Portfolio de 30+ projets livrés.',
+    experience:[
+      {role:'UX Designer Freelance',co:'Indépendante',period:'2023-2026',desc:'Conception UX/UI pour startups et scale-ups : Qonto, Alan, Pennylane.'},
+      {role:'Lead UX Designer',co:'Doctolib',period:'2020-2023',desc:'Refonte du parcours patient, Design System, tests utilisateurs A/B.'},
+      {role:'UX Designer',co:'BlaBlaCar',period:'2019-2020',desc:'Conception de nouvelles fonctionnalités mobiles, prototypage Figma.'}
+    ],
+    formation:'Master Design d\'Interaction — Strate (2019)', dispo:'Disponible immédiatement', secteurs:['SaaS','HealthTech','FinTech'] },
+  { name:'Karim Amrani', title:'Ingénieur IA/ML', company:'Thales', location:'Paris', score:95, status:'new', agent:'ARIA', skills:['PyTorch','NLP','MLOps'], tjm:900, tags:['informatique','IT','intelligence artificielle','IA','machine learning','data science'],
+    linkedin:'https://www.linkedin.com/in/karim-amrani-ai/', email:'k.amrani@thalesgroup.com', phone:'+33 6 78 90 12 34',
+    bio:'Ingénieur IA/ML avec 6 ans d\'expérience en NLP et Computer Vision. PhD en Machine Learning. Expert PyTorch, spécialisé dans le déploiement de modèles en production (MLOps) pour les secteurs défense et aéronautique.',
+    experience:[
+      {role:'Ingénieur IA Senior',co:'Thales',period:'2023-2026',desc:'Développement de modèles NLP pour l\'analyse de renseignement, déploiement MLOps Kubernetes.'},
+      {role:'Data Scientist',co:'Airbus',period:'2020-2023',desc:'Computer Vision pour la détection de défauts sur lignes d\'assemblage, PyTorch.'},
+      {role:'Chercheur ML',co:'INRIA',period:'2018-2020',desc:'Recherche en NLP : modèles de langage, transfer learning, publications ACL/EMNLP.'}
+    ],
+    formation:'PhD Machine Learning — Université Paris-Saclay (2020)', dispo:'Disponible juin 2026', secteurs:['Défense','Aéronautique','Recherche'] },
+  { name:'Nadia Faure', title:'Formatrice Digitale', company:'Freelance', location:'Marseille', score:72, status:'converted', agent:'ALEX', skills:['E-learning','Moodle','Pédagogie'], tjm:450, tags:['informatique','IT','formation','digital','e-learning'],
+    linkedin:'https://www.linkedin.com/in/nadia-faure-formation/', email:'n.faure@formationdigitale.fr', phone:'+33 6 89 01 23 45',
+    bio:'Formatrice digitale freelance spécialisée dans la conception de parcours e-learning et la transformation digitale des organismes de formation. Certifiée Moodle et experte en ingénierie pédagogique.',
+    experience:[
+      {role:'Formatrice Digitale Freelance',co:'Indépendante',period:'2022-2026',desc:'Conception de 20+ parcours e-learning pour entreprises et universités.'},
+      {role:'Ingénieure Pédagogique',co:'OpenClassrooms',period:'2019-2022',desc:'Création de cours en ligne, mentoring, conception de parcours certifiants.'},
+      {role:'Formatrice',co:'AFPA',period:'2017-2019',desc:'Formation bureautique et digitale pour demandeurs d\'emploi.'}
+    ],
+    formation:'Master Sciences de l\'Éducation — Aix-Marseille Université (2017)', dispo:'Convertie — En portage', secteurs:['Formation','Éducation','RH'] }
 ];
 
 const MISSIONS = [
@@ -1154,10 +1221,10 @@ function buildAllPages() {
 
   // LINKEDIN
   let profileCards = '';
-  LINKEDIN_PROFILES.forEach(p => {
+  LINKEDIN_PROFILES.forEach((p, idx) => {
     const st = getStatusInfo(p.status);
     const scoreColor = p.score >= 85 ? '#10b981' : p.score >= 70 ? '#f59e0b' : '#5c5d70';
-    profileCards += `<div class="profile-card">
+    profileCards += `<div class="profile-card" style="cursor:pointer;" onclick="openProfileModal(${idx})">
       <div class="profile-header">
         <div class="profile-avatar">${p.name.charAt(0)}</div>
         <div style="flex:1"><div style="font-size:15px;font-weight:700">${p.name}</div><div style="font-size:13px;color:var(--text-secondary)">${p.title}</div><div style="font-size:11px;color:var(--text-muted)">${p.company} • ${p.location}</div></div>
@@ -1197,6 +1264,9 @@ function buildAllPages() {
     <div id="linkedin-search-results" style="display:none;margin-bottom:16px;"></div>
     <div class="search-box"><span class="material-icons-round">search</span><input placeholder="Filtrer les profils affich\u00e9s..." oninput="filterLinkedInProfiles(this.value)"></div>
     <div class="grid-2" id="linkedin-profiles-grid">${profileCards}</div>
+    <div id="profile-modal-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9999;justify-content:center;align-items:center;padding:20px;" onclick="if(event.target===this)closeProfileModal()">
+      <div id="profile-modal" style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:20px;max-width:800px;width:100%;max-height:90vh;overflow-y:auto;padding:0;"></div>
+    </div>
   </div>`;
 
   // MISSIONS
@@ -1493,6 +1563,21 @@ function buildAllPages() {
     <iframe src="implementation-suivi.html" style="width:100%;height:calc(100vh - 120px);border:none;border-radius:12px;background:var(--bg-card)"></iframe>
   </div>`;
 
+  mc.innerHTML += `<div class="page" id="page-recherche-linkedin">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Recherche LinkedIn</div>
+        <div class="page-subtitle">Documentation des fonctionnalités de recherche et prospection LinkedIn</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <a href="recherche-linkedin.html" target="_blank" class="btn" style="background:var(--accent-linkedin);color:#fff;font-size:13px;padding:8px 16px;text-decoration:none;border-radius:8px;display:flex;align-items:center;gap:6px">
+          <span class="material-icons-round" style="font-size:16px">open_in_new</span> Ouvrir en plein écran
+        </a>
+      </div>
+    </div>
+    <iframe src="recherche-linkedin.html" style="width:100%;height:calc(100vh - 120px);border:none;border-radius:12px;background:var(--bg-card)"></iframe>
+  </div>`;
+
   mc.innerHTML += `<div class="page" id="page-config">
     <div class="page-header"><div><div class="page-title">Configuration</div><div class="page-subtitle">Paramètres de la plateforme commerciale</div></div></div>
     <div class="grid-2">
@@ -1722,6 +1807,109 @@ function filterLinkedInProfiles(query) {
     const text = (p.name + ' ' + p.title + ' ' + p.company + ' ' + p.location + ' ' + p.skills.join(' ')).toLowerCase();
     cards[i].style.display = text.includes(q) ? '' : 'none';
   });
+}
+
+// ===== PROFILE MODAL =====
+function openProfileModal(idx) {
+  const p = LINKEDIN_PROFILES[idx];
+  if(!p) return;
+  const st = getStatusInfo(p.status);
+  const scoreColor = p.score >= 85 ? '#10b981' : p.score >= 70 ? '#f59e0b' : '#5c5d70';
+  const ag = getAgent(p.agent.toLowerCase());
+  
+  let expHtml = '';
+  if(p.experience && p.experience.length) {
+    expHtml = p.experience.map(e => `
+      <div style="display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)">
+        <div style="width:44px;height:44px;border-radius:10px;background:rgba(59,130,246,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <span class="material-icons-round" style="font-size:20px;color:var(--accent-blue)">work</span>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:700">${e.role}</div>
+          <div style="font-size:12px;color:var(--accent-blue);font-weight:600">${e.co} &bull; ${e.period}</div>
+          <div style="font-size:13px;color:var(--text-secondary);margin-top:4px;line-height:1.5">${e.desc}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  let secteursHtml = '';
+  if(p.secteurs && p.secteurs.length) {
+    secteursHtml = p.secteurs.map(s => `<span style="display:inline-block;padding:4px 12px;border-radius:8px;font-size:11px;font-weight:600;background:rgba(139,92,246,0.1);color:var(--accent-purple);margin:3px 4px 3px 0">${s}</span>`).join('');
+  }
+  
+  const modal = document.getElementById('profile-modal');
+  modal.innerHTML = `
+    <div style="position:relative">
+      <!-- Banner -->
+      <div style="height:120px;background:linear-gradient(135deg,#0077b5,#00a0dc);border-radius:20px 20px 0 0;position:relative">
+        <button onclick="closeProfileModal()" style="position:absolute;top:12px;right:12px;background:rgba(0,0,0,0.3);border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <!-- Avatar -->
+      <div style="display:flex;align-items:flex-end;gap:20px;padding:0 32px;margin-top:-48px;position:relative;z-index:2">
+        <div style="width:96px;height:96px;border-radius:50%;background:var(--accent-blue);border:4px solid var(--bg-secondary);display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:800;color:#fff;flex-shrink:0">${p.name.charAt(0)}</div>
+        <div style="padding-bottom:8px;flex:1">
+          <div style="font-size:24px;font-weight:800;line-height:1.2">${p.name}</div>
+          <div style="font-size:15px;color:var(--text-secondary)">${p.title}</div>
+          <div style="font-size:13px;color:var(--text-muted)">${p.company} &bull; ${p.location}</div>
+        </div>
+        <div style="text-align:center;padding-bottom:8px">
+          <div style="font-size:36px;font-weight:900;color:${scoreColor}">${p.score}</div>
+          <div style="font-size:11px;color:var(--text-muted);font-weight:600">Score</div>
+        </div>
+      </div>
+      <!-- Content -->
+      <div style="padding:24px 32px 32px">
+        <!-- Actions -->
+        <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap">
+          <a href="${p.linkedin || '#'}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:#0077b5;color:#fff;border-radius:10px;text-decoration:none;font-size:13px;font-weight:700;transition:opacity 0.2s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+            <span class="material-icons-round" style="font-size:18px">open_in_new</span> Voir le profil LinkedIn
+          </a>
+          <a href="mailto:${p.email || ''}" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:rgba(59,130,246,0.1);color:var(--accent-blue);border:1px solid rgba(59,130,246,0.2);border-radius:10px;text-decoration:none;font-size:13px;font-weight:700">
+            <span class="material-icons-round" style="font-size:18px">email</span> ${p.email || 'N/A'}
+          </a>
+          <a href="tel:${(p.phone||'').replace(/\s/g,'')}" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:rgba(16,185,129,0.1);color:var(--accent-green);border:1px solid rgba(16,185,129,0.2);border-radius:10px;text-decoration:none;font-size:13px;font-weight:700">
+            <span class="material-icons-round" style="font-size:18px">phone</span> ${p.phone || 'N/A'}
+          </a>
+        </div>
+        <!-- Status row -->
+        <div style="display:flex;gap:12px;align-items:center;margin-bottom:24px;flex-wrap:wrap">
+          <span style="padding:6px 14px;border-radius:10px;font-size:12px;font-weight:700;background:${st.bg};color:${st.text}">${st.label}</span>
+          <span style="font-size:13px;font-weight:700">TJM: ${p.tjm}&euro;/j</span>
+          <span style="font-size:12px;color:var(--text-muted);background:var(--bg-input);padding:5px 10px;border-radius:8px">${ag?.emoji || ''} Agent ${p.agent}</span>
+          <span style="font-size:12px;color:var(--accent-cyan);background:rgba(6,182,212,0.1);padding:5px 10px;border-radius:8px;font-weight:600">${p.dispo || ''}</span>
+        </div>
+        <!-- Bio -->
+        <div style="margin-bottom:24px">
+          <div style="font-size:14px;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:8px"><span class="material-icons-round" style="font-size:18px;color:var(--accent-blue)">person</span> À propos</div>
+          <div style="font-size:14px;color:var(--text-secondary);line-height:1.7;background:var(--bg-input);padding:16px;border-radius:12px">${p.bio || ''}</div>
+        </div>
+        <!-- Skills -->
+        <div style="margin-bottom:24px">
+          <div style="font-size:14px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:8px"><span class="material-icons-round" style="font-size:18px;color:var(--accent-green)">psychology</span> Compétences</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">${p.skills.map(s => '<span style="padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;background:rgba(59,130,246,0.1);color:var(--accent-blue)">' + s + '</span>').join('')}</div>
+        </div>
+        <!-- Secteurs -->
+        ${p.secteurs ? '<div style="margin-bottom:24px"><div style="font-size:14px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:8px"><span class="material-icons-round" style="font-size:18px;color:var(--accent-purple)">domain</span> Secteurs cibles</div><div>' + secteursHtml + '</div></div>' : ''}
+        <!-- Formation -->
+        ${p.formation ? '<div style="margin-bottom:24px"><div style="font-size:14px;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:8px"><span class="material-icons-round" style="font-size:18px;color:var(--accent-yellow)">school</span> Formation</div><div style="font-size:14px;color:var(--text-secondary);background:var(--bg-input);padding:12px 16px;border-radius:10px">' + p.formation + '</div></div>' : ''}
+        <!-- Experience -->
+        ${expHtml ? '<div style="margin-bottom:24px"><div style="font-size:14px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px"><span class="material-icons-round" style="font-size:18px;color:var(--accent-cyan)">timeline</span> Expérience professionnelle</div><div>' + expHtml + '</div></div>' : ''}
+        <!-- Actions bottom -->
+        <div style="display:flex;gap:10px;margin-top:24px;padding-top:20px;border-top:1px solid var(--border)">
+          <button onclick="closeProfileModal()" style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg-input);color:var(--text-secondary);font-size:13px;font-weight:700;cursor:pointer">Fermer</button>
+          <button onclick="window.open('${p.linkedin || '#'}','_blank')" style="flex:1;padding:12px;border-radius:10px;border:none;background:#0077b5;color:#fff;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px"><span class="material-icons-round" style="font-size:16px">open_in_new</span> Ouvrir LinkedIn</button>
+        </div>
+      </div>
+    </div>
+  `;
+  const overlay = document.getElementById('profile-modal-overlay');
+  overlay.style.display = 'flex';
+}
+function closeProfileModal() {
+  document.getElementById('profile-modal-overlay').style.display = 'none';
 }
 
 // ===== SLIDE NAVIGATION =====
