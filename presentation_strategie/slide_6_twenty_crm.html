@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brique 3 : Twenty CRM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #0F1115; font-family: 'Inter Tight', sans-serif; overflow: hidden; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: radial-gradient(circle at 50% 0%, #1a1d26 0%, #0F1115 100%);
+            position: relative;
+            padding-top: 60px;
+            color: #FFFFFF;
+        }
+
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .header {
+            margin-left: 80px;
+            margin-right: 80px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .brick-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            font-size: 28px;
+        }
+
+        h1 {
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #FFFFFF 0%, #E5E7EB 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subheader {
+            margin-left: 160px; /* Aligned with text start */
+            margin-right: 80px;
+            margin-bottom: 40px;
+            font-size: 18px;
+            color: #9CA3AF;
+            display: flex;
+            gap: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-left: 80px;
+            margin-right: 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s ease;
+            min-height: 180px;
+        }
+
+        .card-icon {
+            font-size: 24px;
+            color: #3B82F6;
+            margin-bottom: 16px;
+            width: 48px;
+            height: 48px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 10px;
+        }
+
+        .card-desc {
+            font-size: 15px;
+            color: #9CA3AF;
+            line-height: 1.4;
+        }
+
+        .stat-badge {
+            position: absolute;
+            top: 60px;
+            right: 80px;
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        
+        <div class="stat-badge">
+            <i class="fa-solid fa-star"></i> 40 000+ Stars GitHub
+        </div>
+
+        <div class="header">
+            <div class="brick-icon"><i class="fa-solid fa-cube"></i></div>
+            <h1>Twenty CRM remplace Salesforce avec une architecture moderne</h1>
+        </div>
+
+        <div class="subheader">
+            <div class="tag"><i class="fa-solid fa-globe"></i> twenty.com</div>
+            <div class="tag"><i class="fa-solid fa-rocket"></i> YC S23</div>
+            <div class="tag"><i class="fa-brands fa-react"></i> TypeScript & React</div>
+            <div class="tag"><i class="fa-solid fa-database"></i> PostgreSQL</div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="card-icon"><i class="fa-solid fa-database"></i></div>
+                <div class="card-title">Modèle de données flexible</div>
+                <div class="card-desc">Créez des objets personnalisés (Consultant, Mission, TJM) sans limite, comme dans Salesforce.</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="card-icon"><i class="fa-solid fa-table-columns"></i></div>
+                <div class="card-title">Vues personnalisables</div>
+                <div class="card-desc">Visualisez vos pipelines en Kanban, Table ou Liste avec filtres avancés et favoris.</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="card-icon"><i class="fa-solid fa-plug"></i></div>
+                <div class="card-title">API GraphQL & REST</div>
+                <div class="card-desc">Intégration programmatique complète et Webhooks pour les événements temps réel.</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="card-icon"><i class="fa-brands fa-chrome"></i></div>
+                <div class="card-title">Extension Chrome</div>
+                <div class="card-desc">Capturez des leads directement depuis LinkedIn ou n'importe quel site web en un clic.</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="card-icon"><i class="fa-solid fa-envelope"></i></div>
+                <div class="card-title">Sync Emails</div>
+                <div class="card-desc">Connectez Gmail/Outlook pour centraliser automatiquement toutes les communications.</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="card-icon"><i class="fa-solid fa-network-wired"></i></div>
+                <div class="card-title">Connecteur n8n & MCP</div>
+                <div class="card-desc">Nœud communautaire n8n et serveur MCP pour l'intégration avec les assistants IA.</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

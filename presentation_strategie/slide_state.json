@@ -1,0 +1,156 @@
+{
+  "project_info": {
+    "title": "Architecture de Prospection Open Source — Portage AI",
+    "created": 1771834367.4664483,
+    "last_updated": 1771834887.7084062,
+    "total_slides": 12
+  },
+  "slides": [
+    {
+      "id": "slide_1_titre",
+      "state": "edited",
+      "pageNum": 1
+    },
+    {
+      "id": "slide_2_defi",
+      "state": "edited",
+      "pageNum": 2
+    },
+    {
+      "id": "slide_3_vue_ensemble",
+      "state": "edited",
+      "pageNum": 3
+    },
+    {
+      "id": "slide_4_openoutreach",
+      "state": "edited",
+      "pageNum": 4
+    },
+    {
+      "id": "slide_5_fire_enrich",
+      "state": "edited",
+      "pageNum": 5
+    },
+    {
+      "id": "slide_6_twenty_crm",
+      "state": "edited",
+      "pageNum": 6
+    },
+    {
+      "id": "slide_7_n8n",
+      "state": "edited",
+      "pageNum": 7
+    },
+    {
+      "id": "slide_8_comparatif_couts",
+      "state": "edited",
+      "pageNum": 8
+    },
+    {
+      "id": "slide_9_flux_donnees",
+      "state": "edited",
+      "pageNum": 9
+    },
+    {
+      "id": "slide_10_plan_deploiement",
+      "state": "edited",
+      "pageNum": 10
+    },
+    {
+      "id": "slide_11_kpis_roi",
+      "state": "edited",
+      "pageNum": 11
+    },
+    {
+      "id": "slide_12_conclusion",
+      "state": "edited",
+      "pageNum": 12
+    }
+  ],
+  "outline": [
+    {
+      "id": "slide_1_titre",
+      "title": "Architecture de Prospection Open Source — Portage AI",
+      "summary": "Titre de la présentation avec contexte et logos des 4 briques stratégiques.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_2_defi",
+      "title": "Le défi de la prospection B2B en portage salarial",
+      "summary": "Analyse des coûts et inefficacités de la prospection manuelle vs opportunité de marché.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_3_vue_ensemble",
+      "title": "Vue d'ensemble de l'architecture modulaire",
+      "summary": "Présentation du pipeline complet avec les 4 briques interconnectées (OpenOutreach, Fire-Enrich, Twenty, n8n).",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_4_openoutreach",
+      "title": "Brique 1 : OpenOutreach — Scraping LinkedIn intelligent",
+      "summary": "Détails techniques sur OpenOutreach : daemon, ML, machine d'état et anti-détection.",
+      "image_plan": "/home/ubuntu/upload/pasted_file_4ELZlJ_image.png - This image shows a LinkedIn prospecting interface with profiles, scores, and contact statuses, directly illustrating the functionality of OpenOutreach for LinkedIn scraping and qualification.",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_5_fire_enrich",
+      "title": "Brique 2 : Fire-Enrich — Enrichissement IA multi-agents",
+      "summary": "Fonctionnement de Fire-Enrich avec ses 4 agents IA spécialisés et avantages coûts.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_6_twenty_crm",
+      "title": "Brique 3 : Twenty CRM — Le CRM open source nouvelle génération",
+      "summary": "Présentation de Twenty CRM comme alternative Salesforce : modèle de données, API, extension Chrome.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_7_n8n",
+      "title": "Brique 4 : n8n — L'orchestrateur qui connecte tout",
+      "summary": "Rôle central de n8n pour l'automatisation des flux et l'intégration des agents IA.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_8_comparatif_couts",
+      "title": "Comparatif coûts : Open Source vs SaaS propriétaire",
+      "summary": "Tableau comparatif montrant 94% d'économie avec l'architecture open source.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_9_flux_donnees",
+      "title": "Flux de données : du profil LinkedIn au contrat signé",
+      "summary": "Schéma du parcours complet d'un prospect à travers les 8 étapes automatisées.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_10_plan_deploiement",
+      "title": "Plan de déploiement en 4 phases",
+      "summary": "Timeline de mise en œuvre sur 8 semaines pour valider chaque brique progressivement.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_11_kpis_roi",
+      "title": "KPIs attendus et ROI",
+      "summary": "Projections de performance et retour sur investissement chiffré.",
+      "image_plan": "",
+      "slide_template_key": ""
+    },
+    {
+      "id": "slide_12_conclusion",
+      "title": "Conclusion et prochaines étapes",
+      "summary": "Synthèse des avantages compétitifs et plan d'action immédiat.",
+      "image_plan": "",
+      "slide_template_key": ""
+    }
+  ]
+}

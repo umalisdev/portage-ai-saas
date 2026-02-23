@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conclusion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #0F1115; font-family: 'Inter Tight', sans-serif; overflow: hidden; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px; /* keep as required */
+            background: radial-gradient(circle at 50% 0%, #1a1d26 0%, #0F1115 100%);
+            position: relative;
+            padding-top: 60px; /* do not change */
+            color: #FFFFFF;
+        }
+
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .header {
+            margin-left: 80px;
+            margin-right: 80px;
+            margin-bottom: 20px; /* reduced from 60 to bring content up */
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #FFFFFF 0%, #E5E7EB 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: #9CA3AF;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px; /* reduced horizontal gap (also affects row gap if any) */
+            margin-left: 100px;
+            margin-right: 100px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .column-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 16px; /* reduced from 30 */
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px; /* reduced from 15 */
+        }
+
+        /* Left Column: Pillars */
+        .pillar-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px; /* reduced from 20 */
+            margin-bottom: 16px; /* reduced from 30 */
+            background: rgba(255, 255, 255, 0.02);
+            padding: 12px; /* reduced from 20 */
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .pillar-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #3B82F6;
+            flex-shrink: 0;
+        }
+
+        .pillar-content h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 5px;
+        }
+
+        .pillar-content p {
+            font-size: 15px;
+            color: #9CA3AF;
+            line-height: 1.4;
+        }
+
+        /* Right Column: Action Plan */
+        .action-list {
+            list-style: none;
+        }
+
+        .action-item {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* reduced from 20 */
+            margin-bottom: 12px; /* reduced from 25 */
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.05), transparent);
+            padding: 12px; /* reduced from 20 */
+            border-radius: 16px;
+            border-left: 4px solid #10B981;
+        }
+
+        .check-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #10B981;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #10B981;
+            font-size: 16px;
+        }
+
+        .action-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #E5E7EB;
+        }
+
+        .final-cta {
+            margin-top: 20px; /* reduced from 40 */
+            text-align: center;
+            font-size: 18px;
+            color: #6B7280;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        
+        <div class="header">
+            <h1>Une infrastructure propriétaire pour une croissance non plafonnée</h1>
+            <div class="subtitle">Synthèse stratégique et prochaines étapes</div>
+        </div>
+
+        <div class="content-grid">
+            <!-- Left Column -->
+            <div class="left-col">
+                <div class="column-title">
+                    <i class="fa-solid fa-chess-queen" style="color: #3B82F6;"></i>
+                    3 Piliers Stratégiques
+                </div>
+
+                <div class="pillar-item">
+                    <div class="pillar-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="pillar-content">
+                        <h3>Souveraineté Totale</h3>
+                        <p>Vos données prospects et votre intelligence commerciale vous appartiennent à 100%. Aucune dépendance critique.</p>
+                    </div>
+                </div>
+
+                <div class="pillar-item">
+                    <div class="pillar-icon"><i class="fa-solid fa-chart-line"></i></div>
+                    <div class="pillar-content">
+                        <h3>Évolutivité Infinie</h3>
+                        <p>Ajoutez des utilisateurs, des contacts et des workflows sans augmentation linéaire des coûts de licence.</p>
+                    </div>
+                </div>
+
+                <div class="pillar-item">
+                    <div class="pillar-icon"><i class="fa-solid fa-brain"></i></div>
+                    <div class="pillar-content">
+                        <h3>Intelligence Propriétaire</h3>
+                        <p>Le modèle de scoring s'affine avec vos propres données, créant un avantage concurrentiel unique.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="right-col">
+                <div class="column-title">
+                    <i class="fa-solid fa-list-check" style="color: #10B981;"></i>
+                    Plan d'action immédiat
+                </div>
+
+                <ul class="action-list">
+                    <li class="action-item">
+                        <div class="check-circle"><i class="fa-solid fa-check"></i></div>
+                        <div class="action-text">Valider le budget serveur (90€/mois)</div>
+                    </li>
+
+                    <li class="action-item">
+                        <div class="check-circle"><i class="fa-solid fa-check"></i></div>
+                        <div class="action-text">Lancer l'instance Twenty CRM (J+1)</div>
+                    </li>
+
+                    <li class="action-item">
+                        <div class="check-circle"><i class="fa-solid fa-check"></i></div>
+                        <div class="action-text">Définir les 3 premiers personas cibles</div>
+                    </li>
+
+                    <li class="action-item">
+                        <div class="check-circle"><i class="fa-solid fa-check"></i></div>
+                        <div class="action-text">Connecter le pipeline n8n pilote</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="final-cta">
+            Prêt à déployer ? <span style="color: #FFFFFF; font-weight: 700;">git clone portage-ai-saas</span>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de déploiement</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #0F1115; font-family: 'Inter Tight', sans-serif; overflow: hidden; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: radial-gradient(circle at 50% 0%, #1a1d26 0%, #0F1115 100%);
+            position: relative;
+            padding-top: 60px;
+            color: #FFFFFF;
+        }
+
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .header {
+            margin-left: 80px;
+            margin-right: 80px;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #FFFFFF 0%, #E5E7EB 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .timeline-container {
+            margin: 0 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* The connecting line */
+        .timeline-line {
+            position: absolute;
+            top: 24px;
+            left: 12.5%;
+            right: 12.5%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 0;
+        }
+
+        .phases-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .phase-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .phase-node {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #0F1115;
+            border: 4px solid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 20px;
+            z-index: 1;
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .phase-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            width: 100%;
+            height: 340px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .phase-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+
+        .phase-header {
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+        }
+
+        .phase-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 5px;
+        }
+
+        .phase-weeks {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .task-list {
+            list-style: none;
+            flex: 1;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 15px;
+            color: #D1D5DB;
+            line-height: 1.4;
+        }
+
+        .task-item i {
+            margin-top: 4px;
+            font-size: 12px;
+        }
+
+        /* Phase 1: CRM (Blue) */
+        .p1 .phase-node { border-color: #3B82F6; color: #3B82F6; }
+        .p1 .phase-card::before { background: #3B82F6; }
+        .p1 .phase-weeks { color: #3B82F6; }
+        .p1 .task-item i { color: #3B82F6; }
+
+        /* Phase 2: Orchestration (Purple) */
+        .p2 .phase-node { border-color: #8B5CF6; color: #8B5CF6; }
+        .p2 .phase-card::before { background: #8B5CF6; }
+        .p2 .phase-weeks { color: #8B5CF6; }
+        .p2 .task-item i { color: #8B5CF6; }
+
+        /* Phase 3: Prospection (Cyan/Light Blue) */
+        .p3 .phase-node { border-color: #0077b5; color: #0077b5; }
+        .p3 .phase-card::before { background: #0077b5; }
+        .p3 .phase-weeks { color: #0077b5; }
+        .p3 .task-item i { color: #0077b5; }
+
+        /* Phase 4: Enrichment (Orange) */
+        .p4 .phase-node { border-color: #f59e0b; color: #f59e0b; }
+        .p4 .phase-card::before { background: #f59e0b; }
+        .p4 .phase-weeks { color: #f59e0b; }
+        .p4 .task-item i { color: #f59e0b; }
+
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        
+        <div class="header">
+            <h1>Un déploiement progressif sur 8 semaines permet de valider chaque brique</h1>
+        </div>
+
+        <div class="timeline-container">
+            <div class="timeline-line"></div>
+            
+            <div class="phases-grid">
+                <!-- Phase 1 -->
+                <div class="phase-col p1">
+                    <div class="phase-node">1</div>
+                    <div class="phase-card">
+                        <div class="phase-header">
+                            <div class="phase-title">Fondations</div>
+                            <div class="phase-weeks">Semaines 1-2</div>
+                        </div>
+                        <ul class="task-list">
+                            <li class="task-item"><i class="fa-solid fa-server"></i> Déploiement Twenty CRM (Docker)</li>
+                            <li class="task-item"><i class="fa-solid fa-database"></i> Configuration modèle de données</li>
+                            <li class="task-item"><i class="fa-solid fa-file-import"></i> Import contacts existants</li>
+                            <li class="task-item"><i class="fa-solid fa-chalkboard-user"></i> Formation équipe</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="phase-col p2">
+                    <div class="phase-node">2</div>
+                    <div class="phase-card">
+                        <div class="phase-header">
+                            <div class="phase-title">Orchestration</div>
+                            <div class="phase-weeks">Semaines 3-4</div>
+                        </div>
+                        <ul class="task-list">
+                            <li class="task-item"><i class="fa-solid fa-network-wired"></i> Installation n8n</li>
+                            <li class="task-item"><i class="fa-solid fa-bolt"></i> Création workflows alertes</li>
+                            <li class="task-item"><i class="fa-solid fa-link"></i> Connexion n8n ↔ Twenty</li>
+                            <li class="task-item"><i class="fa-solid fa-webhook"></i> Setup Webhooks</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Phase 3 -->
+                <div class="phase-col p3">
+                    <div class="phase-node">3</div>
+                    <div class="phase-card">
+                        <div class="phase-header">
+                            <div class="phase-title">Prospection</div>
+                            <div class="phase-weeks">Semaines 5-6</div>
+                        </div>
+                        <ul class="task-list">
+                            <li class="task-item"><i class="fa-brands fa-linkedin"></i> Déploiement OpenOutreach</li>
+                            <li class="task-item"><i class="fa-solid fa-filter"></i> Configuration critères cibles</li>
+                            <li class="task-item"><i class="fa-solid fa-vial"></i> Campagnes test (10/jour)</li>
+                            <li class="task-item"><i class="fa-solid fa-check-double"></i> Validation technique</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Phase 4 -->
+                <div class="phase-col p4">
+                    <div class="phase-node">4</div>
+                    <div class="phase-card">
+                        <div class="phase-header">
+                            <div class="phase-title">Enrichissement</div>
+                            <div class="phase-weeks">Semaines 7-8</div>
+                        </div>
+                        <ul class="task-list">
+                            <li class="task-item"><i class="fa-solid fa-fire"></i> Activation Fire-Enrich</li>
+                            <li class="task-item"><i class="fa-solid fa-route"></i> Connexion pipeline complet</li>
+                            <li class="task-item"><i class="fa-solid fa-sliders"></i> Ajustement ML & Templates</li>
+                            <li class="task-item"><i class="fa-solid fa-chart-line"></i> Mesure KPIs & ROI</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

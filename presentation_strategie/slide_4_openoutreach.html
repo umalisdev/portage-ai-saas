@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brique 1 : OpenOutreach</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#0F1115;font-family:'Inter Tight',sans-serif;overflow:hidden}
+        .slide-container{width:1280px;min-height:720px;background:radial-gradient(circle at 50% 0%,#1a1d26 0%,#0F1115 100%);position:relative;padding-top:60px;color:#fff}
+        .grid-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px;z-index:0;pointer-events:none}
+        .header{margin-left:80px;margin-right:80px;margin-bottom:24px;position:relative;z-index:1;display:flex;align-items:center;gap:20px}
+        .brick-icon{width:60px;height:60px;background:rgba(0,119,181,.1);border:1px solid rgba(0,119,181,.3);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#0077b5;font-size:28px}
+        h1{font-size:42px;font-weight:800;line-height:1.2;background:linear-gradient(135deg,#fff 0%,#E5E7EB 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .content-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-left:80px;margin-right:80px;position:relative;z-index:1}
+        .features-col{display:flex;flex-direction:column;justify-content:flex-start}
+        .subtitle{font-size:18px;color:#0077b5;margin-bottom:18px;font-weight:600;display:flex;align-items:center;gap:10px}
+        .feature-list{list-style:none;display:grid;grid-template-columns:repeat(2,1fr);gap:16px 18px;padding:0}
+        .feature-item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;backdrop-filter:blur(5px);transition:transform .2s}
+        .feature-title{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+        .feature-title i{color:#0077b5}
+        .feature-desc{font-size:15px;color:#9CA3AF;line-height:1.4;margin-left:24px}
+        .image-col{display:flex;align-items:center;justify-content:center;position:relative}
+        .image-container{width:100%;max-width:560px;border-radius:16px;overflow:hidden;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);box-shadow:0 20px 50px rgba(0,0,0,.5)}
+        .image-container img{width:100%;height:auto;object-fit:contain;background-color:#0F1115;display:block}
+        .tech-badge{position:absolute;bottom:16px;right:16px;background:rgba(0,0,0,.8);padding:8px 14px;border-radius:20px;font-size:12px;color:#9CA3AF;border:1px solid rgba(255,255,255,.1)}
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        <div class="header">
+            <div class="brick-icon"><i class="fa-brands fa-linkedin"></i></div>
+            <h1>OpenOutreach automatise la découverte et la qualification de profils LinkedIn</h1>
+        </div>
+        <div class="content-grid">
+            <div class="features-col">
+                <div class="subtitle"><i class="fa-brands fa-github"></i>&nbsp;github.com/eracle/OpenOutreach</div>
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <div class="feature-title"><i class="fa-solid fa-robot"></i>Daemon 24/7 Intelligent</div>
+                        <div class="feature-desc">Moteur central avec 5 lanes prioritaires (Connect, Follow Up, Enrich, Qualify) qui s'exécutent en continu.</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-title"><i class="fa-solid fa-brain"></i>Qualification ML</div>
+                        <div class="feature-desc">Gaussian Process Classifier + BALD pour apprendre quels profils convertissent le mieux.</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-title"><i class="fa-solid fa-code-branch"></i>Machine d'état stricte</div>
+                        <div class="feature-desc">Traçabilité : Discovered → Enriched → Qualified → Pending → Connected.</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-title"><i class="fa-solid fa-user-secret"></i>Anti-détection avancée</div>
+                        <div class="feature-desc">Playwright en mode stealth, rotation de sessions et respect strict des quotas LinkedIn.</div>
+                    </li>
+                </ul>
+            </div>
+            <div class="image-col">
+                <div class="image-container">
+                    <img src="/home/ubuntu/upload/pasted_file_4ELZlJ_image.png" alt="Interface OpenOutreach">
+                </div>
+                <div class="tech-badge">Python • Playwright • Django</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

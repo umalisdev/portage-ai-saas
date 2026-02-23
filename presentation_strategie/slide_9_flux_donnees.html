@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flux de données</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #0F1115; font-family: 'Inter Tight', sans-serif; overflow: hidden; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px; /* keep as required */
+            background: radial-gradient(circle at 50% 0%, #1a1d26 0%, #0F1115 100%);
+            position: relative;
+            padding-top: 60px; /* do not change (title top padding) */
+            color: #FFFFFF;
+        }
+
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .header {
+            margin-left: 80px;
+            margin-right: 80px;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #FFFFFF 0%, #E5E7EB 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .flow-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px; /* reduced from 20px to save vertical space */
+            margin: 0 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 12px; /* reduced padding */
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+            position: relative;
+            height: 220px; /* reduced from 240px */
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            width: 30px;
+            height: 30px;
+            background: #3B82F6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            color: #FFFFFF;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+            z-index: 2;
+        }
+
+        .step-icon {
+            font-size: 28px;
+            margin-bottom: 12px;
+            margin-top: 6px; /* tightened spacing */
+            color: #9CA3AF;
+        }
+
+        .step-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 8px;
+        }
+
+        .step-desc {
+            font-size: 14px;
+            color: #9CA3AF;
+            line-height: 1.4;
+        }
+
+        /* Color coding for phases */
+        .phase-discovery .step-number { background: #0077b5; } /* LinkedIn Blue */
+        .phase-discovery .step-icon { color: #0077b5; }
+        
+        .phase-enrich .step-number { background: #f59e0b; } /* Orange */
+        .phase-enrich .step-icon { color: #f59e0b; }
+
+        .phase-crm .step-number { background: #3B82F6; } /* Blue */
+        .phase-crm .step-icon { color: #3B82F6; }
+
+        .phase-outreach .step-number { background: #8B5CF6; } /* Purple */
+        .phase-outreach .step-icon { color: #8B5CF6; }
+
+        .phase-conversion .step-number { background: #10B981; } /* Green */
+        .phase-conversion .step-icon { color: #10B981; }
+
+        /* Connector lines */
+        .connector-row {
+            grid-column: 1 / -1;
+            height: 24px; /* reduced from 40px */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .connector-line {
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            width: 100%;
+            position: absolute;
+        }
+        
+        .connector-arrow-down {
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 20px;
+            background: #0F1115;
+            padding: 0 10px;
+            z-index: 1;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        
+        <div class="header">
+            <h1>Le parcours complet d'un prospect traverse 8 étapes automatisées en moins de 72 heures</h1>
+        </div>
+
+        <div class="flow-grid">
+            <!-- Row 1 -->
+            <div class="step-card phase-discovery">
+                <div class="step-number">1</div>
+                <div class="step-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                <div class="step-title">Recherche</div>
+                <div class="step-desc">n8n déclenche OpenOutreach avec les critères cibles (DevOps, Data, Freelance).</div>
+            </div>
+
+            <div class="step-card phase-discovery">
+                <div class="step-number">2</div>
+                <div class="step-icon"><i class="fa-brands fa-linkedin-in"></i></div>
+                <div class="step-title">Scraping</div>
+                <div class="step-desc">Extraction du profil complet via l'API Voyager (poste, entreprise, skills).</div>
+            </div>
+
+            <div class="step-card phase-discovery">
+                <div class="step-number">3</div>
+                <div class="step-icon"><i class="fa-solid fa-filter"></i></div>
+                <div class="step-title">Qualification ML</div>
+                <div class="step-desc">Scoring (0-100) par modèle GPC + BALD basé sur l'historique.</div>
+            </div>
+
+            <div class="step-card phase-enrich">
+                <div class="step-number">4</div>
+                <div class="step-icon"><i class="fa-solid fa-fire"></i></div>
+                <div class="step-title">Enrichissement</div>
+                <div class="step-desc">Fire-Enrich complète : taille entreprise, funding, stack technique.</div>
+            </div>
+
+            <!-- Connector Row -->
+            <div class="connector-row">
+                <div class="connector-line"></div>
+                <i class="fa-solid fa-chevron-down connector-arrow-down"></i>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="step-card phase-crm">
+                <div class="step-number">5</div>
+                <div class="step-icon"><i class="fa-solid fa-database"></i></div>
+                <div class="step-title">Injection CRM</div>
+                <div class="step-desc">Push dans Twenty CRM via API GraphQL avec mappage des champs.</div>
+            </div>
+
+            <div class="step-card phase-outreach">
+                <div class="step-number">6</div>
+                <div class="step-icon"><i class="fa-regular fa-paper-plane"></i></div>
+                <div class="step-title">Outreach</div>
+                <div class="step-desc">Envoi message LinkedIn personnalisé (template Jinja2).</div>
+            </div>
+
+            <div class="step-card phase-outreach">
+                <div class="step-number">7</div>
+                <div class="step-icon"><i class="fa-regular fa-envelope"></i></div>
+                <div class="step-title">Nurturing</div>
+                <div class="step-desc">Séquence email automatique pour les leads qualifiés (3 emails).</div>
+            </div>
+
+            <div class="step-card phase-conversion">
+                <div class="step-number">8</div>
+                <div class="step-icon"><i class="fa-solid fa-handshake"></i></div>
+                <div class="step-title">Conversion</div>
+                <div class="step-desc">Alerte commerciale & assignation dès réponse ou connexion.</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

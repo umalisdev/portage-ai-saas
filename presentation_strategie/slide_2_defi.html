@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le défi de la prospection B2B</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #0F1115; font-family: 'Inter Tight', sans-serif; overflow: hidden; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: radial-gradient(circle at 50% 0%, #1a1d26 0%, #0F1115 100%);
+            position: relative;
+            padding-top: 60px;
+            color: #FFFFFF;
+        }
+
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .header {
+            margin-left: 80px;
+            margin-right: 80px;
+            margin-bottom: 50px;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #FFFFFF 0%, #E5E7EB 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            max-width: 900px;
+        }
+
+        /* Layout changed: single row of four cards to reduce vertical height */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px 24px; /* row-gap, column-gap */
+            margin-left: 80px;
+            margin-right: 80px;
+            position: relative;
+            z-index: 1;
+            align-items: start;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px; /* slightly reduced inner padding */
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+            min-height: 220px;
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            margin-right: 15px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-value {
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .stat-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #E5E7EB;
+            margin-bottom: 10px;
+        }
+
+        .stat-desc {
+            font-size: 16px;
+            color: #9CA3AF;
+            line-height: 1.5;
+        }
+
+        /* Card specific colors */
+        .card-market .stat-icon { color: #3B82F6; background: rgba(59, 130, 246, 0.1); }
+        .card-market .stat-value { color: #3B82F6; }
+        
+        .card-time .stat-icon { color: #EF4444; background: rgba(239, 68, 68, 0.1); }
+        .card-time .stat-value { color: #EF4444; }
+
+        .card-cost .stat-icon { color: #F59E0B; background: rgba(245, 158, 11, 0.1); }
+        .card-cost .stat-value { color: #F59E0B; }
+
+        .card-opp .stat-icon { color: #10B981; background: rgba(16, 185, 129, 0.1); }
+        .card-opp .stat-value { color: #10B981; }
+
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        
+        <div class="header">
+            <h1>La prospection manuelle coûte 68% du temps commercial sans garantie de résultat</h1>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card card-market">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+                    <div class="stat-value">2,4 Mds€</div>
+                </div>
+                <div class="stat-title">Marché en hyper-croissance</div>
+                <div class="stat-desc">Le portage salarial croît de 20% par an, intensifiant la guerre des talents pour attirer les meilleurs consultants.</div>
+            </div>
+
+            <div class="stat-card card-time">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fa-regular fa-clock"></i></div>
+                    <div class="stat-value">68%</div>
+                </div>
+                <div class="stat-title">Temps perdu</div>
+                <div class="stat-desc">Les commerciaux passent la majorité de leur temps sur des tâches répétitives (sourcing, saisie) au lieu de closer.</div>
+            </div>
+
+            <div class="stat-card card-cost">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                    <div class="stat-value">500€</div>
+                </div>
+                <div class="stat-title">Coût SaaS mensuel / user</div>
+                <div class="stat-desc">L'empilement d'outils propriétaires (Sales Nav, Apollo, Clay) explose les budgets et enferme les données en silos.</div>
+            </div>
+
+            <div class="stat-card card-opp">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fa-solid fa-unlock"></i></div>
+                    <div class="stat-value">-90%</div>
+                </div>
+                <div class="stat-title">Opportunité Open Source</div>
+                <div class="stat-desc">Reprendre le contrôle total des données et réduire drastiquement les coûts grâce à une architecture modulaire.</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

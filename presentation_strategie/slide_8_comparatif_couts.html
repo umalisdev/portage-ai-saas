@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparatif coûts : Open Source vs SaaS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #0F1115; font-family: 'Inter Tight', sans-serif; overflow: hidden; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: radial-gradient(circle at 50% 0%, #1a1d26 0%, #0F1115 100%);
+            position: relative;
+            padding-top: 60px; /* DO NOT change - title top padding */
+            color: #FFFFFF;
+        }
+
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .header {
+            margin-left: 80px;
+            margin-right: 80px;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #FFFFFF 0%, #E5E7EB 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: #9CA3AF;
+        }
+
+        /* Table container kept relative so internal absolute elements don't affect page flow */
+        .table-container {
+            margin: 0 80px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            padding-bottom: 18px; /* small footer spacing for internal note */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        /* Shrink inner padding to reduce overall height (keeps fonts intact) */
+        th {
+            text-align: left;
+            padding: 12px 24px;
+            font-size: 16px;
+            color: #9CA3AF;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        td {
+            padding: 12px 24px;
+            font-size: 18px;
+            color: #E5E7EB;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .col-saas {
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .col-opensource {
+            background: rgba(16, 185, 129, 0.05);
+            font-weight: 600;
+        }
+
+        .tool-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tool-icon {
+            width: 24px;
+            text-align: center;
+            color: #9CA3AF;
+        }
+
+        .price-saas {
+            color: #F87171;
+        }
+
+        .price-os {
+            color: #34D399;
+        }
+
+        /* Reduce total-row vertical padding to save space */
+        .total-row td {
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 800;
+            font-size: 24px;
+            padding-top: 16px;
+            padding-bottom: 16px;
+        }
+
+        .total-row .price-saas {
+            color: #EF4444;
+        }
+
+        .total-row .price-os {
+            color: #10B981;
+            font-size: 32px;
+        }
+
+        /* Keep savings badge visible but small enough */
+        .savings-badge {
+            position: absolute;
+            top: -16px;
+            right: -16px;
+            background: #10B981;
+            color: #000;
+            font-weight: 800;
+            padding: 8px 16px;
+            border-radius: 24px;
+            transform: rotate(15deg);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+            z-index: 2;
+            font-size: 18px;
+        }
+
+        /* Move note inside table-container so it doesn't push page height */
+        .note {
+            margin-top: 10px;
+            text-align: center;
+            color: #6B7280;
+            font-size: 14px;
+            font-style: italic;
+            padding: 0 20px 8px;
+        }
+
+        /* Highlight box is positioned relative to table-container to avoid expanding overall page flow */
+        .highlight-box {
+            position: absolute;
+            bottom: 18px;
+            right: 30px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            padding: 12px 18px;
+            border-radius: 12px;
+            text-align: right;
+        }
+
+        .highlight-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #10B981;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .highlight-label {
+            font-size: 14px;
+            color: #D1FAE5;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        
+        <div class="header">
+            <h1>L'architecture open source réduit les coûts de 94%</h1>
+            <div class="subtitle">Comparatif mensuel pour une équipe de 5 commerciaux</div>
+        </div>
+
+        <div class="table-container">
+            <div class="savings-badge">-94%</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 20%">Fonction</th>
+                        <th style="width: 30%">Solution SaaS Propriétaire</th>
+                        <th style="width: 15%">Coût / mois</th>
+                        <th style="width: 30%" class="col-opensource">Solution Open Source</th>
+                        <th style="width: 15%" class="col-opensource">Coût / mois</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Scraping LinkedIn</td>
+                        <td>
+                            <div class="tool-name">
+                                <i class="fa-brands fa-linkedin tool-icon"></i> Sales Nav + Phantombuster
+                            </div>
+                        </td>
+                        <td class="price-saas">180 €</td>
+                        <td class="col-opensource">
+                            <div class="tool-name">
+                                <i class="fa-solid fa-robot tool-icon"></i> OpenOutreach
+                            </div>
+                        </td>
+                        <td class="price-os col-opensource">0 €</td>
+                    </tr>
+                    <tr>
+                        <td>Enrichissement</td>
+                        <td>
+                            <div class="tool-name">
+                                <i class="fa-solid fa-database tool-icon"></i> Clay ou Apollo
+                            </div>
+                        </td>
+                        <td class="price-saas">149 €</td>
+                        <td class="col-opensource">
+                            <div class="tool-name">
+                                <i class="fa-solid fa-fire tool-icon"></i> Fire-Enrich
+                            </div>
+                        </td>
+                        <td class="price-os col-opensource">~5 €</td>
+                    </tr>
+                    <tr>
+                        <td>CRM (5 users)</td>
+                        <td>
+                            <div class="tool-name">
+                                <i class="fa-solid fa-users tool-icon"></i> Salesforce Essentials
+                            </div>
+                        </td>
+                        <td class="price-saas">125 €</td>
+                        <td class="col-opensource">
+                            <div class="tool-name">
+                                <i class="fa-solid fa-cube tool-icon"></i> Twenty CRM
+                            </div>
+                        </td>
+                        <td class="price-os col-opensource">0 €</td>
+                    </tr>
+                    <tr>
+                        <td>Orchestration</td>
+                        <td>
+                            <div class="tool-name">
+                                <i class="fa-solid fa-bolt tool-icon"></i> Zapier Pro
+                            </div>
+                        </td>
+                        <td class="price-saas">49 €</td>
+                        <td class="col-opensource">
+                            <div class="tool-name">
+                                <i class="fa-solid fa-network-wired tool-icon"></i> n8n
+                            </div>
+                        </td>
+                        <td class="price-os col-opensource">0 €</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td>TOTAL</td>
+                        <td></td>
+                        <td class="price-saas">~1 600 €</td>
+                        <td class="col-opensource"></td>
+                        <td class="price-os col-opensource">~95 €</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="note">* Le coût open source inclut l'hébergement serveur VPS (~90€/mois) et les appels API LLM (~5€/mois).</div>
+
+            <div class="highlight-box">
+                <div class="highlight-value">18 000 €</div>
+                <div class="highlight-label">Économie annuelle</div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

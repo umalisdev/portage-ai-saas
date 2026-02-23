@@ -31,6 +31,32 @@
       --sidebar-collapsed: 64px;
       --header-height: 0px;
     }
+    /* ===== LIGHT THEME ===== */
+    [data-theme="light"] {
+      --bg-primary: #f5f6fa;
+      --bg-secondary: #ffffff;
+      --bg-card: #ffffff;
+      --bg-input: #f0f1f5;
+      --border: #e2e4ea;
+      --border-hover: #d0d2da;
+      --text-primary: #1a1b2e;
+      --text-secondary: #5c5d70;
+      --text-muted: #8b8ca0;
+      --text-dim: #b0b1c0;
+      --accent-blue: #2563eb;
+      --accent-green: #059669;
+      --accent-yellow: #d97706;
+      --accent-purple: #7c3aed;
+      --accent-red: #e11d48;
+      --accent-cyan: #0891b2;
+      --accent-linkedin: #0066a0;
+    }
+    [data-theme="light"] .sidebar { box-shadow: 2px 0 8px rgba(0,0,0,0.06); }
+    [data-theme="light"] .kpi-card,
+    [data-theme="light"] .modal,
+    [data-theme="light"] .profile-card { box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    [data-theme="light"] ::-webkit-scrollbar-thumb { background: #d0d2da; }
+    [data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #b0b1c0; }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg-primary);
@@ -408,6 +434,40 @@
     }
     .modal-title { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
     .modal-subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+    /* Theme Toggle Button */
+    .theme-toggle-container {
+      position: fixed;
+      top: 16px;
+      right: 24px;
+      z-index: 200;
+    }
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: var(--text-secondary);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .theme-toggle:hover {
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+      transform: scale(1.03);
+    }
+    .theme-toggle .material-icons-round {
+      font-size: 18px;
+      transition: transform 0.3s ease;
+    }
+    .theme-toggle:hover .material-icons-round {
+      transform: rotate(30deg);
+    }
     /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
@@ -482,7 +542,10 @@
       <div class="nav-section">
         <div class="nav-section-title">Stratégie</div>
         <div class="nav-item" data-page="strategie" onclick="navigate('strategie')">
-          <span class="material-icons-round">architecture</span><span>Architecture Prospection</span>
+          <span class="material-icons-round">architecture</span><span>Étude & Architecture</span>
+        </div>
+        <div class="nav-item" data-page="presentation" onclick="navigate('presentation')">
+          <span class="material-icons-round">slideshow</span><span>Présentation</span>
         </div>
       </div>
       <div class="nav-section">
@@ -498,6 +561,14 @@
       </button>
     </div>
   </nav>
+
+  <!-- THEME TOGGLE -->
+  <div class="theme-toggle-container">
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">
+      <span class="material-icons-round" id="theme-icon">light_mode</span>
+      <span id="theme-label">Mode Clair</span>
+    </button>
+  </div>
 
   <!-- MAIN CONTENT -->
   <div class="main-content" id="main-content">
@@ -696,6 +767,42 @@ function showToast(html) {
 }
 
 // ===== NAVIGATION =====
+// ===== THEME TOGGLE =====
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme');
+  const next = current === 'light' ? 'dark' : 'light';
+  html.setAttribute('data-theme', next);
+  document.getElementById('theme-icon').textContent = next === 'light' ? 'dark_mode' : 'light_mode';
+  document.getElementById('theme-label').textContent = next === 'light' ? 'Mode Sombre' : 'Mode Clair';
+  localStorage.setItem('portage-ai-theme', next);
+  // Update chart colors if charts exist
+  if(typeof Chart !== 'undefined') {
+    Chart.helpers.each(Chart.instances, (chart) => {
+      if(chart.options.scales) {
+        const gridColor = next === 'light' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.04)';
+        const tickColor = next === 'light' ? '#5c5d70' : '#5c5d70';
+        Object.values(chart.options.scales).forEach(scale => {
+          if(scale.grid) scale.grid.color = gridColor;
+          if(scale.ticks) scale.ticks.color = tickColor;
+        });
+      }
+      chart.update('none');
+    });
+  }
+}
+// Restore saved theme on load
+(function() {
+  const saved = localStorage.getItem('portage-ai-theme');
+  if(saved === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+    setTimeout(() => {
+      document.getElementById('theme-icon').textContent = 'dark_mode';
+      document.getElementById('theme-label').textContent = 'Mode Sombre';
+    }, 0);
+  }
+})();
+
 function navigate(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1289,6 +1396,67 @@ function buildAllPages() {
     </div>
   </div>`;
 
+  // PAGE PRESENTATION
+  mc.innerHTML += `<div class="page" id="page-presentation">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Pr\u00e9sentation Strat\u00e9gique</div>
+        <div class="page-subtitle">Architecture de Prospection Open Source — 12 slides</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <div style="display:flex;align-items:center;gap:6px;background:rgba(139,92,246,0.1);padding:6px 14px;border-radius:20px">
+          <span class="material-icons-round" style="font-size:16px;color:#8b5cf6">slideshow</span>
+          <span style="font-size:12px;font-weight:600;color:#8b5cf6">12 slides</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:24px">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:18px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span class="material-icons-round" style="color:#0077b5;font-size:20px">work</span>
+          <span style="font-weight:700;font-size:14px">OpenOutreach</span>
+        </div>
+        <div style="font-size:12px;color:var(--text-muted)">Scraping LinkedIn intelligent avec ML et anti-d\u00e9tection</div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:18px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span class="material-icons-round" style="color:#f59e0b;font-size:20px">local_fire_department</span>
+          <span style="font-weight:700;font-size:14px">Fire-Enrich</span>
+        </div>
+        <div style="font-size:12px;color:var(--text-muted)">Enrichissement IA multi-agents (4 agents sp\u00e9cialis\u00e9s)</div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:18px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <span class="material-icons-round" style="color:#3b82f6;font-size:20px">view_kanban</span>
+          <span style="font-weight:700;font-size:14px">Twenty CRM + n8n</span>
+        </div>
+        <div style="font-size:12px;color:var(--text-muted)">CRM open source (40K stars) + orchestration (176K stars)</div>
+      </div>
+    </div>
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div style="font-size:16px;font-weight:700">Slides de la pr\u00e9sentation</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn" style="background:rgba(59,130,246,0.1);color:#3b82f6;font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid rgba(59,130,246,0.2);cursor:pointer" onclick="document.getElementById('pres-frame').requestFullscreen()">
+            <span class="material-icons-round" style="font-size:14px;vertical-align:middle;margin-right:4px">fullscreen</span>Plein \u00e9cran
+          </button>
+        </div>
+      </div>
+      <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border);aspect-ratio:16/9;background:#0F1115">
+        <iframe id="pres-frame" src="presentation_strategie/slide_1_titre.html" style="width:100%;height:100%;border:none;transform-origin:0 0" onload="this.contentDocument.body.style.overflow='hidden'"></iframe>
+      </div>
+      <div style="display:flex;justify-content:center;align-items:center;gap:16px;margin-top:16px">
+        <button class="btn" style="background:var(--bg-input);color:var(--text-secondary);padding:8px 16px;border-radius:8px;border:1px solid var(--border);cursor:pointer" onclick="changeSlide(-1)">
+          <span class="material-icons-round" style="font-size:18px;vertical-align:middle">chevron_left</span> Pr\u00e9c\u00e9dent
+        </button>
+        <span id="slide-counter" style="font-size:14px;font-weight:700;color:var(--text-secondary)">1 / 12</span>
+        <button class="btn" style="background:var(--bg-input);color:var(--text-secondary);padding:8px 16px;border-radius:8px;border:1px solid var(--border);cursor:pointer" onclick="changeSlide(1)">
+          Suivant <span class="material-icons-round" style="font-size:18px;vertical-align:middle">chevron_right</span>
+        </button>
+      </div>
+    </div>
+  </div>`;
+
   mc.innerHTML += `<div class="page" id="page-config">
     <div class="page-header"><div><div class="page-title">Configuration</div><div class="page-subtitle">Paramètres de la plateforme commerciale</div></div></div>
     <div class="grid-2">
@@ -1495,6 +1663,30 @@ function filterLinkedInProfiles(query) {
     const text = (p.name + ' ' + p.title + ' ' + p.company + ' ' + p.location + ' ' + p.skills.join(' ')).toLowerCase();
     cards[i].style.display = text.includes(q) ? '' : 'none';
   });
+}
+
+// ===== SLIDE NAVIGATION =====
+const SLIDE_FILES = [
+  'presentation_strategie/slide_1_titre.html',
+  'presentation_strategie/slide_2_defi.html',
+  'presentation_strategie/slide_3_vue_ensemble.html',
+  'presentation_strategie/slide_4_openoutreach.html',
+  'presentation_strategie/slide_5_fire_enrich.html',
+  'presentation_strategie/slide_6_twenty_crm.html',
+  'presentation_strategie/slide_7_n8n.html',
+  'presentation_strategie/slide_8_comparatif_couts.html',
+  'presentation_strategie/slide_9_flux_donnees.html',
+  'presentation_strategie/slide_10_plan_deploiement.html',
+  'presentation_strategie/slide_11_kpis_roi.html',
+  'presentation_strategie/slide_12_conclusion.html'
+];
+let currentSlide = 0;
+function changeSlide(dir) {
+  currentSlide = Math.max(0, Math.min(SLIDE_FILES.length - 1, currentSlide + dir));
+  const frame = document.getElementById('pres-frame');
+  if(frame) frame.src = SLIDE_FILES[currentSlide];
+  const counter = document.getElementById('slide-counter');
+  if(counter) counter.textContent = (currentSlide + 1) + ' / ' + SLIDE_FILES.length;
 }
 
 // ===== INIT =====
