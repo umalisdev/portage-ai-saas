@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { overflow: hidden; }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #0a0b0f;
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
+            font-family: 'Inter', sans-serif;
+            color: #e8e9f0;
+            padding: 60px 80px;
+            position: relative;
+        }
+        
+        h2 {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 60px;
+            background: linear-gradient(90deg, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            border-left: 6px solid #3b82f6;
+            padding-left: 24px;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 80px 1fr;
+            gap: 0;
+            margin-bottom: 60px;
+            align-items: center;
+        }
+        
+        .panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 32px;
+            height: 320px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .panel-problem {
+            border-left: 4px solid #ef4444;
+        }
+        
+        .panel-solution {
+            border-left: 4px solid #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+        
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .panel-problem .panel-header { color: #ef4444; }
+        .panel-solution .panel-header { color: #10b981; }
+        
+        .panel-body {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #cbd5e1;
+            flex-grow: 1;
+        }
+        
+        .connector {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #64748b;
+            font-size: 32px;
+        }
+        
+        .kpi-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+        
+        .kpi-card {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .kpi-value {
+            font-size: 48px;
+            font-weight: 800;
+            color: #3b82f6;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .kpi-label {
+            font-size: 16px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        
+        .highlight {
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        li {
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        li i {
+            margin-top: 6px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <h2>Le scoring IA transforme la prospection en science exacte</h2>
+        
+        <div class="content-grid">
+            <div class="panel panel-problem">
+                <div class="panel-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Problème Actuel
+                </div>
+                <div class="panel-body">
+                    <ul>
+                        <li>
+                            <i class="fas fa-times" style="color:#ef4444"></i>
+                            Traitement manuel de centaines de profils sans priorisation claire
+                        </li>
+                        <li>
+                            <i class="fas fa-times" style="color:#ef4444"></i>
+                            Dilution de l'effort commercial sur des leads froids
+                        </li>
+                        <li>
+                            <i class="fas fa-times" style="color:#ef4444"></i>
+                            Taux de conversion faible et coût d'acquisition élevé
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="connector">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+            
+            <div class="panel panel-solution">
+                <div class="panel-header">
+                    <i class="fas fa-brain"></i>
+                    Solution Scoring IA
+                </div>
+                <div class="panel-body">
+                    <ul>
+                        <li>
+                            <i class="fas fa-check" style="color:#10b981"></i>
+                            Algorithme de scoring (0-100) basé sur <span class="highlight">5 critères pondérés</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check" style="color:#10b981"></i>
+                            Concentration de <span class="highlight">80% de l'effort</span> sur les 20% de profils à fort potentiel
+                        </li>
+                        <li>
+                            <i class="fas fa-check" style="color:#10b981"></i>
+                            Qualification automatique et objective
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="kpi-container">
+            <div class="kpi-card">
+                <span class="kpi-value">x2,5</span>
+                <span class="kpi-label">Taux de Conversion</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-value">-70%</span>
+                <span class="kpi-label">Temps de Qualification</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-value">-60%</span>
+                <span class="kpi-label">Coût par Lead</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { overflow: hidden; }
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #0a0b0f;
+            background-image: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 60%);
+            font-family: 'Inter', sans-serif;
+            color: #e8e9f0;
+            padding: 60px 80px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        h2 {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 40px;
+            background: linear-gradient(90deg, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            border-left: 6px solid #8b5cf6;
+            padding-left: 24px;
+        }
+        
+        .content-wrapper {
+            display: flex;
+            gap: 60px;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .chart-container {
+            width: 500px;
+            height: 500px;
+            position: relative;
+        }
+        
+        .center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        
+        .center-score {
+            font-size: 64px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1;
+        }
+        
+        .center-label {
+            font-size: 18px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .legend-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 16px 24px;
+            transition: transform 0.2s;
+        }
+        
+        .color-indicator {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            margin-right: 16px;
+        }
+        
+        .legend-text {
+            flex: 1;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .legend-points {
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+        }
+        
+        .legend-percent {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-left: 8px;
+        }
+        
+        .priority-levels {
+            margin-top: 32px;
+            display: flex;
+            gap: 16px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .priority-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .priority-high { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .priority-medium { background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .priority-low { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <h2>Vue d'ensemble des 5 critères pondérés</h2>
+        
+        <div class="content-wrapper">
+            <div class="chart-container">
+                <canvas id="scoreChart"></canvas>
+                <div class="center-text">
+                    <div class="center-score">100</div>
+                    <div class="center-label">Points</div>
+                </div>
+            </div>
+            
+            <div class="legend-container">
+                <div class="legend-item">
+                    <div class="color-indicator" style="background: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);"></div>
+                    <div class="legend-text">Adéquation Profil</div>
+                    <div class="legend-points">30 <span class="legend-percent">(30%)</span></div>
+                </div>
+                
+                <div class="legend-item">
+                    <div class="color-indicator" style="background: #10b981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);"></div>
+                    <div class="legend-text">TJM & Potentiel CA</div>
+                    <div class="legend-points">25 <span class="legend-percent">(25%)</span></div>
+                </div>
+                
+                <div class="legend-item">
+                    <div class="color-indicator" style="background: #8b5cf6; box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);"></div>
+                    <div class="legend-text">Disponibilité</div>
+                    <div class="legend-points">20 <span class="legend-percent">(20%)</span></div>
+                </div>
+                
+                <div class="legend-item">
+                    <div class="color-indicator" style="background: #f59e0b; box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);"></div>
+                    <div class="legend-text">Engagement</div>
+                    <div class="legend-points">15 <span class="legend-percent">(15%)</span></div>
+                </div>
+                
+                <div class="legend-item">
+                    <div class="color-indicator" style="background: #ec4899; box-shadow: 0 0 10px rgba(236, 72, 153, 0.5);"></div>
+                    <div class="legend-text">Réseau & Influence</div>
+                    <div class="legend-points">10 <span class="legend-percent">(10%)</span></div>
+                </div>
+                
+                <div class="priority-levels">
+                    <div class="priority-badge priority-high">Haute: 85-100</div>
+                    <div class="priority-badge priority-medium">Moyenne: 70-84</div>
+                    <div class="priority-badge priority-low">Basse: <70</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('scoreChart').getContext('2d');
+        const scoreChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Adéquation', 'TJM & CA', 'Disponibilité', 'Engagement', 'Réseau'],
+                datasets: [{
+                    data: [30, 25, 20, 15, 10],
+                    backgroundColor: [
+                        '#3b82f6', // Blue
+                        '#10b981', // Green
+                        '#8b5cf6', // Purple
+                        '#f59e0b', // Orange
+                        '#ec4899'  // Pink
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                cutout: '75%',
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
