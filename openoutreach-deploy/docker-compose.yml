@@ -1,0 +1,65 @@
+# docker-compose.yml — OpenOutreach + Intégration Dashboard Portage AI
+# Déploiement de production
+#
+# Usage:
+#   1. Copier ce dossier sur votre serveur
+#   2. Configurer le fichier .env (voir .env.example)
+#   3. docker compose up -d
+#   4. Accéder au CRM: http://localhost:8000/crm/
+#   5. VNC (visualisation navigateur): vnc://localhost:5900
+#
+# Pour exporter les profils vers le dashboard:
+#   docker compose exec app python export_to_dashboard.py --inject /dashboard/dashboard.html
+
+services:
+  # ─── OpenOutreach (scraping LinkedIn + CRM) ─────────────────────────
+  app:
+    image: ghcr.io/eracle/openoutreach:latest
+    container_name: openoutreach
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env
+    volumes:
+      - openoutreach_data:/app/assets
+      - ./export_to_dashboard.py:/app/export_to_dashboard.py:ro
+      - dashboard_html:/dashboard
+    ports:
+      - "8000:8000"   # Django Admin / CRM
+      - "5900:5900"   # VNC (visualisation du navigateur)
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/admin/')"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+  # ─── Export automatique (cron toutes les heures) ────────────────────
+  exporter:
+    image: ghcr.io/eracle/openoutreach:latest
+    container_name: openoutreach-exporter
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - openoutreach_data:/app/assets
+      - ./export_to_dashboard.py:/app/export_to_dashboard.py:ro
+      - dashboard_html:/dashboard
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "Démarrage de l'exportateur automatique..."
+        while true; do
+          echo "[$(date)] Export des profils vers le dashboard..."
+          python export_to_dashboard.py --inject /dashboard/dashboard.html 2>&1 || echo "Export échoué"
+          echo "[$(date)] Prochain export dans 1 heure"
+          sleep 3600
+        done
+    depends_on:
+      - app
+
+volumes:
+  openoutreach_data:
+    driver: local
+  dashboard_html:
+    driver: local
