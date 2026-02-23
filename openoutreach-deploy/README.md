@@ -1,88 +1,97 @@
-# OpenOutreach — Déploiement Portage AI
+# 🚀 OpenOutreach — Déploiement Portage AI
 
-## Architecture
+Ce package contient tout le nécessaire pour déployer **OpenOutreach** sur votre propre serveur avec Docker. Il est pré-configuré pour s'intégrer parfaitement avec le **Dashboard Portage AI**.
 
-```
-OpenOutreach (Scraping LinkedIn)
-       │
-       ▼
-   CRM Django (Leads, Contacts, Deals)
-       │
-       ▼
-export_to_dashboard.py (Script d'intégration)
-       │
-       ▼
-Dashboard Portage AI (dashboard.html)
-```
+## 1. Prérequis
 
-## Prérequis
+- **Serveur/Machine locale** avec Docker et Docker Compose installés.
+- **Compte LinkedIn dédié** à la prospection (pour éviter de bloquer votre compte personnel).
+- **Clé API OpenAI** pour la qualification IA des profils.
+- **Fichier `dashboard.html`** de votre projet Portage AI SaaS.
 
-- Docker et Docker Compose installés
-- Un compte LinkedIn dédié à la prospection
-- Une clé API OpenAI (ou compatible)
+## 2. Configuration
 
-## Installation rapide
+1.  **Copiez le fichier `.env.example` en `.env`** :
+
+    ```bash
+    cp .env.example .env
+    ```
+
+2.  **Modifiez le fichier `.env`** et remplissez les variables :
+
+    | Variable | Description |
+    | --- | --- |
+    | `LINKEDIN_USERNAME` | Email de votre compte LinkedIn dédié. |
+    | `LINKEDIN_PASSWORD` | Mot de passe du compte. |
+    | `LLM_API_KEY` | Votre clé API OpenAI (commence par `sk-...`). |
+    | `CRM_PORT` | Port pour accéder à l'interface CRM (défaut: 8000). |
+    | `EXPORT_INTERVAL` | Intervalle d'export en secondes (défaut: 3600 = 1h). |
+
+3.  **Placez votre `dashboard.html`** dans un répertoire qui sera monté en volume :
+
+    Créez un répertoire `dashboard` à côté de ce `README.md` et placez-y votre fichier `dashboard.html` :
+
+    ```
+    openoutreach-deploy/
+    ├── dashboard/
+    │   └── dashboard.html
+    ├── docker-compose.yml
+    ├── .env
+    └── ...
+    ```
+
+## 3. Démarrage
+
+Le script `start.sh` automatise tout le processus (vérification, build, initialisation, démarrage).
 
 ```bash
-# 1. Cloner et configurer
-cp .env.example .env
-nano .env  # Remplir les identifiants
-
-# 2. Lancer les services
-docker compose up -d
-
-# 3. Initialiser la base de données
-docker compose exec app python manage.py migrate
-docker compose exec app python manage.py setup_crm
-docker compose exec app python manage.py createsuperuser
-
-# 4. Accéder au CRM
-# http://localhost:8000/crm/
+./start.sh
 ```
 
-## Commandes utiles
+Le script va :
+1.  Vérifier votre configuration.
+2.  Construire les images Docker.
+3.  Initialiser la base de données, la campagne et les mots-clés.
+4.  Démarrer les 3 services (daemon, crm, exporter).
+5.  Afficher les logs du daemon de scraping en temps réel.
 
-```bash
-# Lancer le daemon de scraping LinkedIn
-docker compose exec app python manage.py
+## 4. Services
 
-# Lancer le serveur web CRM
-docker compose exec app python manage.py runserver 0.0.0.0:8000
+| Service | Description | Accès |
+| --- | --- | --- |
+| **`app`** | **Daemon de scraping LinkedIn**. Il tourne en arrière-plan, se connecte à LinkedIn et recherche des profils. | `docker compose logs -f app` |
+| **`crm`** | **Interface web du CRM Django**. Permet de voir les leads, les campagnes, les stats. | `http://localhost:8000/admin/` (login: `admin` / pass: `admin`) |
+| **`exporter`** | **Export automatique**. Toutes les heures, il exporte les profils du CRM et les injecte dans votre `dashboard.html`. | `docker compose logs -f exporter` |
 
-# Exporter les profils vers le dashboard
-docker compose exec app python export_to_dashboard.py --inject /dashboard/dashboard.html
+## 5. Commandes utiles
 
-# Exporter en JSON
-docker compose exec app python export_to_dashboard.py --json -o profiles.json
+- **Voir les logs du scraping** :
+  ```bash
+  docker compose logs -f app
+  ```
 
-# Voir les logs
-docker compose logs -f app
-```
+- **Voir les logs de l'export** :
+  ```bash
+  docker compose logs -f exporter
+  ```
 
-## Script d'intégration (export_to_dashboard.py)
+- **Arrêter tous les services** :
+  ```bash
+  docker compose down
+  ```
 
-Le script `export_to_dashboard.py` convertit les Leads du CRM OpenOutreach en profils compatibles avec le dashboard Portage AI.
+- **Lancer un export manuel** :
+  ```bash
+  docker compose run --rm export-once
+  ```
 
-### Fonctionnalités
+- **Ouvrir un shell dans le conteneur `app`** :
+  ```bash
+  docker compose exec app shell
+  ```
 
-- **Extraction automatique** des compétences depuis les tags CRM et la description
-- **Calcul du score** basé sur la complétude du profil (0-100)
-- **Mapping des statuts** CRM → Dashboard (New → Nouveau, Connected → Connecté, etc.)
-- **Attribution d'agents IA** rotatifs (ARIA, LUNA, NOAH, ALEX, MAX)
-- **Tags sémantiques** pour la recherche multi-critères
-- **Injection directe** dans le fichier dashboard.html
+## 6. Dépannage
 
-### Modes d'utilisation
+- **Erreur "Login failed – no redirect to feed"** : LinkedIn a détecté une connexion depuis une nouvelle IP et demande une vérification (CAPTCHA, email, SMS). Pour résoudre cela, vous pouvez utiliser un VNC pour vous connecter manuellement au navigateur dans le conteneur et passer le checkpoint. Une fois fait, les cookies de session seront sauvegardés et le scraping pourra continuer.
 
-| Mode | Commande | Description |
-|------|---------|-------------|
-| JSON | `--json` | Export en format JSON brut |
-| JavaScript | (défaut) | Génère du code JS injectable |
-| Injection | `--inject dashboard.html` | Remplace directement dans le HTML |
-
-## Sécurité
-
-- Ne jamais committer le fichier `.env` sur Git
-- Utiliser un compte LinkedIn dédié (pas votre compte personnel)
-- Respecter les limites de connexion quotidiennes (20/jour, 100/semaine)
-- Le scraping LinkedIn comporte des risques de suspension de compte
+- **Le scraping ne trouve aucun profil** : Vérifiez les mots-clés de recherche dans le CRM (`http://localhost:8000/admin/linkedin/searchkeyword/`) et ajustez-les si nécessaire.

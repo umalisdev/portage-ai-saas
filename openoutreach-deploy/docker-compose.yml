@@ -1,62 +1,96 @@
-# docker-compose.yml — OpenOutreach + Intégration Dashboard Portage AI
-# Déploiement de production
+# ─────────────────────────────────────────────────────────────────────
+# docker-compose.yml — OpenOutreach + Dashboard Portage AI
+# Déploiement de production clé en main
+# ─────────────────────────────────────────────────────────────────────
 #
-# Usage:
-#   1. Copier ce dossier sur votre serveur
-#   2. Configurer le fichier .env (voir .env.example)
-#   3. docker compose up -d
-#   4. Accéder au CRM: http://localhost:8000/crm/
-#   5. VNC (visualisation navigateur): vnc://localhost:5900
+# Usage rapide:
+#   1. cp .env.example .env && nano .env
+#   2. docker compose up -d --build
+#   3. docker compose logs -f app
 #
-# Pour exporter les profils vers le dashboard:
-#   docker compose exec app python export_to_dashboard.py --inject /dashboard/dashboard.html
+# Services:
+#   - app:      Daemon de scraping LinkedIn (Playwright + xvfb)
+#   - crm:      Interface web CRM Django (port 8000)
+#   - exporter: Export automatique des profils vers le dashboard (toutes les heures)
 
 services:
-  # ─── OpenOutreach (scraping LinkedIn + CRM) ─────────────────────────
+
+  # ─── Daemon de scraping LinkedIn ────────────────────────────────────
   app:
-    image: ghcr.io/eracle/openoutreach:latest
-    container_name: openoutreach
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: openoutreach-daemon
     restart: unless-stopped
-    stdin_open: true
-    tty: true
+    command: daemon
     env_file:
       - .env
     volumes:
       - openoutreach_data:/app/assets
-      - ./export_to_dashboard.py:/app/export_to_dashboard.py:ro
       - dashboard_html:/dashboard
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '2.0'
+
+  # ─── Initialisation (migrations + config Portage AI) ────────────────
+  init:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: openoutreach-init
+    command: init
+    env_file:
+      - .env
+    volumes:
+      - openoutreach_data:/app/assets
+
+  # ─── Interface web CRM Django ───────────────────────────────────────
+  crm:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: openoutreach-crm
+    restart: unless-stopped
+    command: crm
+    env_file:
+      - .env
+    volumes:
+      - openoutreach_data:/app/assets
     ports:
-      - "8000:8000"   # Django Admin / CRM
-      - "5900:5900"   # VNC (visualisation du navigateur)
+      - "${CRM_PORT:-8000}:8000"
+    depends_on:
+      init:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/admin/')"]
       interval: 60s
       timeout: 10s
       retries: 3
 
-  # ─── Export automatique (cron toutes les heures) ────────────────────
+  # ─── Export automatique vers le dashboard (cron) ────────────────────
   exporter:
-    image: ghcr.io/eracle/openoutreach:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: openoutreach-exporter
     restart: unless-stopped
+    command: exporter
     env_file:
       - .env
+    environment:
+      - EXPORT_INTERVAL=${EXPORT_INTERVAL:-3600}
+      - DASHBOARD_PATH=/dashboard/dashboard.html
     volumes:
       - openoutreach_data:/app/assets
-      - ./export_to_dashboard.py:/app/export_to_dashboard.py:ro
       - dashboard_html:/dashboard
-    entrypoint: ["/bin/sh", "-c"]
-    command:
-      - |
-        echo "Démarrage de l'exportateur automatique..."
-        while true; do
-          echo "[$(date)] Export des profils vers le dashboard..."
-          python export_to_dashboard.py --inject /dashboard/dashboard.html 2>&1 || echo "Export échoué"
-          echo "[$(date)] Prochain export dans 1 heure"
-          sleep 3600
-        done
     depends_on:
-      - app
+      init:
+        condition: service_completed_successfully
 
 volumes:
   openoutreach_data:
