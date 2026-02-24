@@ -1,0 +1,79 @@
+# ─────────────────────────────────────────────────────────────────────
+# Twenty CRM — Docker Compose Production
+# Port: 3000
+# ─────────────────────────────────────────────────────────────────────
+version: '3.8'
+
+services:
+  twenty-server:
+    image: twentycrm/twenty:latest
+    container_name: twenty-server
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # Server
+      SERVER_URL: ${SERVER_URL:-http://localhost:3000}
+      PORT: 3000
+      # Database
+      PG_DATABASE_URL: postgres://twenty:twenty_password@twenty-db:5432/twenty
+      # Redis
+      REDIS_URL: redis://twenty-redis:6379
+      # Auth
+      ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET:-a]3Kj9!sD#kL2mN4pQ6rT8vX0yB1cE3fG5hJ7lM9nP
+      LOGIN_TOKEN_SECRET: ${LOGIN_TOKEN_SECRET:-b]4Lk0!tE#lM3nO5qR7sU9wY1zA2dF4gH6iK8mN0pQ
+      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET:-c]5Ml1!uF#mN4oP6rS8tV0xZ2aB3eG5hI7jL9nO1qR
+      # Storage
+      STORAGE_TYPE: local
+      STORAGE_LOCAL_PATH: /app/packages/twenty-server/.local-storage
+      # Misc
+      IS_SIGN_UP_DISABLED: "false"
+      SIGN_IN_PREFILLED: "false"
+    volumes:
+      - twenty_server_data:/app/packages/twenty-server/.local-storage
+      - twenty_docker_data:/app/docker-data
+    depends_on:
+      twenty-db:
+        condition: service_healthy
+      twenty-redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  twenty-db:
+    image: twentycrm/twenty-postgres:latest
+    container_name: twenty-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: twenty
+      POSTGRES_PASSWORD: twenty_password
+      POSTGRES_DB: twenty
+    volumes:
+      - twenty_db_data:/bitnami/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U twenty -d twenty"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  twenty-redis:
+    image: redis:7-alpine
+    container_name: twenty-redis
+    restart: unless-stopped
+    volumes:
+      - twenty_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  twenty_server_data:
+  twenty_db_data:
+  twenty_redis_data:
+  twenty_docker_data:
